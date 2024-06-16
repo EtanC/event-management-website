@@ -11,17 +11,19 @@ definitions_auth = {
         },
     },
     'parameters': {
-        'username': {
-            'name': 'username',
+        'login_details': {
+            'name': 'Login Details',
             'in': 'body',
-            'type': 'string',
+            'type': 'object',
             'required': 'true',
-        },
-        'password': {
-            'name': 'password',
-            'in': 'body',
-            'type': 'string',
-            'required': 'true',
+            'properties': {
+                'username': {
+                    '$ref': '#/definitions/data/username',
+                },
+                'password': {
+                    '$ref': '#/definitions/data/password',
+                }
+            }
         },
         'token': {
             'name': 'token',
