@@ -3,7 +3,6 @@ from flasgger import Swagger, swag_from
 from backend.swagger_doc.auth_register import auth_register_spec
 from backend.swagger_doc.auth_login import auth_login_spec
 from backend.swagger_doc.auth_logout import auth_logout_spec
-from backend.src.auth import auth_login, auth_register, auth_logout
 from backend.src.error import AccessError, InputError
 import json
 from werkzeug.exceptions import HTTPException
@@ -33,19 +32,19 @@ config = getConfig()
 @swag_from(auth_register_spec)
 def auth_register_route():
     body = request.get_json()
-    return json.dumps(auth_register(body['username'], body['password']))
+    return json.dumps({})
 
 @app.post('/auth/login')
 @swag_from(auth_login_spec)
 def auth_login_route():
     body = request.get_json()
-    return json.dumps(auth_login(body['username'], body['password']))
+    return json.dumps({})
 
 @app.post('/auth/logout')
 @swag_from(auth_logout_spec)
 def auth_logout_route():
     body = request.get_json()
-    return json.dumps(auth_logout(body['token']))
+    return json.dumps({})
 
 
 if __name__ == '__main__':

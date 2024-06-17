@@ -1,5 +1,6 @@
 import pytest
-from backend.src.auth import auth_login, auth_logout, auth_register
+from backend.src.auth import AuthModule
+from backend.tests.fake_database import FakeDatabase
 
 @pytest.fixture
 def user1():
@@ -7,18 +8,21 @@ def user1():
         'username': 'John',
         'password': '12345678',
     }
+@pytest.fixture
+def auth():
+    return AuthModule(FakeDatabase())
 
-def test_auth(user1):
+def test_auth(auth, user1):
     # user is given a token when logging in
-    tkn1 = auth_login(user1['username'], user1['password'])['token']
+    tkn1 = auth.login(user1['username'], user1['password'])['token']
     assert isinstance(tkn1, str)
     
     # user can log out
-    auth_logout(tkn1)
+    auth.logout(tkn1)
 
     # user is given a token when registering
-    tkn2 = auth_register(user1['username'], user1['password'])['token']
+    tkn2 = auth.register(user1['username'], user1['password'])['token']
     assert isinstance(tkn2, str)
 
     # user can log out
-    auth_logout(tkn2)
+    auth.logout(tkn2)

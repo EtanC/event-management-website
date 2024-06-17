@@ -1,12 +1,16 @@
-def auth_login(username, password):
-    return {
-        'token': '1'
-    }
+class AuthModule:
+    def __init__(self, db):
+        self.db = db
 
-def auth_register(username, password):
-    return {
-        'token': '1'
-    }
+    def login(self, username, password):
+        return {
+            'token': '1'
+        }
 
-def auth_logout(token):
-    return {}
+    def register(self, username, password):
+        return {
+            'token': '1'
+        }
+
+    def logout(self, token):
+        return {}
