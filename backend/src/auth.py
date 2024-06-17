@@ -3,28 +3,25 @@ from backend.src.error import AccessError, InputError
 class AuthModule:
     def __init__(self, db):
         self.db = db
-        self.user_id = 0
 
     def login(self, email, password):
-        match = self.db.search_user('email', email)
+        match = self.db.find_one({ 'email': email, 'password': password })
         if match is None:
             raise InputError("Incorrect email or password")
         return {
-            'token': f'{match}'
+            'token': f'{match['_id']}'
         }
 
     def register(self, username, email, password):
-        if self.db.search_user('email', email) is not None:
+        if self.db.find_one({ 'email': email }) is not None:
             raise InputError("Email is already being used")
-        user_id = self.user_id
-        self.user_id += 1
-        self.db.insert_user(user_id, {
+        user = self.db.insert_one({
             'username': username,
             'email': email,
             'password': password
         })
         return {
-            'token': f'{user_id}'
+            'token': f'{user['_id']}'
         }
 
     def logout(self, token):
