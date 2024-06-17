@@ -18,6 +18,9 @@ auth_login_spec = {
                     }
                 }
             },
+        },
+        400: {
+            'description': 'Wrong email or password'
         }
     }
 }
