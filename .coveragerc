@@ -1,0 +1,9 @@
+[run]
+source =
+    backend/src
+omit =
+    test_*.py
+    *_test.py
+    backend/src/server.py
+    backend/src/error.py
+    */__init__.py
