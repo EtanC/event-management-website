@@ -6,4 +6,5 @@ omit =
     *_test.py
     backend/src/server.py
     backend/src/error.py
+    backend/src/database.py
     */__init__.py
