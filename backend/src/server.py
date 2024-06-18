@@ -6,6 +6,7 @@ from backend.swagger_doc.auth_logout import auth_logout_spec
 from backend.src.error import AccessError, InputError
 import json
 from werkzeug.exceptions import HTTPException
+from backend.src.auth import auth_login, auth_register, auth_logout
 
 app = Flask(__name__)
 swagger = Swagger(app)
@@ -28,23 +29,23 @@ def getConfig():
 
 config = getConfig()
 
-@app.post('/auth/register')
-@swag_from(auth_register_spec)
-def auth_register_route():
-    body = request.get_json()
-    return json.dumps({})
-
 @app.post('/auth/login')
 @swag_from(auth_login_spec)
 def auth_login_route():
     body = request.get_json()
-    return json.dumps({})
+    return json.dumps(auth_login(body['username'], body['password']))
+
+@app.post('/auth/register')
+@swag_from(auth_register_spec)
+def auth_register_route():
+    body = request.get_json()
+    return json.dumps(auth_register(body['username'], body['email'], body['password']))
 
 @app.post('/auth/logout')
 @swag_from(auth_logout_spec)
 def auth_logout_route():
     body = request.get_json()
-    return json.dumps({})
+    return json.dumps(auth_logout(body['token']))
 
 
 if __name__ == '__main__':
