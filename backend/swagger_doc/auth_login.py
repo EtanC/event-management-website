@@ -3,11 +3,8 @@ from backend.swagger_doc.definitions_auth import definitions_auth
 auth_login_spec = {
     'parameters': [
         {
-            '$ref': '#/definitions/parameters/username'
+            '$ref': '#/definitions/parameters/login_details'
         },
-        {
-            '$ref': '#/definitions/parameters/password'
-        }
     ],
     'definitions': definitions_auth,
     'responses': {
@@ -21,6 +18,9 @@ auth_login_spec = {
                     }
                 }
             },
+        },
+        400: {
+            'description': 'Wrong email or password'
         }
     }
 }
