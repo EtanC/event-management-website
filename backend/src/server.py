@@ -7,8 +7,10 @@ from backend.src.error import AccessError, InputError
 import json
 from werkzeug.exceptions import HTTPException
 from backend.src.auth import auth_login, auth_register, auth_logout
+from flask_cors import CORS
 
 app = Flask(__name__)
+cors = CORS(app)
 swagger = Swagger(app)
 
 @app.errorhandler(HTTPException)
