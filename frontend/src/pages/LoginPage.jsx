@@ -18,27 +18,34 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import background from './LoginLHSBackground.png';
 
 const LoginPage = () => {
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate(); // Use the useNavigate hook
+
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
     const handleLogin = async (event) => {
         event.preventDefault();
+        setIsLoading(true);
         try {
-        const response = await axios.post('http://127.0.0.1:5000/auth/login', {
-            username: email,
-            password,
-        });
-        console.log('Login successful:', response.data);
-        // Use local storage for now
-        localStorage.setItem('token', response.data.token);
-        navigate('/home');
-        
+            const response = await axios.post('http://127.0.0.1:5000/auth/login', {
+                username: email,
+                password,
+            });
+            console.log('Login successful:', response.data);
+            // Use local storage for now
+            localStorage.setItem('token', response.data.token);
+            await sleep(2000);
+            navigate('/'); // navigate to home
         } catch (error) {
             // need to do the errors properly 
-        console.error('Error logging in:', error.response ? error.response.data.description : error.message);
-        setErrorMessage(error.response ? error.response.data.description : error.message);
+            console.error('Error logging in:', error.response ? error.response.data.description : error.message);
+            setErrorMessage(error.response ? error.response.data.description : error.message);
+        } finally {
+            setIsLoading(false);
         }
     }; 
 
@@ -90,17 +97,20 @@ const LoginPage = () => {
                 </IconButton>
             </Box>
             <Divider>OR</Divider>
+            {isLoading ? (
+                <Typography align="center" sx={{ mt: 2 }}>Loading...</Typography>
+                ) : (
             <Box
-                component="form"
-                onSubmit={handleLogin}
-                sx={{
+              component="form"
+              onSubmit={handleLogin}
+              sx={{
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 2,
                 mt: 2,
-                }}
+              }}
             >
-                <TextField
+              <TextField
                 label="Email"
                 type="email"
                 value={email}
@@ -108,12 +118,12 @@ const LoginPage = () => {
                 required
                 fullWidth
                 InputProps={{
-                    sx: {
+                  sx: {
                     borderRadius: '20px',
-                    },
+                  },
                 }}
-                />
-                <TextField
+              />
+              <TextField
                 label="Password"
                 type="password"
                 value={password}
@@ -121,34 +131,36 @@ const LoginPage = () => {
                 required
                 fullWidth
                 InputProps={{
-                    sx: {
+                  sx: {
                     borderRadius: '20px',
-                    },
+                  },
                 }}
-                />
-                {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-                <Button type="submit" variant="contained" color="primary" fullWidth sx={{  fontWeight: 'bold', borderRadius: '20px' }}>
+              />
+              {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+              <Button type="submit" variant="contained" color="primary" fullWidth sx={{ fontWeight: 'bold', borderRadius: '20px' }}>
                 Login
-                </Button>
-                <Button
-                    // component = {forgot login page}
-                    to="/forgot-password"
-                    variant="text"
-                    fullWidth
-                    sx={{
-                        borderRadius: '20px',
-                        '&:hover': {
-                        backgroundColor: 'transparent',
-                        },
-                    }}
-                    >
-                    Forgot password?
-                </Button>
+              </Button>
+              <Button
+                // component={Link}
+                to="/forgot-password"
+                variant="text"
+                fullWidth
+                sx={{
+                  borderRadius: '20px',
+                  '&:hover': {
+                    backgroundColor: 'transparent',
+                  },
+                }}
+              >
+                Forgot password?
+              </Button>
             </Box>
-            </Box>
-        </Grid>
-        </Grid>
-    );
+          )}
+        </Box>
+      </Grid>
+    </Grid>
+  );
 };
+
 
 export default LoginPage; 
