@@ -127,7 +127,7 @@ function ProfilePage() {
                                         value={newProfile.description}
                                         onChange={handleChange}
                                         fullWidth
-                                        sx={{ mb: 2 }}
+                                        InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                     />
                                 ) : (
                                     <Typography variant="body1">{profile.description}</Typography>
@@ -146,7 +146,7 @@ function ProfilePage() {
                                                 value={newProfile.fullName}
                                                 onChange={handleChange}
                                                 fullWidth
-                                                sx={{ mb: 2 }}
+                                                InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                             />
                                             <TextField
                                                 name="email"
@@ -154,7 +154,7 @@ function ProfilePage() {
                                                 value={newProfile.email}
                                                 onChange={handleChange}
                                                 fullWidth
-                                                sx={{ mb: 2 }}
+                                                InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                             />
                                             <TextField
                                                 name="jobTitle"
@@ -162,7 +162,7 @@ function ProfilePage() {
                                                 value={newProfile.jobTitle}
                                                 onChange={handleChange}
                                                 fullWidth
-                                                sx={{ mb: 2 }}
+                                                InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                             />
                                             <TextField
                                                 name="funFact"
@@ -170,7 +170,7 @@ function ProfilePage() {
                                                 value={newProfile.funFact}
                                                 onChange={handleChange}
                                                 fullWidth
-                                                sx={{ mb: 2 }}
+                                                InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                             />
                                         </>
                                     ) : (
@@ -220,7 +220,8 @@ function ProfilePage() {
                                                     value={password.oldpw}
                                                     onChange={handlePWChange}
                                                     fullWidth
-                                                    sx={{ mb: 2 }}
+                                                    required
+                                                    InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                                 />
                                                 <TextField
                                                     name="newpw"
@@ -228,7 +229,8 @@ function ProfilePage() {
                                                     value={password.newpw}
                                                     onChange={handlePWChange}
                                                     fullWidth
-                                                    sx={{ mb: 2 }}
+                                                    required
+                                                    InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                                 />
                                                 <TextField
                                                     name="confirmNewpw"
@@ -236,7 +238,8 @@ function ProfilePage() {
                                                     value={password.confirmNewpw}
                                                     onChange={handlePWChange}
                                                     fullWidth
-                                                    sx={{ mb: 2 }}
+                                                    required
+                                                    InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                                 />
                                                 <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'row', gap: '20px' }}>
                                                     <Button
@@ -318,7 +321,7 @@ const styles = {
     flexCard: {
         marginBottom: '30px',
         borderRadius: '10px',
-        backgroundColor: '#DADAD9',
+        backgroundColor: '#E7E9EA',
     },
     headerFont: {
         fontWeight: 'bold',
