@@ -1,21 +1,23 @@
-// styles
-// import '../styles/HomePage.css';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { useNavigate } from "react-router-dom";
-
+import NewEvent from '../components/NewEvent'
 function HomePage() {
   const navigate = useNavigate();
 
   return (
     <>
-      <p> Home Page</p>
+      <p>Home Page</p>
       <button
         onClick={() => {
-          navigate("/event")
+          navigate("/event");
         }}
-      > I'm an event! Click me!</button>
+      >
+        Go to Event Page
+      </button>
+      <NewEvent />
     </>
-  )
+  );
 }
 
-export default HomePage
+export default HomePage;
