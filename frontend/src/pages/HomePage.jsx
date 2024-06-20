@@ -11,7 +11,6 @@ function HomePage() {
     const [eventType, setEventType] = useState('');
     const [location, setLocation] = useState('');
     const [date, setDate] = useState('');
-    const [visibleEvents, setVisibleEvents] = useState(3);
 
     const handleImageClick = () => {
         navigate('/event/0');
@@ -19,10 +18,6 @@ function HomePage() {
 
     const handleSearch = () => {
         console.log(`Search for: Type: ${eventType}, Location: ${location}, Date: ${date}`);
-    };
-
-    const handleLoadMore = () => {
-        setVisibleEvents(visibleEvents + 6);
     };
 
     return (
@@ -103,10 +98,7 @@ function HomePage() {
                         <Typography variant="h4" component="div">Upcoming Events</Typography>
                         <Button variant="contained" color="primary" onClick={() => navigate("/create-event")}>Create event</Button>
                     </Box>
-                    <EventLoading filters={{ eventType, location, date }} visibleEvents={visibleEvents} />
-                    <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-                        <Button variant="outlined" onClick={handleLoadMore}>Load more...</Button>
-                    </Box>
+                    <EventLoading filters={{ eventType, location, date }} />
                 </Container>
             </Box>
         </>
