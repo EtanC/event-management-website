@@ -120,6 +120,7 @@ function EventLoading() {
                             />
                         ) : (
                             <CircularProgress />
+
                         )}
                     </CardMedia>
                     <CardContent>
