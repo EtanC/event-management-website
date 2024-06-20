@@ -15,7 +15,7 @@ import {
 import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import FacebookIcon from '@mui/icons-material/Facebook';
-import background from './LoginLHSBackground.png';
+import background from './LHSBackground.png';
 
 const LoginPage = () => {
 
@@ -23,7 +23,7 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const navigate = useNavigate(); // Use the useNavigate hook
+    const navigate = useNavigate();
 
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -41,7 +41,6 @@ const LoginPage = () => {
             await sleep(2000);
             navigate('/'); // navigate to home
         } catch (error) {
-            // need to do the errors properly 
             console.error('Error logging in:', error.response ? error.response.data.description : error.message);
             setErrorMessage(error.response ? error.response.data.description : error.message);
         } finally {
@@ -71,7 +70,18 @@ const LoginPage = () => {
         >
             <Typography variant="h4" sx={{ marginBottom: 2, fontWeight: 'bold', fontSize: '1.8em' }}>Don't have an account?</Typography>
             <Typography variant="body1" sx={{ marginBottom: 2 }}>Register with us today!</Typography>
-            <Button variant="contained" sx={{ fontWeight: 'bold', borderRadius: '15px', mt: 2,backgroundColor: '#91b748', color: '#FFFFF', '&:hover': { backgroundColor: '#1E4830' } }}>
+            <Button 
+                variant="contained" 
+                sx={{ 
+                    fontWeight: 'bold', 
+                    borderRadius: '15px', 
+                    mt: 2, 
+                    backgroundColor: '#91b748', 
+                    color: '#FFFFF', 
+                    '&:hover': { backgroundColor: '#1E4830' } 
+                }} 
+                onClick={() => navigate('/register')}
+                >
                 Sign up
             </Button>
         </Grid>

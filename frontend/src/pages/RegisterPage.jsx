@@ -10,7 +10,7 @@ import {
   Grid,
   Alert,
 } from '@mui/material';
-import background from './RegisterPageBackground.png';
+import background from './LHSBackground.png';
 
 const RegisterPage = () => {
   const [email, setEmail] = useState('');
