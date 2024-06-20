@@ -5,6 +5,7 @@ import "./index.css";
 
 import HomePage from "./pages/HomePage";
 import EventInfoPage from "./pages/EventInfoPage";
+import ProfilePage from "./pages/ProfilePage";
 
 const App = () => {
 
@@ -17,6 +18,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/event" element={<EventInfoPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </Router>
   );
