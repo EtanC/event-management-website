@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 //import axios from 'axios';
 import defaultImage from '../components/loading.png';
+import searchIcon from './search-icon.png'
 import {
     Card,
     CardContent,
@@ -10,6 +11,9 @@ import {
     Grid,
     Box,
     CircularProgress,
+    TextField,
+    Autocomplete, 
+    IconButton,
 } from '@mui/material';
   
 // fields: 
@@ -46,17 +50,45 @@ const mockData = [
 ]
 
 function EventLoading() {
+    const navigate = useNavigate();
+    const [eventType, setEventType] = useState('');
+    const [location, setLocation] = useState('');
+    const [date, setDate] = useState('');
     const [events, setEvents] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
+    const [locations, setLocations] = useState([]);
 
     useEffect(() => {
         const fetchEvents = async () => {
             setIsLoading(true);
             try {
                 await new Promise(resolve => setTimeout(resolve, 2000));
-                setEvents(mockData);
+                let filteredEvents = mockData;
+
+                if (eventType) {
+                    filteredEvents = filteredEvents.filter(event =>
+                        event.name.toLowerCase().includes(eventType.toLowerCase())
+                    );
+                }
+
+                if (location) {
+                    filteredEvents = filteredEvents.filter(event =>
+                        event.location.toLowerCase().includes(location.toLowerCase())
+                    );
+                }
+
+                if (date) {
+                    filteredEvents = filteredEvents.filter(event => 
+                        new Date(event.date) >= new Date(date)
+                    );
+                    filteredEvents = filteredEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+                }
+
+                setEvents(filteredEvents);
+
+                const uniqueLocations = [...new Set(mockData.map(event => event.location))];
+                setLocations(uniqueLocations);
             } catch (err) {
                 setError('Failed to fetch events');
             } finally {
@@ -64,84 +96,177 @@ function EventLoading() {
             }
         };
         fetchEvents();
-    }, []);
+    }, [eventType, location, date]);
 
     const handleCardClick = (event) => {
         navigate(`/event/${event.name}`, { state: { event } });
     };
 
-    if (isLoading) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-                <CircularProgress />
-            </Box>
-        );
-    }
-
-    if (error) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-                <Typography variant="h6" color="error">
-                    {error}
-                </Typography>
-            </Box>
-        );
-    }
+    const handleSearch = () => {
+        setIsLoading(true);
+        setEvents([]);
+        setTimeout(() => {
+            setIsLoading(false);
+            setEvents(mockData.filter(event => 
+                (!eventType || event.name.toLowerCase().includes(eventType.toLowerCase())) &&
+                (!location || event.location.toLowerCase().includes(location.toLowerCase())) &&
+                (!date || new Date(event.date) >= new Date(date))
+            ));
+        }, 2000);
+    };
 
     return (
-        <Box sx={{ padding: 4 }}>
-            <Grid container spacing={2}>
-                {events.map((event, index) => (
-                    <Grid item xs={12} sm={6} md={4} key={index} sx={{ display: 'flex', justifyContent: 'center' }}>
-                        <Card 
-                            sx={{ width: 345, boxShadow: 3, borderRadius: 2 }}
-                            onClick={() => handleCardClick(event)}
-                        >
-                            <CardMedia
-                                component="div"
-                                sx={{
-                                    position: 'relative',
-                                    height: 140,
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    backgroundColor: '#f0f0f0',
-                                    borderTopLeftRadius: 8,
-                                    borderTopRightRadius: 8
-                                }}
-                            >
-                            {isLoading ? (
-                                <img
-                                    src={defaultImage}
-                                    alt={event.name}
-                                    style={{
-                                        maxHeight: '100%',
-                                        maxWidth: '100%',
-                                        objectFit: 'contain',
-                                        borderTopLeftRadius: 8,
-                                        borderTopRightRadius: 8
+        <Box sx={{ backgroundColor: '#f5f5f5', padding: '20px 0' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '40px', backgroundColor: '#1E4830', padding: '20px', borderRadius: '15px' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', maxWidth: '800px', gap: '10px' }}>
+                    <TextField
+                        label="Looking For"
+                        value={eventType}
+                        onChange={(e) => setEventType(e.target.value)}
+                        fullWidth
+                        variant="outlined"
+                        sx={{ 
+                            flex: 1,
+                            '& .MuiOutlinedInput-root': { 
+                                borderRadius: '15px', 
+                                '& .MuiOutlinedInput-notchedOutline': { borderColor: 'white' }, 
+                                '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' } 
+                            },
+                            '& .MuiInputBase-input': { color: 'white' }, 
+                            '& .MuiFormLabel-root': { color: 'white' }, 
+                            '& .MuiInputAdornment-root .MuiSvgIcon-root': { color: 'white' } 
+                        }}
+                    />
+                    <Autocomplete
+                        options={locations}
+                        getOptionLabel={(option) => option}
+                        value={location}
+                        onChange={(e, newValue) => setLocation(newValue)}
+                        sx={{ 
+                            flex: 1,
+                            '& .MuiOutlinedInput-root': { 
+                                borderRadius: '15px', 
+                                '& .MuiOutlinedInput-notchedOutline': { borderColor: 'white' }, 
+                                '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' } 
+                            },
+                            '& .MuiInputBase-input': { color: 'white' }, 
+                            '& .MuiFormLabel-root': { color: 'white' }, 
+                            '& .MuiInputAdornment-root .MuiSvgIcon-root': { color: 'white' } 
+                        }}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label="Location"
+                                variant="outlined"
+                                fullWidth
+                            />
+                        )}
+                    />
+                    <TextField
+                        type="date"
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
+                        InputLabelProps={{ shrink: true }}
+                        fullWidth
+                        variant="outlined"
+                        sx={{ 
+                            flex: 1,
+                            '& .MuiOutlinedInput-root': { 
+                                borderRadius: '15px', 
+                                '& .MuiOutlinedInput-notchedOutline': { borderColor: 'white' }, 
+                                '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' } 
+                            },
+                            '& .MuiInputBase-input': { color: 'white' }, 
+                            '& .MuiFormLabel-root': { color: 'white' }, 
+                            '& .MuiInputAdornment-root .MuiSvgIcon-root': { color: 'white' } 
+                        }}
+                    />
+                    <IconButton
+                        sx={{ 
+                            backgroundColor: '#D6FA51', 
+                            color: '#FFFFFF', 
+                            '&:hover': { backgroundColor: '#D6FA51', color: '#FFFFFF' },
+                            flexShrink: 0 
+                        }}
+                        onClick={handleSearch}
+                    >
+                        <img src={searchIcon} alt="Search" style={{ width: '24px', height: '24px' }} />
+                    </IconButton>
+                </Box>
+            </Box>
+
+            {isLoading ? (
+                <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+                    <CircularProgress />
+                </Box>
+            ) : error ? (
+                <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+                    <Typography variant="h6" color="error">
+                        {error}
+                    </Typography>
+                </Box>
+            ) : events.length === 0 ? (
+                <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+                    <Typography variant="h6" color="textSecondary">
+                        No search results
+                    </Typography>
+                </Box>
+            ) : (
+                <Box sx={{ padding: 4 }}>
+                    <Grid container spacing={2}>
+                        {events.map((event, index) => (
+                            <Grid item xs={12} sm={6} md={4} key={index} sx={{ display: 'flex', justifyContent: 'center' }}>
+                                <Card 
+                                    sx={{ 
+                                        width: 345, 
+                                        boxShadow: 3, 
+                                        borderRadius: 2, 
+                                        '&:hover': {cursor: 'pointer',} 
                                     }}
-                                />
-                            ) : (
-                                <CircularProgress/>
-                                
-                            )}
-                            </CardMedia>
-                            <CardContent>
-                                <Typography gutterBottom variant="h6" component="div">
-                                    {event.name}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    {event.date}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    {event.location}
-                                </Typography>
-                            </CardContent>
-                        </Card>
+                                    onClick={() => handleCardClick(event)}
+                                >
+                                    <CardMedia
+                                        component="div"
+                                        sx={{
+                                            position: 'relative',
+                                            height: 140,
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            backgroundColor: '#f0f0f0',
+                                            borderTopLeftRadius: 8,
+                                            borderTopRightRadius: 8
+                                        }}
+                                    >
+                                        <img
+                                            src={defaultImage}
+                                            alt={event.name}
+                                            style={{
+                                                maxHeight: '100%',
+                                                maxWidth: '100%',
+                                                objectFit: 'contain',
+                                                borderTopLeftRadius: 8,
+                                                borderTopRightRadius: 8
+                                            }}
+                                        />
+                                    </CardMedia>
+                                    <CardContent>
+                                        <Typography gutterBottom variant="h6" component="div">
+                                            {event.name}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            {event.date}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            {event.location}
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        ))}
                     </Grid>
-                ))}
-            </Grid>
+                </Box>
+            )}
         </Box>
     );
 }
