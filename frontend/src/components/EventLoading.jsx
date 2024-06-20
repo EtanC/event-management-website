@@ -1,5 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 //import axios from 'axios';
 import defaultImage from './loading.png';
 import {
@@ -50,6 +51,7 @@ function EventLoading() {
     const [events, setEvents] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -92,7 +94,10 @@ function EventLoading() {
             <Grid container spacing={4}>
                 {events.map((event, index) => (
                 <Grid item xs={12} sm={6} md={4} key={index} sx={{ display: 'flex', justifyContent: 'center' }}>
-                    <Card sx={{ width: 345, boxShadow: 3, borderRadius: 2 }}>
+                    <Card 
+                        sx={{ width: 345, boxShadow: 3, borderRadius: 2 }}
+                        onClick={() => navigate(`/event/${index}`, { state: { event } })}
+                    >
                     <CardMedia
                         component="div"
                         sx={{
