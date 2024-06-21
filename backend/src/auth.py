@@ -15,7 +15,9 @@ def auth_register(username, email, password):
     user = db.users.insert_one({
         'username': username,
         'email': email,
-        'password': password
+        'password': password,
+        'preferences': {},
+        'profile_pic': None
     })
     return {
         'token': f'{user.inserted_id}'
