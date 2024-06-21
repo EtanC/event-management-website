@@ -13,7 +13,7 @@ def get_profile_details(token):
 
 	return { 	'username': f"{user['username']}", 
 				'email': f"{user['email']}",
-				'preferences': f"{user['preferences']}"		}
+				'preferences': user['preferences']		}
 
 # mayeb won't deal with profile pics first, but might have to use GridFS to store on mongoDB
 def update_profile_details(token, username, email, old_password, new_password, re_password, preferences):
@@ -22,11 +22,18 @@ def update_profile_details(token, username, email, old_password, new_password, r
 
 	user = db.users.find_one({"_id": ObjectId(token)})
 
+	# might be overdoing these but just in case ig
 	if user is None: 
 		raise AccessError('Invalid Token')
 	elif old_password and old_password != user['password']:
 		raise InputError("Old password doesn't match")
-	elif new_password != re_password:
+	elif not old_password and new_password:
+		raise InputError('Old password required')
+	elif old_password and new_password and not re_password:
+		raise InputError('Please re-enter your new password')
+	elif old_password and not new_password and re_password:
+		raise InputError('Please enter your new password')
+	elif old_password and new_password != re_password:
 		raise InputError("New passwords don't match")
 
 
