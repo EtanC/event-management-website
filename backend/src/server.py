@@ -8,6 +8,7 @@ import json
 from werkzeug.exceptions import HTTPException
 from backend.src.auth import auth_login, auth_register, auth_logout
 from flask_cors import CORS
+from backend.src.config import config
 
 app = Flask(__name__)
 cors = CORS(app)
