@@ -9,6 +9,12 @@ import {
     Typography,
     Box,
 } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import Tags from './Tags.jsx';
 
 const styles = {
     modal: {
@@ -16,10 +22,8 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
     },
-    paper: {
-        maxWidth: 400,
-        width: '100%',
-        backgroundColor: 'white',
+    date: {
+        borderRadius: '40px'
     },
     card: {
         padding: '30px',
@@ -27,45 +31,102 @@ const styles = {
     },
     textContainer: {
         display: 'flex',
+        gap: '10px'
     },
     buttonsContainer: {
         display: 'flex',
         justifyContent: 'flex-end',
-        gap: '20px'
-    }
+        gap: '10px'
+    },
+    button: {
+        borderRadius: '25px',
+        textTransform: 'none'
+    },
 };
+
+const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+});
 
 const NewEvent = () => {
     const [open, setOpen] = useState(false);
-
-    const handleOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
+    const [eventData, setEventData] = useState({
+        eventName: '',
+        location: '',
+        date: '',
+        registrationLink: '',
+        description: '',
+        tags: [],
+        image: null
+    });
 
     const handleSave = () => {
-        // Implement save functionality here
-        handleClose();
-        // You can add your save logic here, such as sending data to an API or updating state.
+        console.log(eventData);
+        setOpen(false);
+        // save the data into the database
+
+        setEventData(preState => ({
+            eventName: '',
+            location: '',
+            date: null,
+            registrationLink: '',
+            description: '',
+            tags: [],
+            image: null
+        }))
+    };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setEventData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    const handleDateChange = (date_data) => {
+        setEventData(prevState => ({
+            ...prevState,
+            date: date_data.$d
+        }));
+    };
+
+    const handleTagsChange = (tags) => {
+        setEventData(prevState => ({
+            ...prevState,
+            tags: tags
+        }));
+    };
+
+    const handleFileChange = (e) => {
+        setEventData(prevState => ({
+            ...prevState,
+            image: e.target.files[0]
+        }));
     };
 
     return (
-        <div>
-            <Button variant="contained" color="primary" onClick={handleOpen}>
+        <>
+            <Button variant="contained" color="primary" onClick={() => { setOpen(true) }}>
                 New Event
             </Button>
             <Modal
                 sx={styles.modal}
                 open={open}
-                onClose={handleClose}
+                onClose={() => { setOpen(false) }}
                 closeAfterTransition
             >
                 <Fade in={open}>
                     <Card sx={styles.card}>
-                        <Typography variant="h5" gutterBottom>
+                        <Typography variant="h5" sx={{ mb: 4 }}>
                             Create New Event
                         </Typography>
                         <Grid container spacing={5}>
@@ -74,23 +135,41 @@ const NewEvent = () => {
                                     fullWidth
                                     label="Event Name"
                                     variant="outlined"
+                                    required
+                                    name="eventName"
+                                    value={eventData.eventName}
+                                    onChange={handleChange}
+                                    InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                 />
                                 <Box sx={styles.textContainer}>
                                     <TextField
                                         fullWidth
                                         label="Location"
                                         variant="outlined"
+                                        required
+                                        name="location"
+                                        value={eventData.location}
+                                        onChange={handleChange}
+                                        InputProps={{ sx: { borderRadius: '40px', mb: 2, width: '100%' }, }}
                                     />
-                                    <TextField
-                                        fullWidth
-                                        label="Submission Deadline"
-                                        variant="outlined"
-                                    />
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DatePicker
+                                            label="Submission Deadline"
+                                            onChange={handleDateChange}
+                                            slotProps={{
+                                                textField: { sx: { borderRadius: '40px', width: '400px', fieldset: { borderRadius: '40px' }, } }
+                                            }}
+                                        />
+                                    </LocalizationProvider>
                                 </Box>
                                 <TextField
                                     fullWidth
                                     label="Registration Link"
                                     variant="outlined"
+                                    name="registrationLink"
+                                    value={eventData.registrationLink}
+                                    onChange={handleChange}
+                                    InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                 />
                                 <TextField
                                     fullWidth
@@ -98,24 +177,37 @@ const NewEvent = () => {
                                     variant="outlined"
                                     multiline
                                     rows={4}
+                                    name="description"
+                                    value={eventData.description}
+                                    onChange={handleChange}
+                                    InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                 />
-                                <Typography>Add Tags</Typography>
-                                <Typography>Add Image</Typography>
+                                <Tags tags={eventData.tags} setTags={handleTagsChange} />
+                                <Box sx={{ display: 'flex', gap: '20px', alignItems: 'center', mb: 5 }}>
+                                    <Button
+                                        component="label"
+                                        variant="contained"
+                                        tabIndex={-1}
+                                        startIcon={<CloudUploadIcon />}
+                                        sx={{ textTransform: 'none', borderRadius: '40px' }}
+                                    >
+                                        Upload Image
+                                        <VisuallyHiddenInput type="file" onChange={handleFileChange} />
+                                    </Button>
+                                    {eventData.image && (
+                                        <Typography>{eventData.image.name}</Typography>
+                                    )}
+                                </Box>
                             </Grid>
-                            {/* Add more fields as needed */}
                         </Grid>
                         <Box sx={styles.buttonsContainer}>
-                            <Button variant="outlined" color="secondary" onClick={handleClose}>
-                                Cancel
-                            </Button>
-                            <Button variant="contained" color="primary" onClick={handleSave}>
-                                Save
-                            </Button>
+                            <Button variant="outlined" color="primary" sx={styles.button} onClick={() => { setOpen(false) }}>Cancel</Button>
+                            <Button variant="contained" color="primary" sx={styles.button} onClick={handleSave}>Save Event</Button>
                         </Box>
                     </Card>
                 </Fade>
             </Modal>
-        </div>
+        </>
     );
 };
 
