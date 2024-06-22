@@ -24,13 +24,6 @@ def access_error_handler(e):
     response.content_type = "application/json"
     return response
 
-def getConfig():
-    with open('./backend/src/config.json') as file:
-        config = json.load(file)
-    return config
-
-config = getConfig()
-
 @app.post('/auth/login')
 @swag_from(auth_login_spec)
 def auth_login_route():
