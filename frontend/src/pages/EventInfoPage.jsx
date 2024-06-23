@@ -1,19 +1,21 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/EventInfo.css';
 import Navbar from '../components/Navbar';
+import EventDetailRender from '../components/EventDetailRender';
 import {
-    Box,
-    Button,
-    Card,
-    CardContent,
-    Container,
-    Grid,
-    IconButton,
-    Typography
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Container,
+  Grid,
+  IconButton,
+  Typography
 } from '@mui/material';
-import { LocationOn, CalendarToday, Facebook, WhatsApp, LinkedIn, Twitter } from '@mui/icons-material';
+import { LocationOn, CalendarToday, Facebook, WhatsApp, LinkedIn, Twitter, ArrowBackIosNew } from '@mui/icons-material';
 
 function EventInfoPage() {
+  const navigate = useNavigate();
   const location = useLocation();
   const { event } = location.state;
 
@@ -23,20 +25,28 @@ function EventInfoPage() {
       <Container maxWidth="lg" sx={{ marginTop: '20px' }}>
         <Card>
           <CardContent>
+            <Box sx={{ paddingLeft: '50px', paddingTop: '20px' }}>
+              <Button
+                variant='contained'
+                sx={{ textTransform: 'none', color: 'primary' }}
+                onClick={() => { navigate('/') }}
+              >
+                <ArrowBackIosNew fontSize='small' sx={{ marginRight: '5px' }} />
+                Back
+              </Button>
+            </Box>
             <Box className="header-container">
               <Box className="header-container2" sx={{ width: '65%' }}>
                 <Typography variant="h4" component="h1" gutterBottom>
                   {event.name}
                 </Typography>
-                <Typography variant="body1" color="textSecondary" paragraph>
-                  {event.details}
-                </Typography>
+                <EventDetailRender htmlString={event.details} />
               </Box>
-              <Card sx={{ padding: '20px' }}>
+              <Card sx={{ padding: '20px', width: '35%' }}>
                 <CardContent>
                   <Box className="header-container2">
                     <Grid item xs={12} md={6}>
-                      <Typography variant="h6" component="h2" gutterBottom>
+                      <Typography className="header-font">
                         Date & time
                       </Typography>
                       <Box display="flex" alignItems="center">
@@ -44,10 +54,10 @@ function EventInfoPage() {
                         <Typography variant="body1">{event.date}</Typography>
                       </Box>
                     </Grid>
-                    <Button variant="contained" color="primary" sx={{ marginBottom: '20px' }}>
+                    <Button variant="contained" color="primary" sx={{ textTransform: 'none' }}>
                       Book now
                     </Button>
-                    <Button variant="outlined" sx={{ marginBottom: '20px', marginLeft: '10px' }}>
+                    <Button variant="outlined" sx={{ textTransform: 'none', marginTop: '10px' }}>
                       Program promoter
                     </Button>
                   </Box>
@@ -61,9 +71,7 @@ function EventInfoPage() {
             <Typography variant="h6" component="h2" gutterBottom>
               Description
             </Typography>
-            <Typography variant="body1" color="textSecondary" paragraph>
-              {event.details}
-            </Typography>
+            <EventDetailRender htmlString={event.details} />
             <Typography variant="h6" component="h2" gutterBottom>
               Submission Deadline
             </Typography>
