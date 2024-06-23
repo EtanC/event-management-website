@@ -8,6 +8,7 @@ import json
 from werkzeug.exceptions import HTTPException
 from backend.src.auth import auth_login, auth_register, auth_logout
 from flask_cors import CORS
+from backend.src.config import config
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -23,13 +24,6 @@ def access_error_handler(e):
     })
     response.content_type = "application/json"
     return response
-
-def getConfig():
-    with open('./backend/src/config.json') as file:
-        config = json.load(file)
-    return config
-
-config = getConfig()
 
 @app.post('/auth/login')
 @swag_from(auth_login_spec)

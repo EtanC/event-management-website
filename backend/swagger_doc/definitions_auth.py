@@ -46,7 +46,7 @@ definitions_auth = {
             }
         },
         'token': {
-            'name': 'token',
+            'name': 'JWT token',
             'in': 'body',
             'type': 'object',
             'required': 'true',
