@@ -11,24 +11,17 @@ def encode_jwt(data):
 def hash(string):
     return hashlib.sha256(string.encode()).hexdigest()
 
-SESSION_ID = -1
-def get_session_id():
-    global SESSION_ID
-    SESSION_ID += 1
-    return SESSION_ID
-
 def add_login_session(user_id):
-    session_id = get_session_id()
+    # Calculate end time
     session_end_time = datetime.datetime.today() + datetime.timedelta(minutes=config['MINUTES_TILL_TIMEOUT'])
-    db.users.update_one(
-        { '_id': user_id },
+    # Use separate table to keep track of sessions
+    response = db.active_sessions.insert_one(
         {
-            '$set': {
-                f'active_sessions.{session_id}': session_end_time
-            }
-        }
+            'user_id': user_id,
+            'session_end_time': session_end_time
+        },
     )
-    return (session_id, session_end_time)
+    return (response.inserted_id, session_end_time)
 
 def auth_login(email, password):
     match = db.users.find_one({ 'email': email, 'password': hash(password) })
