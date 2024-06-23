@@ -1,40 +1,4 @@
-/* EventInfoPage.css */
-.event-header {
-    position: relative;
-    background-size: cover;
-    background-position: center;
-    height: 300px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 20px;
-    color: white;
-}
-
-.event-title {
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: white;
-}
-
-.event-subtitle {
-    margin-bottom: 20px;
-    color: white;
-}
-
-.date-time-box {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 3;
-    width: 300px;
-}
-
-.event-detail {
-    padding: 20px;
-}
-
+/* EventDetailRender.css */
 .event-detail h1,
 .event-detail h2,
 .event-detail h3,
