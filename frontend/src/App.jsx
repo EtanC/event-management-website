@@ -23,6 +23,7 @@ const App = () => {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/event/:id" element={<EventInfoPage />} />
       </Routes>
     </Router>
   );
