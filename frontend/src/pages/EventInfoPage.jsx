@@ -2,14 +2,14 @@ import { useLocation } from 'react-router-dom';
 import '../styles/EventInfo.css';
 import Navbar from '../components/Navbar';
 import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Container,
-  Grid,
-  IconButton,
-  Typography
+    Box,
+    Button,
+    Card,
+    CardContent,
+    Container,
+    Grid,
+    IconButton,
+    Typography
 } from '@mui/material';
 import { LocationOn, CalendarToday, Facebook, WhatsApp, LinkedIn, Twitter } from '@mui/icons-material';
 
