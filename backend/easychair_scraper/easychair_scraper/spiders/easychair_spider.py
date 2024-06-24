@@ -19,10 +19,9 @@ class EasychairSpider(scrapy.Spider):
             }
             details_link = conference['details_link']
             if details_link:
-                yield response.follow(details_link, self.parse_details, meta={'conference': conference})
+                yield response.follow(details_link, self.parse_conference_details, meta={'conference': conference})
     
-    def parse_details(self, response):
+    def parse_conference_details(self, response):
         conference = response.meta['conference']
-        details = ' '.join(response.css('p::text').getall())
-        conference['details'] = details
+        conference['details'] = response.css('#cfp').get()
         yield conference
