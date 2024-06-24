@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import DOMPurify from 'dompurify';
-import '../styles/EventDetailRender.css';
+import '../styles/HtmlTagRender.css';
 
-function EventDetailRender({ htmlString }) {
+function HtmlTagRender({ htmlString }) {
     console.log(htmlString)
     const sanitizedHTML = DOMPurify.sanitize(htmlString);
 
@@ -11,8 +11,8 @@ function EventDetailRender({ htmlString }) {
     );
 }
 
-EventDetailRender.propTypes = {
+HtmlTagRender.propTypes = {
     htmlString: PropTypes.string.isRequired,
 };
 
-export default EventDetailRender;
+export default HtmlTagRender;

@@ -13,7 +13,7 @@ import {
     Menu, 
 } from '@mui/material';
 
-export default function MenuAppBar() {
+function NavBar() {
   const navigate = useNavigate();
   // currently, if a token is detected in localstorage then system is considered "logged in"
   const [auth, setAuth] = React.useState(!!localStorage.getItem('token'));
@@ -110,3 +110,5 @@ export default function MenuAppBar() {
         </Box>
     );
 }
+
+export default NavBar;

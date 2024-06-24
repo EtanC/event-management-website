@@ -1,4 +1,4 @@
-const filterEvent = (events, eventType, location, date) => {
+const filterEvents = (events, eventType, location, date) => {
     let filteredEvents = events;
 
     if (eventType) {
@@ -23,4 +23,4 @@ const filterEvent = (events, eventType, location, date) => {
     return filteredEvents;
 };
 
-export default filterEvent;
+export default filterEvents;

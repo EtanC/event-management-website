@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
-import { TextField, Autocomplete, Box, IconButton } from '@mui/material';
-import searchIcon from '../Image/search-icon.png';
+import { TextField, Autocomplete, Box } from '@mui/material';
 
 const inputStyles = {
     borderRadius: '15px',
@@ -12,7 +12,7 @@ const inputStyles = {
     '& .MuiInputAdornment-root .MuiSvgIcon-root': { color: 'white' }
 };
 
-const SearchBar = ({ eventType, setEventType, location, setLocation, locations, date, setDate, handleSearch }) => (
+const SearchBar = ({ eventType, setEventType, location, setLocation, locations, date, setDate }) => (
     <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '40px', backgroundColor: '#1E4830', padding: '20px', borderRadius: '15px' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', maxWidth: '800px', gap: '10px' }}>
             <TextField
@@ -24,7 +24,7 @@ const SearchBar = ({ eventType, setEventType, location, setLocation, locations, 
                 sx={{ flex: 1, ...inputStyles }}
             />
             <Autocomplete
-                options={locations}
+                options={locations.filter(loc => loc)}  // Ensure only available options are shown
                 getOptionLabel={(option) => option}
                 value={location}
                 onChange={(e, newValue) => setLocation(newValue)}
@@ -47,17 +47,6 @@ const SearchBar = ({ eventType, setEventType, location, setLocation, locations, 
                 variant="outlined"
                 sx={{ flex: 1, ...inputStyles }}
             />
-            <IconButton
-                sx={{
-                    backgroundColor: '#D6FA51',
-                    color: '#FFFFFF',
-                    '&:hover': { backgroundColor: '#D6FA51', color: '#FFFFFF' },
-                    flexShrink: 0
-                }}
-                onClick={handleSearch}
-            >
-                <img src={searchIcon} alt="Search" style={{ width: '24px', height: '24px' }} />
-            </IconButton>
         </Box>
     </Box>
 );

@@ -2,16 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import fetchEventsData from '../helper/fetchEventData';
 import filterEvents from '../helper/filterEvent';
-import SearchBar from '../assets/searchBar';
-import EventCard from '../assets/eventCard';
+import SearchBar from './SearchBar';
+import EventCard from './EventCard';
 import { Box, CircularProgress, Typography, Grid } from '@mui/material';
 
-function EventLoading() {
+function MainEventCard() {
     const navigate = useNavigate();
     const [eventType, setEventType] = useState('');
     const [location, setLocation] = useState('');
     const [date, setDate] = useState('');
     const [events, setEvents] = useState([]);
+    const [filteredEvents, setFilteredEvents] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [locations, setLocations] = useState([]);
@@ -20,16 +21,13 @@ function EventLoading() {
         fetchEventsData(setEvents, setLocations, setError, setIsLoading);
     }, []);
 
+    useEffect(() => {
+        const result = filterEvents(events, eventType, location, date);
+        setFilteredEvents(result.length > 0 ? result : events);
+    }, [eventType, location, date, events]);
+
     const handleCardClick = (event) => {
         navigate(`/event/${event.name}`, { state: { event } });
-    };
-
-    const handleSearch = () => {
-        setIsLoading(true);
-        setTimeout(() => {
-            setIsLoading(false);
-            setEvents(filterEvents(events, eventType, location, date));
-        }, 2000);
     };
 
     return (
@@ -42,7 +40,6 @@ function EventLoading() {
                 locations={locations}
                 date={date}
                 setDate={setDate}
-                handleSearch={handleSearch}
             />
 
             {isLoading ? (
@@ -55,7 +52,7 @@ function EventLoading() {
                         {error}
                     </Typography>
                 </Box>
-            ) : events.length === 0 ? (
+            ) : filteredEvents.length === 0 ? (
                 <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
                     <Typography variant="h6" color="textSecondary">
                         No search results
@@ -64,7 +61,7 @@ function EventLoading() {
             ) : (
                 <Box sx={{ padding: 4 }}>
                     <Grid container spacing={2}>
-                        {events.map((event, index) => (
+                        {filteredEvents.map((event, index) => (
                             <EventCard key={index} event={event} handleCardClick={handleCardClick} />
                         ))}
                     </Grid>
@@ -74,4 +71,4 @@ function EventLoading() {
     );
 }
 
-export default EventLoading;
+export default MainEventCard;

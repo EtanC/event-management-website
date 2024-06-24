@@ -1,15 +1,14 @@
 import axios from 'axios';
 
-const fetchEventData = async (setEvents, setLocations, setError, setIsLoading) => {
+const fetchEventsData = async (setEvents, setLocations, setError, setIsLoading) => {
     setIsLoading(true);
     try {
         const response = await axios.get('http://127.0.0.1:5000/events/get/all');
         const eventData = response.data;
-
-        // Set initial events and locations
         setEvents(eventData);
-        const uniqueLocations = [...new Set(eventData.map(event => event.location))];
+        const uniqueLocations = [...new Set(eventData.map(event => event.location).filter(loc => loc))];
         setLocations(uniqueLocations);
+        setError(null);
     } catch (err) {
         setError('Failed to fetch events');
     } finally {
@@ -17,4 +16,4 @@ const fetchEventData = async (setEvents, setLocations, setError, setIsLoading) =
     }
 };
 
-export default fetchEventData;
+export default fetchEventsData;
