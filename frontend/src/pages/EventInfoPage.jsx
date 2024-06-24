@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import EventDetailRender from '../components/EventDetailRender';
-import defaultImage from './eventInfo-background.jpeg';
+import defaultImage from '../Image/eventInfo-background.jpeg';
 
 import {
   Box,

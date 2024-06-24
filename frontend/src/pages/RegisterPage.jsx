@@ -8,9 +8,9 @@ import {
     Grid,
     Alert,
 } from '@mui/material';
-import background from './LHSBackground.png';
+import background from '../Image/LHSBackground.png';
 import { handleRegister } from '../components/handleAuth.jsx';
-import logo from '../components/CompanyLogo.png';
+import logo from '../Image/CompanyLogo.png';
 
 const RegisterPage = () => {
     const [email, setEmail] = useState('');

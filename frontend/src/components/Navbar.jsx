@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import logo from './CompanyLogo.png';
-import profile from './defaultProfile.png';
+import logo from '../Image/CompanyLogo.png';
+import profile from '../Image/defaultProfile.png';
 
 import {
     AppBar, 

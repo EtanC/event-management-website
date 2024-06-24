@@ -3,6 +3,7 @@ import DOMPurify from 'dompurify';
 import '../styles/EventDetailRender.css';
 
 function EventDetailRender({ htmlString }) {
+    console.log(htmlString)
     const sanitizedHTML = DOMPurify.sanitize(htmlString);
 
     return (

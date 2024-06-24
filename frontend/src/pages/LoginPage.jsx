@@ -4,8 +4,8 @@ import { TextField, Button, Typography, Box, Alert, Grid, Divider, IconButton } 
 import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import FacebookIcon from '@mui/icons-material/Facebook';
-import background from './LHSBackground.png';
-import logo from '../components/CompanyLogo.png';
+import background from '../Image/LHSBackground.png';
+import logo from '../Image/CompanyLogo.png';
 import { handleLogin } from '../components/handleAuth';
 
 const LoginPage = () => {
