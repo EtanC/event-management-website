@@ -31,7 +31,8 @@ const styles = {
     },
     textContainer: {
         display: 'flex',
-        gap: '10px'
+        gap: '10px',
+        marginBottom: 2,
     },
     buttonsContainer: {
         display: 'flex',
@@ -76,7 +77,8 @@ const NewEvent = () => {
         setEventData(preState => ({
             eventName: '',
             location: '',
-            date: null,
+            startDate: null,
+            endDate: null,
             registrationLink: '',
             description: '',
             tags: [],
@@ -123,6 +125,7 @@ const NewEvent = () => {
                 open={open}
                 onClose={() => { setOpen(false) }}
                 closeAfterTransition
+                disableBackdropClick={true}
             >
                 <Fade in={open}>
                     <Card sx={styles.card}>
@@ -141,20 +144,29 @@ const NewEvent = () => {
                                     onChange={handleChange}
                                     InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                 />
+                                <TextField
+                                    fullWidth
+                                    label="Location"
+                                    variant="outlined"
+                                    required
+                                    name="location"
+                                    value={eventData.location}
+                                    onChange={handleChange}
+                                    InputProps={{ sx: { borderRadius: '40px', mb: 2, width: '100%' }, }}
+                                />
                                 <Box sx={styles.textContainer}>
-                                    <TextField
-                                        fullWidth
-                                        label="Location"
-                                        variant="outlined"
-                                        required
-                                        name="location"
-                                        value={eventData.location}
-                                        onChange={handleChange}
-                                        InputProps={{ sx: { borderRadius: '40px', mb: 2, width: '100%' }, }}
-                                    />
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <DatePicker
-                                            label="Submission Deadline"
+                                            label="Event Start Date"
+                                            onChange={handleDateChange}
+                                            slotProps={{
+                                                textField: { sx: { borderRadius: '40px', width: '400px', fieldset: { borderRadius: '40px' }, } }
+                                            }}
+                                        />
+                                    </LocalizationProvider>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DatePicker
+                                            label="Event End Date"
                                             onChange={handleDateChange}
                                             slotProps={{
                                                 textField: { sx: { borderRadius: '40px', width: '400px', fieldset: { borderRadius: '40px' }, } }
