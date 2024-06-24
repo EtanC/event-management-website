@@ -1,6 +1,6 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
 import Navbar from "../components/Navbar";
-import { useNavigate } from "react-router-dom";
 import { Container, Box, Typography, Switch, Button, Card, CardContent, Grid, TextField, Tooltip, IconButton } from '@mui/material';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 

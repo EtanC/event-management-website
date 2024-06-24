@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { Box, Container } from '@mui/material';
 import Navbar from '../components/Navbar';
-import EventLoading from '../components/EventLoading';
-import defaultImage from './default-image.jpg';
+import EventLoading from '../components/MainEventCardSection';
+import defaultImage from '../Image/default-image.jpg';
 
 function HomePage() {
     const navigate = useNavigate();

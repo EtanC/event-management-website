@@ -1,16 +1,10 @@
-import { useState } from 'react';
+// eslint-disable-next-line no-unused-vars
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-    TextField,
-    Button,
-    Typography,
-    Box,
-    Grid,
-    Alert,
-} from '@mui/material';
-import background from './LHSBackground.png';
-import { handleRegister } from '../components/handleAuth.jsx';
-import logo from '../components/CompanyLogo.png';
+import { TextField, Button, Typography, Box, Grid, Alert } from '@mui/material';
+import background from '../Image/LHSBackground.png';
+import { handleRegister } from '../helper/handleAuth';
+import Logo from '../components/CompanyLogo.jsx';
 
 const RegisterPage = () => {
     const [email, setEmail] = useState('');
@@ -75,18 +69,9 @@ const RegisterPage = () => {
             </Grid>
 
             {/* Right Side */}
-            <Grid item xs={12} md={8} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 4 }}>
+            <Grid item xs={12} md={8} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 4, position: 'relative' }}>
                 <Box elevation={6} sx={{ padding: 4, width: '100%', maxWidth: 600 }}>
-                    <Box 
-                        sx={{ position: 'absolute', top: '100px', right: '100px', cursor: 'pointer' }}
-                        onClick={() => navigate('/')}
-                    >
-                        <img
-                            src={logo}
-                            alt="Company Logo"
-                            style={{ height: '50px' }}
-                        />
-                    </Box>
+                    <Logo navigate={navigate} />
                     <Typography variant="h4" align="center" gutterBottom sx={{ color: '#1E4830', fontWeight: 'bold' }}>
                         Register New User
                     </Typography>

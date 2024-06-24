@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import logo from './CompanyLogo.png';
-import profile from './defaultProfile.png';
+import logo from '../Image/CompanyLogo.png';
+import profile from '../Image/defaultProfile.png';
 
 import {
     AppBar, 
@@ -13,7 +13,7 @@ import {
     Menu, 
 } from '@mui/material';
 
-export default function MenuAppBar() {
+function NavBar() {
   const navigate = useNavigate();
   // currently, if a token is detected in localstorage then system is considered "logged in"
   const [auth, setAuth] = React.useState(!!localStorage.getItem('token'));
@@ -110,3 +110,5 @@ export default function MenuAppBar() {
         </Box>
     );
 }
+
+export default NavBar;
