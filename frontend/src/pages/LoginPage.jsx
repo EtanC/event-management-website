@@ -1,22 +1,12 @@
-import React from 'react';
-import { jwtDecode } from "jwt-decode";
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import axios from 'axios';
-import {
-  TextField,
-  Button,
-  Typography,
-  Box,
-  Alert,
-  Grid,
-  Divider,
-  IconButton,
-} from '@mui/material';
+import { TextField, Button, Typography, Box, Alert, Grid, Divider, IconButton } from '@mui/material';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import background from './LHSBackground.png';
+import logo from '../components/CompanyLogo.png';
+import { handleLogin } from '../components/handleAuth';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -25,39 +15,9 @@ const LoginPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
-    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-    const handleLogin = async (event) => {
+    const onSubmit = (event) => {
         event.preventDefault();
-        setIsLoading(true);
-        try {
-            const response = await axios.post('http://127.0.0.1:5000/auth/login', {
-                username: email,
-                password,
-            });
-            const token = response.data.token;
-            const decodedToken = jwtDecode(token);
-            const sessionEndTime = decodedToken.session_end_time;
-
-            localStorage.setItem('token', token);
-            localStorage.setItem('session_end_time', sessionEndTime);
-
-            // Set timeout to log out the user when the session expires
-            const sessionExpiryTime = new Date(sessionEndTime).getTime() - new Date().getTime();
-            setTimeout(() => {
-                localStorage.removeItem('token');
-                localStorage.removeItem('session_end_time');
-                navigate('/login');
-            }, sessionExpiryTime);
-
-            await sleep(2000);
-            navigate('/'); // navigate to home
-        } catch (error) {
-            console.error('Error logging in:', error.response ? error.response.data.description : error.message);
-            setErrorMessage(error.response ? error.response.data.description : error.message);
-        } finally {
-            setIsLoading(false);
-        }
+        handleLogin(email, password, navigate, setErrorMessage, setIsLoading);
     };
 
     return (
@@ -99,8 +59,18 @@ const LoginPage = () => {
             </Grid>
 
             {/* Right Side */}
-            <Grid item xs={12} md={8} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 4 }}>
+            <Grid item xs={12} md={8} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 4, position: 'relative' }}>
                 <Box elevation={6} sx={{ padding: 4, width: '100%', maxWidth: 600 }}>
+                    <Box 
+                        sx={{ position: 'absolute', top: '100px', right: '100px', cursor: 'pointer' }}
+                        onClick={() => navigate('/')}
+                    >
+                        <img
+                            src={logo}
+                            alt="Company Logo"
+                            style={{ height: '50px' }}
+                        />
+                    </Box>
                     <Typography variant="h4" align="center" gutterBottom sx={{ color: '#1E4830', fontWeight: 'bold'}}>
                         Login To Your Account
                     </Typography>
@@ -124,7 +94,7 @@ const LoginPage = () => {
                     ) : (
                         <Box
                             component="form"
-                            onSubmit={handleLogin}
+                            onSubmit={onSubmit}
                             sx={{
                                 display: 'flex',
                                 flexDirection: 'column',
@@ -163,7 +133,6 @@ const LoginPage = () => {
                                 Login
                             </Button>
                             <Button
-                                // component={Link}
                                 to="/forgot-password"
                                 variant="text"
                                 fullWidth
