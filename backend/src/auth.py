@@ -4,6 +4,7 @@ import datetime
 import hashlib
 from backend.src.config import config
 import jwt
+from bson.objectid import ObjectId
 
 def encode_jwt(data):
     return jwt.encode(data, config['SECRET'], algorithm='HS256')
@@ -57,4 +58,6 @@ def auth_register(username, email, password):
     }
 
 def auth_logout(token):
+    data = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
+    db.active_sessions.delete_one({ '_id': ObjectId(data['session_id']) })
     return {}
