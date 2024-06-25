@@ -19,16 +19,22 @@ class EasychairScraperPipeline(object):
         self.db = db
 
     def process_item(self, item, spider):
-        valid = True
+        # If name is already in database, then event is already inserted/found
+        # TODO:
+        # - Case sensitivity
+        # - Instead of dropping item, update event details, maybe they changed
+        if self.db.events.find_one({"name": item.get("name")}) is not None:
+            logging.debug("Duplicate item found: {0}".format(item.get("name")), extra={'spider': spider})
+            raise DropItem("Duplicate item found: {0}".format(item.get("name")))
+        
+        self.db.events.insert_one(dict(item))
+        logging.debug("Event added to MongoDB database!", extra={'spider': spider})
+        
+        return item
+
+class RemoveInvalidPipeline(object):
+    def process_item(self, item, spider):
         for data in item:
             if not data:
-                valid = False
                 raise DropItem("Missing {0}!".format(data))
-        if valid:
-            if self.db.events.find_one({"name": item.get("name")}) is None:
-                self.db.events.insert_one(dict(item))
-                logging.debug("Event added to MongoDB database!", extra={'spider': spider})
-            else:
-                logging.debug("Duplicate item found: {0}".format(item.get("name")), extra={'spider': spider})
-                raise DropItem("Duplicate item found: {0}".format(item.get("name")))
         return item
