@@ -1,6 +1,6 @@
 from backend.swagger_doc.definitions_profile import definitions_profile
 
-auth_login_spec = {
+profile_get_spec = {
     'parameters': [
         {
             '$ref': '#/definitions/parameters/token'

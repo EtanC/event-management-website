@@ -45,7 +45,7 @@ definitions_profile = {
         },
         'token': {
             'name': 'token',
-            'in': 'body',
+            'in': 'header',
             'type': 'object',
             'required': 'true',
             'properties': {

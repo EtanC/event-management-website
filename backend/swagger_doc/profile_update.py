@@ -1,6 +1,6 @@
 from backend.swagger_doc.definitions_profile import definitions_profile
 
-profile_change_spec = {
+profile_update_spec = {
     'parameters': [
         {
             '$ref': '#/definitions/parameters/update_details'

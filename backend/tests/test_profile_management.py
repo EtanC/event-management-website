@@ -3,6 +3,7 @@ from backend.src.profile_details import get_profile_details, update_profile_deta
 from backend.src.auth import auth_register, auth_login
 from backend.src.error import InputError, AccessError
 from backend.src.database import clear
+import jwt
 
 @pytest.fixture
 def user1():
@@ -17,6 +18,16 @@ def reset():
     clear('users')
 
 
+def generate_random_jwt():
+    payload = {
+        'user_id': str('random'),
+        'session_id': str('wow'),
+        'session_end_time': str('hi')
+    }
+
+    token = jwt.encode(payload, 'NOTASECRET', algorithm='HS256')
+    return token
+
 def test_get_profile(reset, user1):
     token = auth_register(user1['username'], user1['email'], user1['password'])['token']
     details = get_profile_details(token)
@@ -25,9 +36,10 @@ def test_get_profile(reset, user1):
                         'preferences': {}})
 
 def test_get_profile_error(reset, user1):
+    random_token = generate_random_jwt()
     # test invalid token
     with pytest.raises(AccessError):
-        get_profile_details('aaaaaaaaaaaaaaaaaaaaaaaa')
+        get_profile_details(random_token)
 
 def test_update_profile(reset, user1):
     token = auth_register(user1['username'], user1['email'], user1['password'])['token']
@@ -84,9 +96,11 @@ def test_update_profile(reset, user1):
 def test_update_profile_error(reset, user1):
     token = auth_register(user1['username'], user1['email'], user1['password'])['token']
 
+    random_token = generate_random_jwt()
+
     # test invalid token
     with pytest.raises(AccessError):
-        update_profile_details('aaaaaaaaaaaaaaaaaaaaaaaa', 'newusr', 'newemail', None, None, None, None)
+        update_profile_details(random_token, 'newusr', 'newemail', None, None, None, None)
     
     # test old password doesn't match on update password
     with pytest.raises(InputError):

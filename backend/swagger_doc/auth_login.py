@@ -1,6 +1,7 @@
 from backend.swagger_doc.definitions_auth import definitions_auth
 
 auth_login_spec = {
+    'tags': ['Auth'],
     'parameters': [
         {
             '$ref': '#/definitions/parameters/login_details'
