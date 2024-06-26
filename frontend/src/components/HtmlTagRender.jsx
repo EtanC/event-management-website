@@ -3,7 +3,6 @@ import DOMPurify from 'dompurify';
 import '../styles/HtmlTagRender.css';
 
 function HtmlTagRender({ htmlString }) {
-    console.log(htmlString)
     const sanitizedHTML = DOMPurify.sanitize(htmlString);
 
     return (
