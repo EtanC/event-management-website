@@ -15,7 +15,7 @@ const filterEvents = (events, eventType, location, date) => {
 
     if (date) {
         filteredEvents = filteredEvents.filter(event =>
-            new Date(event.date) >= new Date(date)
+            new Date(event.start_date) >= new Date(date)
         );
         filteredEvents = filteredEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
     }

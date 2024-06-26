@@ -72,7 +72,7 @@ function EventDetailPage() {
                         {event.name}
                     </Typography>
                     </Box>
-                    <EventDetail date={event.date} />
+                    <EventDetail date={event.start_date} />
                 </Box>
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={8}>

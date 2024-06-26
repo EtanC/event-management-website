@@ -12,13 +12,13 @@ class EasychairSpider(scrapy.Spider):
         for even_rows, odd_rows in zip(table.css("table > tr:not(tr:nth-child(1)):nth-child(2n)"), table.css("table > tr:not(tr:nth-child(1)):nth-child(2n+1)")):
             conference_deets = {
                 'name': even_rows.css("td:nth-child(2)::text").get(),
-                'date': self.get_start_date(odd_rows.css("td:nth-child(1)::text").get()),
+                'start_date': self.get_start_date(odd_rows.css("td:nth-child(1)::text").get()),
                 'location': odd_rows.css("td:nth-child(2)::text").get(),
                 'deadline': odd_rows.css("td:nth-child(3)::text").get(),
             }
-            conference_details_link = even_rows.css("td:nth-child(1) > a::attr(href)").get()
-            if conference_details_link:
-                yield response.follow(conference_details_link, self.parse_conference_details, meta={'conference': conference_deets})
+            conference_deets['details_link'] = even_rows.css("td:nth-child(1) > a::attr(href)").get()
+            if conference_deets['details_link']:
+                yield response.follow(conference_deets['details_link'], self.parse_conference_details, meta={'conference': conference_deets})
 
 
     def get_start_date(self, date_range):
