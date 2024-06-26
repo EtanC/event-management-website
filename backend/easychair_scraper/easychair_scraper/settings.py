@@ -63,7 +63,8 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    "easychair_scraper.pipelines.EasychairScraperPipeline": 300,
+    "easychair_scraper.pipelines.EasychairScraperPipeline": 400,
+    "easychair_scraper.pipelines.RemoveInvalidPipeline": 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

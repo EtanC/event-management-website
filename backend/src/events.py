@@ -3,6 +3,7 @@ import subprocess
 
 def events_crawl():
     subprocess.run(["cd backend/easychair_scraper && python3 -m scrapy crawl easychair"], shell=True)
+    subprocess.run(["cd backend/easychair_scraper && python3 -m scrapy crawl wikicfp"], shell=True)
     return {}
 
 def stringify_id(x):
