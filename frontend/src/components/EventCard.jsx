@@ -45,7 +45,7 @@ const EventCard = ({ event, handleCardClick }) => (
                     {event.name}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                    {event.date}
+                    {event.start_date}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                     {event.location}
