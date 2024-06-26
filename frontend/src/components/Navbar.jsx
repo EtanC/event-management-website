@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { handleLogout } from '../helper/handleAuth';
 import logo from '../Image/CompanyLogo.png';
 import profile from '../Image/defaultProfile.png';
 
@@ -14,10 +15,10 @@ import {
 } from '@mui/material';
 
 function NavBar() {
-  const navigate = useNavigate();
-  // currently, if a token is detected in localstorage then system is considered "logged in"
-  const [auth, setAuth] = React.useState(!!localStorage.getItem('token'));
-  const [anchorEl, setAnchorEl] = React.useState(null);
+    const navigate = useNavigate();
+    // currently, if a token is detected in localstorage then system is considered "logged in"
+    const [auth, setAuth] = React.useState(!!localStorage.getItem('token'));
+    const [anchorEl, setAnchorEl] = React.useState(null);
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -25,14 +26,6 @@ function NavBar() {
 
     const handleClose = () => {
         setAnchorEl(null);
-    }; // at the moment, a place holder for "myevents"
-
-    const handleLogout = () => {
-        // would need to change this when logout is implemented
-        localStorage.removeItem('token');
-        localStorage.removeItem('session_end_time');
-        setAuth(false);
-        handleClose();
     };
 
     const handleSignIn = () => {
@@ -55,56 +48,56 @@ function NavBar() {
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static" sx={{ padding: "25px 150px 25px", backgroundColor: 'white' }}>
                 <Toolbar>
-                <img
-                    src={logo}
-                    alt="Company Logo"
-                    style={{ cursor: 'pointer', height: '50px' }}
-                    onClick={handleLogoClick}
-                />
-                <Box sx={{ flexGrow: 1 }} />
-                {auth ? (
-                    <div>
-                    <IconButton
-                        aria-label="account of current user"
-                        aria-controls="menu-appbar"
-                        aria-haspopup="true"
-                        onClick={handleMenu}
-                        color="primary"
-                        sx={{ padding: 0 }}
-                    >
-                        <img
-                        src={profile}
-                        alt="Profile"
-                        style={{ cursor: 'pointer', height: '40px', width: '40px', borderRadius: '50%' }}
-                        />
-                    </IconButton>
-                    <Menu
-                        id="menu-appbar"
-                        anchorEl={anchorEl}
-                        anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right',
-                        }}
-                        keepMounted
-                        transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                        }}
-                        open={Boolean(anchorEl)}
-                        onClose={handleClose}
-                        sx={{ mt: 1.5 }}
-                    >
-                        <MenuItem onClick={handleProfile}>Profile</MenuItem>
-                        <MenuItem onClick={handleClose}>My Events</MenuItem>
-                        <MenuItem onClick={handleLogout}>Log Out</MenuItem>
-                    </Menu>
-                    </div>
-                ) : (
-                    <div>
-                    <Button sx={{ marginRight: 2 }} onClick={handleSignIn}>Sign In</Button>
-                    <Button variant="contained" color="primary" onClick={handleSignUp}>Sign Up</Button>
-                    </div>
-                )}
+                    <img
+                        src={logo}
+                        alt="Company Logo"
+                        style={{ cursor: 'pointer', height: '50px' }}
+                        onClick={handleLogoClick}
+                    />
+                    <Box sx={{ flexGrow: 1 }} />
+                    {auth ? (
+                        <div>
+                            <IconButton
+                                aria-label="account of current user"
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
+                                onClick={handleMenu}
+                                color="primary"
+                                sx={{ padding: 0 }}
+                            >
+                                <img
+                                    src={profile}
+                                    alt="Profile"
+                                    style={{ cursor: 'pointer', height: '40px', width: '40px', borderRadius: '50%' }}
+                                />
+                            </IconButton>
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={anchorEl}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={Boolean(anchorEl)}
+                                onClose={handleClose}
+                                sx={{ mt: 1.5 }}
+                            >
+                                <MenuItem onClick={handleProfile}>Profile</MenuItem>
+                                <MenuItem onClick={handleClose}>My Events</MenuItem>
+                                <MenuItem onClick={() => handleLogout(navigate, setAuth)}>Log Out</MenuItem>
+                            </Menu>
+                        </div>
+                    ) : (
+                        <div>
+                            <Button sx={{ marginRight: 2 }} onClick={handleSignIn}>Sign In</Button>
+                            <Button variant="contained" color="primary" onClick={handleSignUp}>Sign Up</Button>
+                        </div>
+                    )}
                 </Toolbar>
             </AppBar>
         </Box>

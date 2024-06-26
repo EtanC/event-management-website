@@ -58,3 +58,22 @@ export const handleRegister = async (email, password, name, setErrorMessage, set
         setIsLoading(false);
     }
 };
+
+export const handleLogout = async (navigate, setAuth) => {
+    try {
+        const token = localStorage.getItem('token');
+        await axios.post('http://127.0.0.1:5000/auth/logout', { token });
+
+        // Clear local storage
+        localStorage.removeItem('token');
+        localStorage.removeItem('session_end_time');
+
+        // Update auth state
+        setAuth(false);
+
+        // Navigate to login page
+        navigate('/');
+    } catch (error) {
+        console.error('Error logging out:', error.response ? error.response.data.description : error.message);
+    }
+};
