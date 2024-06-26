@@ -35,7 +35,7 @@ function EventDetailPage() {
         // Simulate loading delay
         const timer = setTimeout(() => {
             setIsLoading(false);
-        }, 2000); // Adjust the delay as needed
+        }, 2000);
 
         return () => clearTimeout(timer);
     }, []);
@@ -119,7 +119,7 @@ function EventDetailPage() {
                 </Container>
             </Box>
         </>
-    );
-}
+    );    
+}    
 
 export default EventDetailPage;
