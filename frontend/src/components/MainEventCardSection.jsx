@@ -43,7 +43,7 @@ function MainEventCard() {
             />
 
             {isLoading ? (
-                <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+                <Box display="flex" justifyContent="center" alignItems="top" height="100vh">
                     <CircularProgress />
                 </Box>
             ) : error ? (
