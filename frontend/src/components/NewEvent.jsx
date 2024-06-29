@@ -57,8 +57,7 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-const NewEvent = () => {
-    const [open, setOpen] = useState(false);
+const NewEvent = ({ open, handleClose }) => {
     const [eventData, setEventData] = useState({
         eventName: '',
         location: '',
@@ -71,7 +70,7 @@ const NewEvent = () => {
 
     const handleSave = () => {
         console.log(eventData);
-        setOpen(false);
+        handleClose();
         // save the data into the database
 
         setEventData(preState => ({
@@ -83,7 +82,7 @@ const NewEvent = () => {
             description: '',
             tags: [],
             image: null
-        }))
+        }));
     };
 
     const handleChange = (e) => {
@@ -117,15 +116,11 @@ const NewEvent = () => {
 
     return (
         <>
-            <Button variant="contained" color="primary" onClick={() => { setOpen(true) }}>
-                New Event
-            </Button>
             <Modal
                 sx={styles.modal}
                 open={open}
-                onClose={() => { setOpen(false) }}
+                onClose={handleClose}
                 closeAfterTransition
-                disableBackdropClick={true}
             >
                 <Fade in={open}>
                     <Card sx={styles.card}>
@@ -213,7 +208,7 @@ const NewEvent = () => {
                             </Grid>
                         </Grid>
                         <Box sx={styles.buttonsContainer}>
-                            <Button variant="outlined" color="primary" sx={styles.button} onClick={() => { setOpen(false) }}>Cancel</Button>
+                            <Button variant="outlined" color="primary" sx={styles.button} onClick={handleClose}>Cancel</Button>
                             <Button variant="contained" color="primary" sx={styles.button} onClick={handleSave}>Save Event</Button>
                         </Box>
                     </Card>

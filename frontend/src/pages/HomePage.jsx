@@ -3,8 +3,8 @@ import { Box, Container } from '@mui/material';
 import Navbar from '../components/Navbar';
 import EventLoading from '../components/MainEventCardSection';
 import defaultImage from '../Image/default-image.jpg';
+import NewEventButton from '../components/NewEventButton'
 
-import NewEvent from '../components/NewEvent'
 function HomePage() {
     const navigate = useNavigate();
 
@@ -17,6 +17,7 @@ function HomePage() {
             <Navbar />
             <Box sx={{ backgroundColor: '#f5f5f5', padding: '20px 0' }}>
                 <Container maxWidth="lg">
+                    <NewEventButton />
                     <Box
                         sx={{
                             position: 'relative',
