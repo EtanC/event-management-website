@@ -15,7 +15,7 @@ def add_user(username, password):
 # db = client.test_database
 
 def clear(collection):
-    db.drop_collection(collection)
+    db[collection].delete_many({})
 
 
 if __name__ == '__main__':
