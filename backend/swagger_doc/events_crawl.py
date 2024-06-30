@@ -1,9 +1,9 @@
-from backend.swagger_doc.definitions_auth import definitions_auth
+from backend.swagger_doc.definitions_event import definitions_event
 
 events_crawl_spec = {
     'tags': ['Events'],
     'parameters': [],
-    'definitions': definitions_auth,
+    'definitions': definitions_event,
     'responses': {
         200: {
             'description': 'Data crawled successfully',

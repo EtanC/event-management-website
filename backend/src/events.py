@@ -16,3 +16,14 @@ def events_get_all():
 def events_clear():
     clear('events')
     return {}
+
+def event_create(event):
+    return {
+        'event_id': 'theeventid'
+    }
+
+def event_update(event_id, new_event):
+    return {}
+
+def event_delete(event_id):
+    return {}
