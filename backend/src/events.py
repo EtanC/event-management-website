@@ -26,20 +26,20 @@ def event_already_exists(event):
         'location': event['location'],
         'start_date': event['start_date'],
     }
-    return db.events.find_one(search_object) is None
+    return db.events.find_one(search_object) is not None
 
-def is_real_date(date):
-    try:
-        datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S.%f")
-    except ValueError:
-        return False
-    return True
+# def is_real_date(date):
+#     try:
+#         datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S.%f")
+#     except ValueError:
+#         return False
+#     return True
 
 def event_is_valid(event):
     if len(event['name']) == 0: return False
     if len(event['location']) == 0: return False
-    if not is_real_date(event['start_date']): return False
-    if not is_real_date(event['deadline']): return False
+    # if not is_real_date(event['start_date']): return False
+    # if not is_real_date(event['deadline']): return False
     return True
 
 def event_create(event):
@@ -64,12 +64,12 @@ def event_update(event_id, new_event):
     db.events.update_one(
         { '_id': ObjectId(event_id) },
         { '$set': {
-            'name': event['name'],
-            'location': event['location'],
-            'start_date': event['start_date'],
-            'deadline': event['deadline'],
-            'details': event['details'],
-            'details_link': event['details_link'],
+            'name': new_event['name'],
+            'location': new_event['location'],
+            'start_date': new_event['start_date'],
+            'deadline': new_event['deadline'],
+            'details': new_event['details'],
+            'details_link': new_event['details_link'],
         }}
     )
     return {}
