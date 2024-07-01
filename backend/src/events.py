@@ -10,7 +10,7 @@ def events_crawl():
     return {}
 
 def stringify_id(x):
-    x.update({ '_id': str(x['_id'])})
+    x['_id'] = str(x['_id'])
     return x
 
 def events_get_all():
