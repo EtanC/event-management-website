@@ -2,12 +2,14 @@ from flask import Flask, request
 from flasgger import Swagger, swag_from
 from backend.swagger_doc.auth import auth_login_spec, auth_register_spec, auth_logout_spec
 from backend.swagger_doc.events import events_crawl_spec, events_clear_spec, events_get_all_spec, event_create_spec, event_update_spec, event_delete_spec
+from backend.swagger_doc.profile import profile_get_spec, profile_update_spec
 from backend.swagger_doc.definitions import definitions
 from backend.src.error import AccessError, InputError
 import json
 from werkzeug.exceptions import HTTPException
 from backend.src.auth import auth_login, auth_register, auth_logout
 from backend.src.events import events_crawl, events_clear, events_get_all, event_create, event_update, event_delete
+from backend.src.profile_details import get_profile_details, update_profile_details
 from flask_cors import CORS
 from backend.src.config import config
 
@@ -85,6 +87,26 @@ def event_update_route():
 def event_delete_route():
     event_id = request.args.get('event_id')
     return json.dumps(event_delete(event_id))
+@app.get('/profile/get')
+@swag_from(profile_get_spec)
+def profile_get_route():
+    token = request.headers.get('Authorization')
+
+    if token.startswith('Bearer '):
+        token = token[len('Bearer '):]
+
+    return json.dumps(get_profile_details(token))
+
+@app.post('/profile/update')
+@swag_from(profile_update_spec)
+def profile_update_route():
+    token = request.headers.get('Authorization')
+
+    if token.startswith('Bearer '):
+        token = token[len('Bearer '):]
+
+    body = request.get_json()
+    return json.dumps(update_profile_details(token, body['username'], body['email'], body['old_password'], body['new_password'], body['re_password'], body['preferences']))
 
 if __name__ == '__main__':
     app.run(port=config['BACKEND_PORT'],debug=True)
