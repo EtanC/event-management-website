@@ -4,6 +4,7 @@ import jwt
 from backend.src.config import config
 from backend.src.error import AccessError, InputError
 from bson import ObjectId
+from backend.src.events import stringify_id
 
 def decode_token(token):
     try:
@@ -33,12 +34,15 @@ def user_register_event(token, event_id):
         raise InputError('Already registered to event')
     return {}
 
+
+
 def user_events(token):
     # Get the user document
     user_id = decode_token(token)
     user = db.users.find_one({ '_id': ObjectId(user_id) })
     # 1. Get user's list of "registered_events" event_ids
     # 2. Search for events in events collection that match these ids
+    events = list(map(stringify_id, db.events.find({ '_id': { '$in': list(map(ObjectId, user['registered_events'])) }})))
     return {
-        'events': list(db.events.find({ '_id': { '$in': user['registered_events'] }})),
+        'events': events,
     }
