@@ -343,7 +343,6 @@ const styles = {
     flexCard: {
         marginBottom: '30px',
         borderRadius: '10px',
-        backgroundColor: '#E7E9EA',
     },
     headerFont: {
         fontWeight: 'bold',
