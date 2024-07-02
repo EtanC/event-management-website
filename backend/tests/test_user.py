@@ -37,7 +37,7 @@ def test_user(reset, sample_event, sample_user):
         **sample_event,
         '_id': event_id
     }
-    assert events_get_all() == [expected_event]
+    assert events_get_all()['events'] == [expected_event]
     token = auth_register(**sample_user)['token']
     user_register_event(token, event_id)
     assert user_events(token)['events'] == [expected_event]
