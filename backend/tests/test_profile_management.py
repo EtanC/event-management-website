@@ -10,7 +10,7 @@ def user1():
     return {
         'username': 'John',
         'email': 'johnsmith1234@outlook.com',
-        'password': '12345678',
+        'password': 'ilovesmith123!',
     }
 
 @pytest.fixture
@@ -157,7 +157,7 @@ def test_update_profile_error(reset, user1):
 
 def test_update_password(reset, user1):
     token = auth_register(user1['username'], user1['email'], user1['password'])['token']
-    new_password = 'abc'
+    new_password = 'ilovejohn312*'
 
     update_profile_password(token, user1['password'], new_password, new_password)
     tkn2 = auth_login(user1['email'], new_password)['token']
@@ -165,14 +165,30 @@ def test_update_password(reset, user1):
 
 def test_update_password_error(reset, user1):
     token = auth_register(user1['username'], user1['email'], user1['password'])['token']
+    new_password = 'ilovejohn312*'
     # test old password doesn't match on update password
     with pytest.raises(InputError):
-        update_profile_password(token, 'abc', None, None)
+        update_profile_password(token, 'ahuwdbawdahd123!', None, None)
 
     # test old password not given when trying to update password
     with pytest.raises(InputError):
-        update_profile_password(token, None,  'abc', 'abc')
+        update_profile_password(token, None,  new_password, new_password)
 
     # test new passsword and re-entered password don't match on update password
     with pytest.raises(InputError):
-        update_profile_password(token, user1['password'], 'abc', 'def')
+        update_profile_password(token, user1['password'], new_password, 'auiwdawbd123$')
+    
+    # test invalid password formats
+
+    short_password = 'a1!'
+    with pytest.raises(InputError):
+        update_profile_password(token, user1['password'], short_password, short_password)
+    
+    no_special_character = 'abcdef123'
+    with pytest.raises(InputError):
+        update_profile_password(token, user1['password'], no_special_character, no_special_character)
+    
+    no_number = 'abcdef!@#$%'
+    with pytest.raises(InputError):
+        update_profile_password(token, user1['password'], no_number, no_number)
+    
