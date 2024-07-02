@@ -1,34 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from "../components/Navbar";
-import { Container, Box, Typography, Switch, Button, Card, CardContent, Grid, TextField, Tooltip, IconButton } from '@mui/material';
+import { Container, Box, Typography, Switch, Button, Card, CardContent, Grid, TextField, Tooltip, IconButton, Alert } from '@mui/material';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import profilePic from '../Image/defaultProfile.png';
+import { fetchProfileData, updateProfileDetails, updateProfilePassword } from '../helper/handleProfileData';
 
 function ProfilePage() {
     const [isEditing, setIsEditing] = useState(false);
     const [isEditingPW, setIsEditingPW] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const [profile, setProfile] = useState({
-        description: "Aspiring Software Developer",
-        fullName: "Ethan Chen",
-        email: "123@gmail.com",
-        jobTitle: "Unemployment",
-        funFact: "Live love laugh",
-        pw: "lmfao",
+        description: "",
+        full_name: "",
+        email: "",
+        job_title: "",
+        fun_fact: "",
+        pw: "",
     });
+
+    useEffect(() => {
+        fetchProfileData(setProfile);
+    }, []);
 
     const [newProfile, setNewProfile] = useState({
         description: '',
-        fullName: '',
+        full_name: '',
         email: '',
-        jobTitle: '',
-        funFact: '',
+        job_title: '',
+        fun_fact: '',
     });
 
     const [password, setPassword] = useState({
-        oldpw: '',
-        newpw: '',
-        confirmNewpw: '',
+        old_pw: '',
+        new_pw: '',
+        confirm_new_pw: '',
     });
 
     const handleEditClick = () => {
@@ -37,33 +43,12 @@ function ProfilePage() {
 
     const handleEditPWClick = () => {
         setIsEditingPW(!isEditingPW);
-    };
-
-    const handleChangePassword = () => {
-        if (isEditingPW) {
-            if (password.oldpw === profile.pw) {
-                if (password.newpw !== password.confirmNewpw) {
-                    alert("Passwords do not match. Please try again.");
-                    return;
-                }
-                setProfile({
-                    ...profile,
-                    pw: password.newpw
-                });
-                alert("Password changed successfully!");
-                setIsEditingPW(false);
-                setPassword({
-                    oldpw: '',
-                    newpw: '',
-                    confirmNewpw: '',
-                });
-                setIsEditingPW(!isEditingPW);
-            } else {
-                alert("Old password is incorrect. Please try again.");
-            }
-        } else {
-            setIsEditingPW(!isEditingPW);
-        }
+        setErrorMessage('');
+        setPassword({
+            old_pw: '',
+            new_pw: '',
+            confirm_new_pw: '',
+        });
     };
 
     const handleChange = (event) => {
@@ -87,28 +72,48 @@ function ProfilePage() {
         set
     }
 
-    const updateProfile = () => {
+    const updateProfile = async () => {
         const updatedProfile = {
             ...profile,
             description: newProfile.description !== "" ? newProfile.description : profile.description,
-            fullName: newProfile.fullName !== "" ? newProfile.fullName : profile.fullName,
+            full_name: newProfile.full_name !== "" ? newProfile.full_name : profile.full_name,
             email: newProfile.email !== "" ? newProfile.email : profile.email,
-            jobTitle: newProfile.jobTitle !== "" ? newProfile.jobTitle : profile.jobTitle,
-            funFact: newProfile.funFact !== "" ? newProfile.funFact : profile.funFact,
+            job_title: newProfile.job_title !== "" ? newProfile.job_title : profile.job_title,
+            fun_fact: newProfile.fun_fact !== "" ? newProfile.fun_fact : profile.fun_fact,
+            username: profile.username,
         };
+        try {
+            const result = await updateProfileDetails(updatedProfile);
+            if (result === 200) {
+                alert("Profile successfully updated.");
+                setProfile(updatedProfile)
+            }
+            setNewProfile({
+                description: "",
+                full_name: "",
+                email: "",
+                job_title: "",
+                fun_fact: "",
+            });
+            setIsEditing(false);
 
-        setProfile(updatedProfile);
-
-        setNewProfile({
-            description: "",
-            fullName: "",
-            email: "",
-            jobTitle: "",
-            funFact: "",
-        });
-        setIsEditing(!isEditing);
-        alert("Profile successfully updated.");
+        } catch (err) {
+            console.log(`Failed to update profile: ${err.message}`);
+        }
     };
+
+    const updatePassword = async () => {
+        console.log(password)
+        try {
+            const result = await updateProfilePassword(password, setErrorMessage);
+            if (result === 200) {
+                alert("Reset Password Successfully");
+                setIsEditingPW(false);
+            }
+        } catch (err) {
+            console.log(`Failed to change password: ${err.message}`);
+        }
+    }
 
     return (
         <>
@@ -141,7 +146,7 @@ function ProfilePage() {
                                             </IconButton>
                                         )}
                                     </Box>
-                                    <Typography variant="h4" sx={{ mb: 2 }}>{profile.fullName}</Typography>
+                                    <Typography variant="h4" sx={{ mb: 2 }}>{profile.full_name}</Typography>
                                     {isEditing ? (
                                         <TextField
                                             name="description"
@@ -163,9 +168,9 @@ function ProfilePage() {
                                         {isEditing ? (
                                             <>
                                                 <TextField
-                                                    name="fullName"
+                                                    name="full_name"
                                                     label="Full Name"
-                                                    value={newProfile.fullName}
+                                                    value={newProfile.full_name}
                                                     onChange={handleChange}
                                                     fullWidth
                                                     InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
@@ -179,17 +184,17 @@ function ProfilePage() {
                                                     InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                                 />
                                                 <TextField
-                                                    name="jobTitle"
+                                                    name="job_title"
                                                     label="Job Title"
-                                                    value={newProfile.jobTitle}
+                                                    value={newProfile.job_title}
                                                     onChange={handleChange}
                                                     fullWidth
                                                     InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                                 />
                                                 <TextField
-                                                    name="funFact"
+                                                    name="fun_fact"
                                                     label="Fun Fact"
-                                                    value={newProfile.funFact}
+                                                    value={newProfile.fun_fact}
                                                     onChange={handleChange}
                                                     fullWidth
                                                     InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
@@ -197,10 +202,10 @@ function ProfilePage() {
                                             </>
                                         ) : (
                                             <>
-                                                <Typography variant="body1" sx={{ mb: 2 }}><strong>Full Name:</strong> {profile.fullName}</Typography>
+                                                <Typography variant="body1" sx={{ mb: 2 }}><strong>Full Name:</strong> {profile.full_name}</Typography>
                                                 <Typography variant="body1" sx={{ mb: 2 }}><strong>Email Address:</strong> {profile.email}</Typography>
-                                                <Typography variant="body1" sx={{ mb: 2 }}><strong>Job Title:</strong> {profile.jobTitle}</Typography>
-                                                <Typography variant="body1"><strong>Fun Fact:</strong> {profile.funFact}</Typography>
+                                                <Typography variant="body1" sx={{ mb: 2 }}><strong>Job Title:</strong> {profile.job_title}</Typography>
+                                                <Typography variant="body1"><strong>Fun Fact:</strong> {profile.fun_fact}</Typography>
                                             </>
                                         )}
                                     </Box>
@@ -237,32 +242,33 @@ function ProfilePage() {
                                             {isEditingPW ? (
                                                 <>
                                                     <TextField
-                                                        name="oldpw"
+                                                        name="old_pw"
                                                         label="Old Password"
-                                                        value={password.oldpw}
+                                                        value={password.old_pw}
                                                         onChange={handlePWChange}
                                                         fullWidth
                                                         required
                                                         InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                                     />
                                                     <TextField
-                                                        name="newpw"
+                                                        name="new_pw"
                                                         label="New Password"
-                                                        value={password.newpw}
+                                                        value={password.new_pw}
                                                         onChange={handlePWChange}
                                                         fullWidth
                                                         required
                                                         InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                                     />
                                                     <TextField
-                                                        name="confirmNewpw"
+                                                        name="confirm_new_pw"
                                                         label="Confirm New Password"
-                                                        value={password.confirmNewpw}
+                                                        value={password.confirm_new_pw}
                                                         onChange={handlePWChange}
                                                         fullWidth
                                                         required
                                                         InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                                     />
+                                                    {errorMessage && <Alert severity="error" sx={{ marginBottom: '20px' }}>{errorMessage}</Alert>}
                                                     <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'row', gap: '20px' }}>
                                                         <Button
                                                             variant="outlined" color="primary"
@@ -274,7 +280,7 @@ function ProfilePage() {
                                                         <Button
                                                             variant="contained" color="primary"
                                                             sx={{ width: '150px', borderRadius: '20px', textTransform: 'none', fontWeight: 'bold' }}
-                                                            onClick={handleChangePassword}
+                                                            onClick={updatePassword}
                                                         >
                                                             Save Password
                                                         </Button>

@@ -6,6 +6,18 @@ definitions_profile = {
         'email': {
             'type': 'string',
         },
+        'description': {
+            'type': 'string'
+        },
+        'full_name': {
+            'type': 'string'
+        },
+        'job_title': {
+            'type': 'string'
+        },
+        'fun_fact': {
+            'type': 'string'
+        },
         'password': {
             'type': 'string'
         },
@@ -29,6 +41,29 @@ definitions_profile = {
                 'username': {
                     '$ref': '#/definitions/data/username',
                 },
+                'description': {
+                    '$ref': '#/definitions/data/description',
+                },
+                'full_name': {
+                    '$ref': '#/definitions/data/full_name',
+                },
+                'job_title': {
+                    '$ref': '#/definitions/data/job_title',
+                },
+                'fun_fact': {
+                    '$ref': '#/definitions/data/fun_fact',
+                },
+                'preferences': {
+                    '$ref': '#/definitions/data/preferences',
+                },
+            }
+        },
+        'update_password': {
+            'name': 'Update Password',
+            'in': 'body',
+            'type': 'object',
+            'required': 'true',
+            'properties': {
                 'old_password': {
                     '$ref': '#/definitions/data/password',
                 },
@@ -38,9 +73,6 @@ definitions_profile = {
                 're_password': {
                     '$ref': '#/definitions/data/password',
                 },
-                'preferences': {
-                    '$ref': '#/definitions/data/preferences',
-                }
             }
         },
         'token': {
