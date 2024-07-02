@@ -58,6 +58,16 @@ definitions = {
         },
         'event_id': {
             'type': 'string'
+        },
+        'preferences': {
+            'type': 'dict'
+        },
+    },
+    "securityDefinitions": {
+        "bearerAuth": {
+            "type": "apiKey",
+            "scheme": "bearer",
+            "bearerFormat": "JWT"
         }
     }
 }

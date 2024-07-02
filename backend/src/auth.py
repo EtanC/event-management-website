@@ -44,6 +44,8 @@ def auth_register(username, email, password):
     user = db.users.insert_one({
         'username': username,
         'email': email,
+        'preferences': {},
+        'profile_pic': None,
         'password': hash(password),
         'registered_events': []
     })
