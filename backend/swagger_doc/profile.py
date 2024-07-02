@@ -57,6 +57,18 @@ profile_update_spec = {
                     '$ref': '#/definitions/preferences',
                 }
             }
+        },
+        {
+            'name': 'Files',
+            'in': 'formData',
+            'type': 'file',
+            'required': 'true',
+            'properties': {
+                'profile_pic': {
+                    'type': 'string',
+                    'format': 'binary'
+                }
+            }
         }
     ],
     'responses': {
