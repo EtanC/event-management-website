@@ -67,7 +67,9 @@ definitions = {
         "bearerAuth": {
             "type": "apiKey",
             "scheme": "bearer",
-            "bearerFormat": "JWT"
+            'in': 'header',
+            "bearerFormat": "JWT",
+            'name': 'Authorization',
         }
     }
 }

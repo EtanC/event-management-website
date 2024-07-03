@@ -14,7 +14,9 @@ def stringify_id(x):
     return x
 
 def events_get_all():
-    return list(map(stringify_id , db.events.find({})))
+    return {
+        'events': list(map(stringify_id , db.events.find({})))
+    }
 
 def events_clear():
     clear('events')
@@ -49,7 +51,7 @@ def event_create(event):
         raise InputError('Invalid event')
     result = db.events.insert_one(event)
     return {
-        'event_id': result.inserted_id
+        'event_id': str(result.inserted_id)
     }
 
 def get_event(event_id):
