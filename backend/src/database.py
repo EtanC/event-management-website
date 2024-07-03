@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from config import config
+from backend.src.config import config
 # install pymongo
 # python3 -m pip install "pymongo[srv]"
 
