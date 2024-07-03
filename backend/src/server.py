@@ -10,7 +10,7 @@ from backend.src.error import AccessError, InputError
 import json
 from werkzeug.exceptions import HTTPException
 from backend.src.auth import auth_login, auth_register, auth_logout
-from backend.src.events import events_crawl, events_clear, events_get_all
+from backend.src.events import events_ai_description, events_crawl, events_clear, events_get_all
 from flask_cors import CORS
 from backend.src.config import config
 
@@ -57,10 +57,14 @@ def events_crawl_route():
 def events_get_all_route():
     return json.dumps(events_get_all())
 
+# add check for admin privileges for some endpoints
 @app.delete('/events/clear')
 @swag_from(events_clear_spec)
 def events_clear_route():
     return json.dumps(events_clear())
 
+@app.post('/events/ai-description')
+def events_ai_description_route():
+  return json.dumps(events_ai_description())
 if __name__ == '__main__':
     app.run(port=config['BACKEND_PORT'],debug=True)
