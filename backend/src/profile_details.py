@@ -5,6 +5,7 @@ from backend.src.auth import hash
 from bson import ObjectId
 import jwt
 import hashlib
+import base64
 
 # NOTE: keeping contact info as just email for now until we hear more
 
@@ -23,8 +24,9 @@ def get_profile_details(token):
 	user = db.users.find_one({"_id": ObjectId(user_id)})
 	file_id = user['profile_pic_id']
 	file_data = fs.get(file_id).read()
+	encoded_image = base64.b64encode(file_data) # not sure if this works
 
-	# might return file_data as Base64 encoded 
+	# might return file_data as Base64 encoded
 
 
 	return { 	'username': f"{user['username']}", 
