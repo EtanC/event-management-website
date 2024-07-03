@@ -22,6 +22,8 @@ class EasychairSpider(scrapy.Spider):
 
 
     def get_start_date(self, date_range):
+        if date_range == 'N/A':
+            return date_range
         start_date = re.search("(.*) - .*", date_range).group(1)
         return start_date
     
