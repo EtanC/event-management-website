@@ -1,3 +1,4 @@
+import sys
 from backend.src.database import clear, db
 import subprocess
 import requests
@@ -26,14 +27,15 @@ def events_ai_description():
   # loop through each event listing 
   cursor = db.events.find()
   # ai API
-  API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
+  API_URL = "https://api-inference.huggingface.co/models/pszemraj/led-large-book-summary"
   headers = {"Authorization": f"Bearer {AI_TOKEN}"}
   for event in cursor:
     ai_description = event.get("ai_description")
-    if ai_description is None:
+    if ai_description is None or (ai_description and 'error' in ai_description):
       query_filter = {"_id": event["_id"]}
       output = query({
-          "inputs": event.get("description"),
+          "inputs": event.get("details"),
+          "options": {"wait_for_model": True}
         }, API_URL, headers)
       db.events.update_one(query_filter, {"$set": {"ai_description": output}})
   return {}

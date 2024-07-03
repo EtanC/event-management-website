@@ -6,6 +6,7 @@ from backend.swagger_doc.auth_logout import auth_logout_spec
 from backend.swagger_doc.events_crawl import events_crawl_spec
 from backend.swagger_doc.events_clear import events_clear_spec
 from backend.swagger_doc.events_get_all import events_get_all_spec
+from backend.swagger_doc.events_ai_description import events_ai_description_spec
 from backend.src.error import AccessError, InputError
 import json
 from werkzeug.exceptions import HTTPException
@@ -64,6 +65,7 @@ def events_clear_route():
     return json.dumps(events_clear())
 
 @app.post('/events/ai-description')
+@swag_from(events_ai_description_spec)
 def events_ai_description_route():
   return json.dumps(events_ai_description())
 if __name__ == '__main__':
