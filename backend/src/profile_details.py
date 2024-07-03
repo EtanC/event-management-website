@@ -28,10 +28,10 @@ def get_profile_details(token):
 
 	# might return file_data as Base64 encoded
 
-
 	return { 	'username': f"{user['username']}", 
 				'email': f"{user['email']}",
-				'preferences': user['preferences']		}
+				'preferences': user['preferences'], 
+				'profile_pic': encoded_image 		}
 
 # mayeb won't deal with profile pics first, but might have to use GridFS to store on mongoDB
 def update_profile_details(token, username, email, old_password, new_password, re_password, preferences, profile_pic):
