@@ -4,21 +4,28 @@ import datetime
 from backend.src.error import InputError
 from bson import ObjectId
 
+
 def events_crawl():
-    subprocess.run(["cd backend/easychair_scraper && python3 -m scrapy crawl easychair"], shell=True)
-    subprocess.run(["cd backend/easychair_scraper && python3 -m scrapy crawl wikicfp"], shell=True)
+    subprocess.run(
+        ["cd backend/easychair_scraper && python3 -m scrapy crawl easychair"], shell=True)
+    subprocess.run(
+        ["cd backend/easychair_scraper && python3 -m scrapy crawl wikicfp"], shell=True)
     return {}
+
 
 def stringify_id(x):
     x['_id'] = str(x['_id'])
     return x
 
+
 def events_get_all():
-    return list(map(stringify_id , db.events.find({})))
+    return list(map(stringify_id, db.events.find({})))
+
 
 def events_clear():
     clear('events')
     return {}
+
 
 def event_already_exists(event):
     search_object = {
@@ -35,12 +42,16 @@ def event_already_exists(event):
 #         return False
 #     return True
 
+
 def event_is_valid(event):
-    if len(event['name']) == 0: return False
-    if len(event['location']) == 0: return False
+    if len(event['name']) == 0:
+        return False
+    if len(event['location']) == 0:
+        return False
     # if not is_real_date(event['start_date']): return False
     # if not is_real_date(event['deadline']): return False
     return True
+
 
 def event_create(event):
     if event_already_exists(event):
@@ -49,11 +60,13 @@ def event_create(event):
         raise InputError('Invalid event')
     result = db.events.insert_one(event)
     return {
-        'event_id': result.inserted_id
+        'event_id': str(result.inserted_id)
     }
 
+
 def get_event(event_id):
-    return db.events.find_one({ '_id': ObjectId(event_id) })
+    return db.events.find_one({'_id': ObjectId(event_id)})
+
 
 def event_update(event_id, new_event):
     event = get_event(event_id)
@@ -62,21 +75,24 @@ def event_update(event_id, new_event):
     if not event_is_valid(new_event):
         raise InputError('New event is not a valid event')
     db.events.update_one(
-        { '_id': ObjectId(event_id) },
-        { '$set': {
+        {'_id': ObjectId(event_id)},
+        {'$set': {
             'name': new_event['name'],
             'location': new_event['location'],
             'start_date': new_event['start_date'],
-            'deadline': new_event['deadline'],
+            'end_date': new_event['end_date'],
+            'tags': new_event['tags'],
             'details': new_event['details'],
-            'details_link': new_event['details_link'],
+            'registration_link': new_event['registration_link'],
+            'image': new_event['image'],
         }}
     )
     return {}
+
 
 def event_delete(event_id):
     event = get_event(event_id)
     if event is None:
         raise InputError('No event in database with specified event_id')
-    db.events.delete_one({ '_id': ObjectId(event_id)})
+    db.events.delete_one({'_id': ObjectId(event_id)})
     return {}

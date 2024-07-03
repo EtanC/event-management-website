@@ -8,6 +8,7 @@ import {
     Grid,
     Typography,
     Box,
+    Alert,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -15,6 +16,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Tags from './Tags.jsx';
+import { createEvent } from '../helper/handleEventData.js';
 
 const styles = {
     modal: {
@@ -59,30 +61,37 @@ const VisuallyHiddenInput = styled('input')({
 
 const NewEvent = ({ open, handleClose }) => {
     const [eventData, setEventData] = useState({
-        eventName: '',
+        name: '',
         location: '',
-        date: '',
-        registrationLink: '',
-        description: '',
+        start_date: '',
+        end_date: '',
+        registration_link: '',
+        details: '',
         tags: [],
         image: null
     });
+    const [errorMessage, setErrorMessage] = useState('')
 
-    const handleSave = () => {
+    const handleSave = async () => {
         console.log(eventData);
-        handleClose();
-        // save the data into the database
-
-        setEventData(preState => ({
-            eventName: '',
-            location: '',
-            startDate: null,
-            endDate: null,
-            registrationLink: '',
-            description: '',
-            tags: [],
-            image: null
-        }));
+        try {
+            const result = await createEvent(eventData)
+            if (result === 200) {
+                handleClose();
+                setEventData(preState => ({
+                    name: '',
+                    location: '',
+                    start_date: null,
+                    end_date: null,
+                    registration_link: '',
+                    details: '',
+                    tags: [],
+                    image: null
+                }));
+            }
+        } catch (error) {
+            console.log(`Failed to save new event: ${error.message}`)
+        }
     };
 
     const handleChange = (e) => {
@@ -93,10 +102,10 @@ const NewEvent = ({ open, handleClose }) => {
         }));
     };
 
-    const handleDateChange = (date_data) => {
+    const handleDateChange = (field) => (date_data) => {
         setEventData(prevState => ({
             ...prevState,
-            date: date_data.$d
+            [field]: date_data.$d
         }));
     };
 
@@ -134,8 +143,8 @@ const NewEvent = ({ open, handleClose }) => {
                                     label="Event Name"
                                     variant="outlined"
                                     required
-                                    name="eventName"
-                                    value={eventData.eventName}
+                                    name="name"
+                                    value={eventData.name}
                                     onChange={handleChange}
                                     InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                 />
@@ -153,7 +162,7 @@ const NewEvent = ({ open, handleClose }) => {
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <DatePicker
                                             label="Event Start Date"
-                                            onChange={handleDateChange}
+                                            onChange={handleDateChange('start_date')}
                                             slotProps={{
                                                 textField: { sx: { borderRadius: '40px', width: '400px', fieldset: { borderRadius: '40px' }, } }
                                             }}
@@ -162,7 +171,7 @@ const NewEvent = ({ open, handleClose }) => {
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <DatePicker
                                             label="Event End Date"
-                                            onChange={handleDateChange}
+                                            onChange={handleDateChange('end_date')}
                                             slotProps={{
                                                 textField: { sx: { borderRadius: '40px', width: '400px', fieldset: { borderRadius: '40px' }, } }
                                             }}
@@ -173,19 +182,19 @@ const NewEvent = ({ open, handleClose }) => {
                                     fullWidth
                                     label="Registration Link"
                                     variant="outlined"
-                                    name="registrationLink"
-                                    value={eventData.registrationLink}
+                                    name="registration_link"
+                                    value={eventData.registration_link}
                                     onChange={handleChange}
                                     InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                 />
                                 <TextField
                                     fullWidth
-                                    label="Description"
+                                    label="Details"
                                     variant="outlined"
                                     multiline
                                     rows={4}
-                                    name="description"
-                                    value={eventData.description}
+                                    name="details"
+                                    value={eventData.details}
                                     onChange={handleChange}
                                     InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                 />
@@ -207,6 +216,7 @@ const NewEvent = ({ open, handleClose }) => {
                                 </Box>
                             </Grid>
                         </Grid>
+                        {errorMessage && <Alert severity='error' sx={{ marginBottom: '20px' }}>{errorMessage}</Alert>}
                         <Box sx={styles.buttonsContainer}>
                             <Button variant="outlined" color="primary" sx={styles.button} onClick={handleClose}>Cancel</Button>
                             <Button variant="contained" color="primary" sx={styles.button} onClick={handleSave}>Save Event</Button>

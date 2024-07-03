@@ -60,14 +60,20 @@ event_create_spec = {
                 'start_date': {
                     '$ref': '#/definitions/event_start_date'
                 },
-                'deadline': {
-                    '$ref': '#/definitions/event_deadline'
+                'end_date': {
+                    '$ref': '#/definitions/event_end_date'
                 },
-                'details': {
-                    '$ref': '#/definitions/event_details'
+                'tags': {
+                    '$ref': '#/definitions/event_tags'
                 },
-                'details_link': {
-                    '$ref': '#/definitions/event_details_link'
+                'description': {
+                    '$ref': '#/definitions/event_description'
+                },
+                'registration_link': {
+                    '$ref': '#/definitions/event_registration_link'
+                },
+                'image': {
+                    '$ref': '#/definitions/event_image'
                 },
             }
         }

@@ -24,14 +24,20 @@ definitions = {
                 'start_date': {
                     '$ref': '#definitions/event_start_date'
                 },
-                'details': {
-                    '$ref': '#definitions/event_details'
+                'end_date': {
+                    '$ref': '#definitions/event_end_date'
                 },
-                'deadline': {
-                    '$ref': '#definitions/event_deadline'
+                'tags': {
+                    '$ref': '#definitions/event_tags'
                 },
-                'details_link': {
-                    '$ref': '#definitions/event_details_link'
+                'description': {
+                    '$ref': '#definitions/event_description'
+                },
+                'registration_link': {
+                    '$ref': '#definitions/event_registration_link'
+                },
+                'image': {
+                    '$ref': '#/definitions/event_image'
                 },
             }
         },
@@ -41,13 +47,13 @@ definitions = {
         'event_location': {
             'type': 'string'
         },
-        'event_details': {
+        'event_description': {
             'type': 'string'
         },
-        'event_deadline': {
+        'event_end_date': {
             '$ref': '#definitions/date'
         },
-        'event_details_link': {
+        'event_registration_link': {
             'type': 'string'
         },
         'event_start_date': {
@@ -56,7 +62,13 @@ definitions = {
         'date': {
             'type': 'string'
         },
+        'event_tags': {
+            'type': 'array'
+        },
         'event_id': {
+            'type': 'string'
+        },
+        'event_image': {
             'type': 'string'
         },
         'preferences': {
