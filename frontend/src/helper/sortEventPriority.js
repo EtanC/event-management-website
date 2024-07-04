@@ -1,7 +1,15 @@
 //sort event by priority then alphabetically if same priority
 
-const transformEvents = (events) => {
+const sortEventPriority = (events) => {
+    if (!Array.isArray(events)) {
+        return []; // Return an empty array if events is not an array
+    }
+
     return events
+        .map(event => ({
+            ...event,
+            priority: event.priority ?? 0, // Assign priority 0 if it doesn't exist, just in case
+        }))
         .sort((a, b) => {
             if (a.priority === b.priority) {
                 return a.name.localeCompare(b.name);
@@ -17,4 +25,5 @@ const transformEvents = (events) => {
         }));
 };
 
-export default transformEvents;
+export default sortEventPriority;
+

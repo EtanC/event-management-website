@@ -28,6 +28,10 @@ function NavBar() {
         setAnchorEl(null);
     };
 
+    const handleCalendar = () => {
+        navigate('/MyCalendar')
+    }
+
     const handleSignIn = () => {
         navigate('/login');
     };
@@ -46,7 +50,7 @@ function NavBar() {
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static" sx={{ padding: "25px 150px 25px", backgroundColor: 'white' }}>
+            <AppBar position="static" sx={{ padding: "25px 10px 25px", backgroundColor: 'white', borderBottom: '1px solid #e0e0e0' }}>
                 <Toolbar>
                     <img
                         src={logo}
@@ -88,7 +92,7 @@ function NavBar() {
                                 sx={{ mt: 1.5 }}
                             >
                                 <MenuItem onClick={handleProfile}>Profile</MenuItem>
-                                <MenuItem onClick={handleClose}>My Events</MenuItem>
+                                <MenuItem onClick={handleCalendar}>My Events</MenuItem>
                                 <MenuItem onClick={() => handleLogout(navigate, setAuth)}>Log Out</MenuItem>
                             </Menu>
                         </div>

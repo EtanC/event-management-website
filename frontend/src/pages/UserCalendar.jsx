@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import transformEvents from '../helper/sortEventPriority';
+import sortEventPriority from '../helper/sortEventPriority';
+import fetchRegisteredEvents from '../helper/fetchRegisteredEvents';
 import { CircularProgress, Typography, Box, Container } from '@mui/material';
 import Navbar from '../components/Navbar';
-import SearchBar from '../components/SearchBar';
-import mockEvents from '../helper/mockCalendarEvent';
+import CalendarSidebar from '../components/CalendarSideBar';
+import '../styles/UserCalendar.css';
 
 const localizer = momentLocalizer(moment);
 
@@ -24,21 +25,11 @@ const UserCalendar = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    /*
     useEffect(() => {
-        fetchUserEvents(setEvents, setError, setIsLoading);
-    }, []); */ // put this back after the backend api is done
-
-    useEffect(() => {
-        // Simulate fetching data with a delay
-        setTimeout(() => {
-            setEvents(mockEvents);
-            setIsLoading(false);
-        }, 1000);
-        setError('');
+        fetchRegisteredEvents(setEvents, setError, setIsLoading);
     }, []);
 
-    const calendarEvents = transformEvents(events);
+    const calendarEvents = sortEventPriority(events);
 
     const eventStyleGetter = (event) => {
         const backgroundColor = eventColors[event.resource.priority] || '#808080';
@@ -62,18 +53,10 @@ const UserCalendar = () => {
     return (
         <>
             <Navbar />
-            <Box sx={{ backgroundColor: '#f5f5f5', padding: '20px 0' }}>
-                <Container maxWidth="lg">
-                    <SearchBar 
-                        eventType={''} 
-                        setEventType={() => {}} 
-                        location={''} 
-                        setLocation={() => {}} 
-                        locations={[]} 
-                        date={''} 
-                        setDate={() => {}} 
-                    />
-                    <Box sx={{ marginTop: '20px', padding: '20px', backgroundColor: 'white', borderRadius: '8px' }}>
+            <Box sx={{ display: 'flex', backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
+                <CalendarSidebar />
+                <Container maxWidth="lg" sx={{ flexGrow: 1, padding: 0 }}>
+                    <Box sx={{ marginTop: '20px', height: '100%', padding: '20px', backgroundColor: 'white', borderRadius: '8px' }}>
                         {isLoading ? (
                             <Box display="flex" justifyContent="center" alignItems="center" height="100%">
                                 <CircularProgress />
@@ -85,7 +68,7 @@ const UserCalendar = () => {
                                 </Typography>
                             </Box>
                         ) : (
-                            <Box sx={{ height: '70vh', width: '100%' }}>
+                            <Box sx={{ height: '100%', width: '100%' }}>
                                 <Calendar
                                     localizer={localizer}
                                     events={calendarEvents}
