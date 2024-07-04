@@ -1,0 +1,30 @@
+/* CustomCalendar.css */
+
+.rbc-toolbar button {
+    background-color: #1E4830; /* Change background color */
+    color: #fff; /* Change text color */
+    border: none; /* Remove default border */
+    padding: 10px 15px; /* Adjust padding */
+    border-radius: 5px; /* Add border-radius */
+    margin: 0 5px; /* Adjust margin */
+    cursor: pointer;
+}
+
+.rbc-toolbar button:hover {
+    background-color: #EAF9DF; /* Change background color on hover */
+}
+
+.rbc-toolbar button:focus {
+    outline: none; /* Remove focus outline */
+}
+
+.rbc-toolbar button:disabled {
+    background-color: #ccc; /* Change background color when disabled */
+    cursor: not-allowed;
+}
+
+.rbc-toolbar-label {
+    font-size: 18px; /* Adjust font size */
+    font-weight: bold; /* Adjust font weight */
+    color: #1E4830; /* Change text color */
+}
