@@ -100,7 +100,6 @@ function ProfilePage() {
     };
 
     const updatePassword = async () => {
-        console.log(password)
         try {
             const result = await updateProfilePassword(password, setErrorMessage);
             if (result === 200) {
@@ -233,6 +232,7 @@ function ProfilePage() {
                                                     <TextField
                                                         name="old_pw"
                                                         label="Old Password"
+                                                        type="password"
                                                         value={password.old_pw}
                                                         onChange={handlePWChange}
                                                         fullWidth
@@ -242,6 +242,7 @@ function ProfilePage() {
                                                     <TextField
                                                         name="new_pw"
                                                         label="New Password"
+                                                        type="password"
                                                         value={password.new_pw}
                                                         onChange={handlePWChange}
                                                         fullWidth
@@ -251,6 +252,7 @@ function ProfilePage() {
                                                     <TextField
                                                         name="confirm_new_pw"
                                                         label="Confirm New Password"
+                                                        type="password"
                                                         value={password.confirm_new_pw}
                                                         onChange={handlePWChange}
                                                         fullWidth
