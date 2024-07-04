@@ -4,6 +4,7 @@ from backend.src.config import config
 from backend.src.auth import hash
 from bson import ObjectId
 import jwt
+import string
 
 # NOTE: keeping contact info as just email for now until we hear more
 
@@ -100,6 +101,12 @@ def update_profile_password(token, old_password, new_password, re_password):
         raise InputError('New and old passwords cannot match')
     elif old_password and new_password != re_password:
         raise InputError("New passwords don't match")
+    elif len(new_password) < 8:
+        raise InputError('Password needs to be at least 8 characters long')
+    elif not any(c in string.punctuation for c in new_password):
+        raise InputError("Password needs a special character")
+    elif not any(c in string.digits for c in new_password):
+        raise InputError('Password needs a number')
 
     if old_password and hashed_old_password == user['password'] and new_password == re_password:
         changed_values['$set']['password'] = hash(new_password)
