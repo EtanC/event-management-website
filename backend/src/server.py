@@ -121,7 +121,7 @@ def profile_update_details_route():
         token = token[len('Bearer '):]
 
     body = request.get_json()
-    return json.dumps(update_profile_details(token, body['username'], body['email'], body['description'], body['full_name'], body['job_title'], body['fun_fact'], body['preferences']))
+    return json.dumps(update_profile_details(token, body['username'], body['description'], body['full_name'], body['job_title'], body['fun_fact'], body['preferences']))
 
 
 @app.post('/profile/update/password')

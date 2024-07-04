@@ -26,7 +26,6 @@ function ProfilePage() {
     const [newProfile, setNewProfile] = useState({
         description: '',
         full_name: '',
-        email: '',
         job_title: '',
         fun_fact: '',
     });
@@ -77,7 +76,6 @@ function ProfilePage() {
             ...profile,
             description: newProfile.description !== "" ? newProfile.description : profile.description,
             full_name: newProfile.full_name !== "" ? newProfile.full_name : profile.full_name,
-            email: newProfile.email !== "" ? newProfile.email : profile.email,
             job_title: newProfile.job_title !== "" ? newProfile.job_title : profile.job_title,
             fun_fact: newProfile.fun_fact !== "" ? newProfile.fun_fact : profile.fun_fact,
             username: profile.username,
@@ -91,7 +89,6 @@ function ProfilePage() {
             setNewProfile({
                 description: "",
                 full_name: "",
-                email: "",
                 job_title: "",
                 fun_fact: "",
             });
@@ -171,14 +168,6 @@ function ProfilePage() {
                                                     name="full_name"
                                                     label="Full Name"
                                                     value={newProfile.full_name}
-                                                    onChange={handleChange}
-                                                    fullWidth
-                                                    InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
-                                                />
-                                                <TextField
-                                                    name="email"
-                                                    label="Email Address"
-                                                    value={newProfile.email}
                                                     onChange={handleChange}
                                                     fullWidth
                                                     InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}

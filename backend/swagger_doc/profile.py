@@ -56,9 +56,6 @@ profile_update_details_spec = {
                     'full_name': {
                         '$ref': '#/definitions/data/full_name'
                     },
-                    'email': {
-                        '$ref': '#/definitions/data/email'
-                    },
                 }
             },
         },

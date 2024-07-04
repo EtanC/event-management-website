@@ -33,7 +33,7 @@ def get_profile_details(token):
 # mayeb won't deal with profile pics first, but might have to use GridFS to store on mongoDB
 
 
-def update_profile_details(token, username, email, description, full_name, job_title, fun_fact, preferences):
+def update_profile_details(token, username, description, full_name, job_title, fun_fact, preferences):
 
     try:
         token = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
@@ -51,8 +51,6 @@ def update_profile_details(token, username, email, description, full_name, job_t
 
     if username:
         changed_values['$set']['username'] = username
-    if email:
-        changed_values['$set']['email'] = email
     if description:
         changed_values['$set']['description'] = description
     if full_name:
