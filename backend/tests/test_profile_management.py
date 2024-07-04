@@ -58,53 +58,45 @@ def test_update_profile(reset, user1):
     new_fun_fact = 'imthegoat'
 
     # test update username
-    update_profile_details(token, new_usr, None, None, None, None, None, None)
+    update_profile_details(token, new_usr, None, None, None, None, None)
     assert(get_profile_details(token) == {  'username': new_usr,
                                             'email': 'johnsmith1234@outlook.com',
                                             'description': 'None',
                                             'full_name': 'None',
                                             'fun_fact': 'None',
                                             'job_title': 'None'})
-    # test update email
-    update_profile_details(token, None, new_email, None, None, None, None, None)
-    assert(get_profile_details(token) == {  'username': new_usr,
-                                            'email': new_email,
-                                            'description': 'None',
-                                            'full_name': 'None',
-                                            'fun_fact': 'None',
-                                            'job_title': 'None'})
 
     # test update description
-    update_profile_details(token, None, None, new_description, None, None, None, None)
+    update_profile_details(token, None, new_description, None, None, None, None)
     assert(get_profile_details(token) == {  'username': new_usr,
-                                            'email': new_email,
+                                            'email': user1['email'],
                                             'description': new_description,
                                             'full_name': 'None',
                                             'fun_fact': 'None',
                                             'job_title': 'None'})
     
     # test update full name
-    update_profile_details(token, None, None, None, new_full_name, None, None, None)
+    update_profile_details(token, None, None, new_full_name, None, None, None)
     assert(get_profile_details(token) == {  'username': new_usr,
-                                            'email': new_email,
+                                            'email': user1['email'],
                                             'description': new_description,
                                             'full_name': new_full_name,
                                             'fun_fact': 'None',
                                             'job_title': 'None'})
     
     # test update job title
-    update_profile_details(token, None, None, None, None, new_job_title, None, None)
+    update_profile_details(token, None, None, None, new_job_title, None, None)
     assert(get_profile_details(token) == {  'username': new_usr,
-                                            'email': new_email,
+                                            'email': user1['email'],
                                             'description': new_description,
                                             'full_name': new_full_name,
                                             'fun_fact': 'None',
                                             'job_title': new_job_title})
     
      # test update fun fact
-    update_profile_details(token, None, None, None, None, None, new_fun_fact, None)
+    update_profile_details(token, None, None, None, None, new_fun_fact, None)
     assert(get_profile_details(token) == {  'username': new_usr,
-                                            'email': new_email,
+                                            'email': user1['email'],
                                             'description': new_description,
                                             'full_name': new_full_name,
                                             'fun_fact': new_fun_fact,
@@ -153,7 +145,7 @@ def test_update_profile_error(reset, user1):
 
     # test invalid token
     with pytest.raises(AccessError):
-        update_profile_details(random_token, 'newusr', 'newemail', None, None, None, None, None)
+        update_profile_details(random_token, 'newusr', 'newemail', None, None, None, None)
 
 def test_update_password(reset, user1):
     token = auth_register(user1['username'], user1['email'], user1['password'])['token']
