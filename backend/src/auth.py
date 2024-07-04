@@ -45,7 +45,7 @@ def auth_register(username, email, password):
         'username': username,
         'email': email,
         'preferences': {},
-        'profile_pic': None,
+        'profile_pic_id': None,
         'password': hash(password),
         'active_sessions': {}
     })

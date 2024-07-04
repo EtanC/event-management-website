@@ -23,18 +23,23 @@ def get_profile_details(token):
 	# check token validity
 	user = db.users.find_one({"_id": ObjectId(user_id)})
 	file_id = user['profile_pic_id']
-	file_data = fs.get(file_id).read()
-	encoded_image = base64.b64encode(file_data) # not sure if this works
+	if file_id is not None:
+		file_data = fs.get(file_id).read()
+		encoded_image = base64.b64encode(file_data) # not sure if this works
+	else:
+		encoded_image = None # or could make it a default profile pic
 
 	# might return file_data as Base64 encoded
 
+	# if i am to return it as base64 encoded, then might as well just store it like that instead of using gridfs
+
 	return { 	'username': f"{user['username']}", 
 				'email': f"{user['email']}",
-				'preferences': user['preferences'], 
-				'profile_pic': encoded_image 		}
+				'profile_pic': encoded_image,
+				'preferences': user['preferences'],	}
 
 # mayeb won't deal with profile pics first, but might have to use GridFS to store on mongoDB
-def update_profile_details(token, username, email, old_password, new_password, re_password, preferences, profile_pic):
+def update_profile_details(token, username, email, old_password, new_password, re_password, profile_pic, preferences):
 
 	try:  
 		token = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
@@ -75,7 +80,7 @@ def update_profile_details(token, username, email, old_password, new_password, r
 		changed_values['$set']['password'] = hash(new_password)
 	if preferences:
 		changed_values['$set']['preferences'] = preferences
-	if profile_pic and profile_pic.filename != '': 
+	if profile_pic:
 		# value was passed for profile_pic 
 
 		# store the profile pic onto gridfs
