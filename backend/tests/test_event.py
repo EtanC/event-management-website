@@ -19,13 +19,14 @@ def reset():
     clear('events')
 
 def test_event(reset, sample_event):
-    assert events_get_all() == []
+    assert events_get_all()['events'] == []
     event_id = event_create(sample_event)['event_id']
     expected_event = {
         **sample_event,
         '_id': str(event_id),
+        'ranking': 0,
     }
-    assert events_get_all() == [expected_event]
+    assert events_get_all()['events'] == [expected_event]
     updated_event = {
         'deadline': '2 July 2024',
         'details': 'This is a somewhat ok event, everyone should come',
@@ -38,7 +39,8 @@ def test_event(reset, sample_event):
     expected_event = {
         **updated_event,
         '_id': str(event_id),
+        'ranking': 0,
     }
-    assert events_get_all() == [expected_event]
+    assert events_get_all()['events'] == [expected_event]
     event_delete(event_id)
-    assert events_get_all() == []
+    assert events_get_all()['events'] == []
