@@ -2,7 +2,7 @@ from flask import Flask, request
 from flasgger import Swagger, swag_from
 from backend.swagger_doc.auth import auth_login_spec, auth_register_spec, auth_logout_spec
 from backend.swagger_doc.events import events_crawl_spec, events_clear_spec, events_get_all_spec, event_create_spec, event_update_spec, event_delete_spec
-from backend.swagger_doc.profile import profile_get_spec, profile_update_spec
+from backend.swagger_doc.profile import profile_get_spec, profile_update_details_spec, profile_update_password_spec
 from backend.swagger_doc.user import user_events_spec, user_register_event_spec
 from backend.swagger_doc.definitions import definitions
 from backend.src.error import AccessError, InputError
@@ -10,7 +10,7 @@ import json
 from werkzeug.exceptions import HTTPException
 from backend.src.auth import auth_login, auth_register, auth_logout
 from backend.src.events import events_crawl, events_clear, events_get_all, event_create, event_update, event_delete
-from backend.src.profile_details import get_profile_details, update_profile_details
+from backend.src.profile_details import get_profile_details, update_profile_details, update_profile_password
 from backend.src.user import user_register_event, user_events
 from flask_cors import CORS
 from backend.src.config import config
