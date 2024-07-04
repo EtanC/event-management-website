@@ -9,13 +9,13 @@ import logging
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
-
+from config import config
 
 class EasychairScraperPipeline(object):
 
     def __init__(self):
         client = MongoClient('mongodb+srv://comp3900:wowilovecompsci123@comp3900-database.dkmw7l9.mongodb.net/?retryWrites=true&w=majority&appName=COMP3900-Database')
-        db = client.test_database
+        db = client[config['DATABASE_NAME']]
         self.db = db
 
     def process_item(self, item, spider):
