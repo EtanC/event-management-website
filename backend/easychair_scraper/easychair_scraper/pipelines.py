@@ -9,7 +9,7 @@ import logging
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
-
+from easychair_scraper.ranking import Ranking, NameProcessor
 
 class EasychairScraperPipeline(object):
 
@@ -17,6 +17,8 @@ class EasychairScraperPipeline(object):
         client = MongoClient('mongodb+srv://comp3900:wowilovecompsci123@comp3900-database.dkmw7l9.mongodb.net/?retryWrites=true&w=majority&appName=COMP3900-Database')
         db = client.test_database
         self.db = db
+        self.ranker = Ranking(NameProcessor())
+        self.ranker.icore_to_ranking_map('./easychair_scraper/ranking_data/CORE.csv')
 
     def process_item(self, item, spider):
         # If name is already in database, then event is already inserted/found
@@ -26,7 +28,7 @@ class EasychairScraperPipeline(object):
         if self.db.events.find_one({"name": item.get("name")}) is not None:
             logging.debug("Duplicate item found: {0}".format(item.get("name")), extra={'spider': spider})
             raise DropItem("Duplicate item found: {0}".format(item.get("name")))
-        
+        item['ranking'] = self.ranker.rank_event(item['name'])
         self.db.events.insert_one(dict(item))
         logging.debug("Event added to MongoDB database!", extra={'spider': spider})
         

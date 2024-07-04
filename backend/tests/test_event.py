@@ -24,6 +24,7 @@ def test_event(reset, sample_event):
     expected_event = {
         **sample_event,
         '_id': str(event_id),
+        'ranking': 0,
     }
     assert events_get_all()['events'] == [expected_event]
     updated_event = {
@@ -38,6 +39,7 @@ def test_event(reset, sample_event):
     expected_event = {
         **updated_event,
         '_id': str(event_id),
+        'ranking': 0,
     }
     assert events_get_all()['events'] == [expected_event]
     event_delete(event_id)
