@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import { Box, Button, Typography, Checkbox, FormControlLabel, FormGroup, Accordion, AccordionSummary, AccordionDetails, InputBase, List, ListItem, ListItemText } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-const CalendarSidebar = ({ events, onSearchResultClick }) => {
+const CalendarSidebar = ({ events, onSearchResultClick, onRankingChange }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
+    const [selectedPriorities, setSelectedPriorities] = useState([]);
 
     useEffect(() => {
         if (searchTerm) {
-            const results = events.filter(event =>
+            const results = (Array.isArray(events) ? events : []).filter(event =>
                 event.name.toLowerCase().includes(searchTerm.toLowerCase())
             );
             setSearchResults(results);
@@ -16,6 +17,19 @@ const CalendarSidebar = ({ events, onSearchResultClick }) => {
             setSearchResults([]);
         }
     }, [searchTerm, events]);
+
+    const handleRankingChange = (event) => {
+        const ranking = event.target.name;
+        setSelectedPriorities(prev =>
+            prev.includes(ranking)
+                ? prev.filter(p => p !== ranking)
+                : [...prev, ranking]
+        );
+    };
+
+    useEffect(() => {
+        onRankingChange(selectedPriorities);
+    }, [selectedPriorities, onRankingChange]);
 
     return (
         <Box 
@@ -26,8 +40,7 @@ const CalendarSidebar = ({ events, onSearchResultClick }) => {
                 borderRight: '1px solid #ddd' , 
                 flexShrink: 0,
             }}
-        > 
-        # when create is done then make it clickable
+        >
             <Button variant="contained" color="primary" fullWidth sx={{ marginBottom: '20px' }}>
                 Create
             </Button>
@@ -63,16 +76,15 @@ const CalendarSidebar = ({ events, onSearchResultClick }) => {
 
             <Accordion defaultExpanded sx={{ boxShadow: 'none'}}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography variant="h6">Priority</Typography>
+                    <Typography variant="h6">Ranking</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                     <FormGroup>
-                        <FormControlLabel control={<Checkbox />} label="A+" />
-                        <FormControlLabel control={<Checkbox />} label="A" />
-                        <FormControlLabel control={<Checkbox />} label="B" />
-                        <FormControlLabel control={<Checkbox />} label="C" />
-                        <FormControlLabel control={<Checkbox />} label="D" />
-                        <FormControlLabel control={<Checkbox />} label="Unspecified" />
+                        <FormControlLabel control={<Checkbox onChange={handleRankingChange} name="A+" />} label="A+" />
+                        <FormControlLabel control={<Checkbox onChange={handleRankingChange} name="A" />} label="A" />
+                        <FormControlLabel control={<Checkbox onChange={handleRankingChange} name="B" />} label="B" />
+                        <FormControlLabel control={<Checkbox onChange={handleRankingChange} name="C" />} label="C" />
+                        <FormControlLabel control={<Checkbox onChange={handleRankingChange} name="Unspecified" />} label="Unspecified" />
                     </FormGroup>
                 </AccordionDetails>
             </Accordion>

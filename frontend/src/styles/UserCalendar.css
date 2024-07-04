@@ -28,3 +28,18 @@
     font-weight: bold; /* Adjust font weight */
     color: #1E4830; /* Change text color */
 }
+
+.rbc-event {
+    font-size: 12px;
+    line-height: 14px;
+    padding: 2px 4px;
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.rbc-event-content {
+    display: inline-block;
+    width: 100%;
+}

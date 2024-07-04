@@ -9,7 +9,7 @@ const fetchRegisteredEvents = async (setEvents, setError, setIsLoading) => {
                 Authorization: `Bearer ${token}`
             }
         });
-        setEvents(response.data);
+        setEvents(response.data.events);
         setError(null);
     } catch (err) {
         setError('Failed to fetch events');
