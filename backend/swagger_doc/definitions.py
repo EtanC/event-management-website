@@ -33,6 +33,9 @@ definitions = {
                 'details_link': {
                     '$ref': '#definitions/event_details_link'
                 },
+                'ranking': {
+                    '$ref': '#definitions/event_rank'
+                }
             }
         },
         'name': {
@@ -52,6 +55,9 @@ definitions = {
         },
         'event_start_date': {
             '$ref': '#definitions/date'
+        },
+        'event_rank': {
+            'type': 'integer',
         },
         'date': {
             'type': 'string'

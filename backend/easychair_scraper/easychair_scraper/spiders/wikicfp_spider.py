@@ -5,7 +5,7 @@ import re
 class EasychairSpider(scrapy.Spider):
     name = 'wikicfp'
     allowed_domains = ['wikicfp.com']
-    start_urls = ['http://www.wikicfp.com/cfp/allcfp?page=1']
+    start_urls = ['http://www.wikicfp.com/cfp/allcfp?page=15']
 
     def parse(self, response):
         table = response.css('.contsec table > tr:nth-child(3) table')

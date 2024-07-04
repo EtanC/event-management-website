@@ -49,6 +49,7 @@ def event_create(event):
         raise InputError('Event already exists')
     if not event_is_valid(event):
         raise InputError('Invalid event')
+    event['ranking'] = 0
     result = db.events.insert_one(event)
     return {
         'event_id': str(result.inserted_id)
