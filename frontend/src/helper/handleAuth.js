@@ -26,7 +26,7 @@ export const handleLogin = async (email, password, navigate, setErrorMessage, se
     setIsLoading(true);
     try {
         const response = await axios.post('http://127.0.0.1:5000/auth/login', {
-            username: email,
+            email,
             password,
         });
 

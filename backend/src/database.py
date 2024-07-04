@@ -1,12 +1,12 @@
 from pymongo import MongoClient
-
+from backend.src.config import config
 # install pymongo
 # python3 -m pip install "pymongo[srv]"
 
 # to run: python3 -m backend.src.database
 
 client = MongoClient('mongodb+srv://comp3900:wowilovecompsci123@comp3900-database.dkmw7l9.mongodb.net/?retryWrites=true&w=majority&appName=COMP3900-Database')
-db = client.test_database
+db = client[config['DATABASE_NAME']]
 
 def add_user(username, password):
     db.users.insert_one({ 'username': username, 'password': password })
