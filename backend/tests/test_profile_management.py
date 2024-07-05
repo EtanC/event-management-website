@@ -7,6 +7,7 @@ import jwt
 from io import BytesIO
 import base64
 
+
 @pytest.fixture
 def user1():
     return {
@@ -14,6 +15,7 @@ def user1():
         'email': 'johnsmith1234@outlook.com',
         'password': 'ilovesmith123!',
     }
+
 
 @pytest.fixture
 def reset():
@@ -30,8 +32,10 @@ def generate_random_jwt():
     token = jwt.encode(payload, 'NOTASECRET', algorithm='HS256')
     return token
 
+
 def test_get_profile(reset, user1):
-    token = auth_register(user1['username'], user1['email'], user1['password'])['token']
+    token = auth_register(
+        user1['username'], user1['email'], user1['password'])['token']
     details = get_profile_details(token)
     assert(details == { 'username': 'John',
                     	'email': 'johnsmith1234@outlook.com',
@@ -47,8 +51,10 @@ def test_get_profile_error(reset, user1):
     with pytest.raises(AccessError):
         get_profile_details(random_token)
 
+
 def test_update_profile(reset, user1):
-    token = auth_register(user1['username'], user1['email'], user1['password'])['token']
+    token = auth_register(
+        user1['username'], user1['email'], user1['password'])['token']
 
     new_usr = 'Steven'
     new_email = 'steven@gmail.com'
@@ -132,37 +138,37 @@ def test_update_profile(reset, user1):
     
     # ignoring these tests for now until preferences is complete
 
-    # # test update preferences 
+    # # test update preferences
     # update_profile_details(token, None, None, None, None, None, None, {   'AI': True,
     #                                                                 'Machine Learning': False,
     #                                                                 'Computer Vision': True,
-    #                                                                 'Computer Science': False 
+    #                                                                 'Computer Science': False
     #                                                             })
     # assert(get_profile_details(token) == {  'username': new_usr,
     #                                         'email': new_email,
     #                                         'preferences': {    'AI': True,
     #                                                             'Machine Learning': False,
     #                                                             'Computer Vision': True,
-    #                                                             'Computer Science': False 
+    #                                                             'Computer Science': False
     #                                                         }})
-    
 
     # # test update all
     # update_profile_details(token, 'John', 'john@gmail.com', None, None, None, None, {   'AI': False,
     #                                                                                 'Machine Learning': True,
     #                                                                                 'Computer Vision': False,
-    #                                                                                 'Computer Science': True 
+    #                                                                                 'Computer Science': True
     #                                                                                 })
     # assert(get_profile_details(token) == {  'username': 'John',
     #                                         'email': 'john@gmail.com',
     #                                         'preferences': {    'AI': False,
     #                                                             'Machine Learning': True,
     #                                                             'Computer Vision': False,
-    #                                                             'Computer Science': True 
+    #                                                             'Computer Science': True
     #                                                         }})
 
 def test_update_profile_error(reset, user1):
-    token = auth_register(user1['username'], user1['email'], user1['password'])['token']
+    token = auth_register(
+        user1['username'], user1['email'], user1['password'])['token']
 
     random_token = generate_random_jwt()
 
@@ -171,15 +177,19 @@ def test_update_profile_error(reset, user1):
         update_profile_details(random_token, 'newusr', 'newemail', None, None, None, None, None)
 
 def test_update_password(reset, user1):
-    token = auth_register(user1['username'], user1['email'], user1['password'])['token']
+    token = auth_register(
+        user1['username'], user1['email'], user1['password'])['token']
     new_password = 'ilovejohn312*'
 
-    update_profile_password(token, user1['password'], new_password, new_password)
+    update_profile_password(
+        token, user1['password'], new_password, new_password)
     tkn2 = auth_login(user1['email'], new_password)['token']
     assert isinstance(tkn2, str)
 
+
 def test_update_password_error(reset, user1):
-    token = auth_register(user1['username'], user1['email'], user1['password'])['token']
+    token = auth_register(
+        user1['username'], user1['email'], user1['password'])['token']
     new_password = 'ilovejohn312*'
     # test old password doesn't match on update password
     with pytest.raises(InputError):
@@ -191,18 +201,21 @@ def test_update_password_error(reset, user1):
 
     # test new passsword and re-entered password don't match on update password
     with pytest.raises(InputError):
-        update_profile_password(token, user1['password'], new_password, 'auiwdawbd123$')
-    
+        update_profile_password(
+            token, user1['password'], new_password, 'auiwdawbd123$')
+
     # test invalid password formats
 
     short_password = 'a1!'
     with pytest.raises(InputError):
-        update_profile_password(token, user1['password'], short_password, short_password)
-    
+        update_profile_password(
+            token, user1['password'], short_password, short_password)
+
     no_special_character = 'abcdef123'
     with pytest.raises(InputError):
-        update_profile_password(token, user1['password'], no_special_character, no_special_character)
-    
+        update_profile_password(
+            token, user1['password'], no_special_character, no_special_character)
+
     no_number = 'abcdef!@#$%'
     with pytest.raises(InputError):
         update_profile_password(token, user1['password'], no_number, no_number)
