@@ -5,13 +5,13 @@ import logo from '../Image/CompanyLogo.png';
 import profile from '../Image/defaultProfile.png';
 
 import {
-    AppBar, 
-    Box, 
-    Toolbar, 
-    IconButton, 
-    Button, 
-    MenuItem, 
-    Menu, 
+    AppBar,
+    Box,
+    Toolbar,
+    IconButton,
+    Button,
+    MenuItem,
+    Menu,
 } from '@mui/material';
 
 function NavBar() {
@@ -45,8 +45,8 @@ function NavBar() {
     };
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static" sx={{ padding: "25px 150px 25px", backgroundColor: 'white' }}>
+        <Box sx={{ flexGrow: 1, height: '10vh' }}>
+            <AppBar position="fixed" sx={{ padding: "25px 150px 25px", backgroundColor: 'white', boxShadow: 'none' }}>
                 <Toolbar>
                     <img
                         src={logo}
