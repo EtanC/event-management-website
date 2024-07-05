@@ -159,13 +159,11 @@ def user_events_route():
 
 @app.post('/user/register/<event_id>')
 @swag_from(user_register_event_spec)
-def user_register_event_route():
+def user_register_event_route(event_id):
     token = request.headers.get('Authorization')
 
-    if token.startswith('Bearer '):
+    if token and token.startswith('Bearer '):
         token = token[len('Bearer '):]
-
-    event_id = request.view_args('event_id')
 
     return json.dumps(user_register_event(token, event_id))
 

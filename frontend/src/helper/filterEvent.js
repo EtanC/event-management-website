@@ -1,4 +1,10 @@
 const filterEvents = (events, eventType, location, date) => {
+    // Ensure events is an array
+    if (!Array.isArray(events)) {
+        console.error('Expected events to be an array, but got:', events);
+        return [];
+    }
+
     let filteredEvents = events;
 
     if (eventType) {
@@ -17,7 +23,7 @@ const filterEvents = (events, eventType, location, date) => {
         filteredEvents = filteredEvents.filter(event =>
             new Date(event.start_date) >= new Date(date)
         );
-        filteredEvents = filteredEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+        filteredEvents = filteredEvents.sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
     }
 
     return filteredEvents;
