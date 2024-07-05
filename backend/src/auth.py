@@ -50,7 +50,6 @@ def auth_register(username, email, password):
     user = db.users.insert_one({
         'username': username,
         'email': email,
-        'preferences': {},
         'profile_pic_id': None,
         'full_name': None,
         'job_title': None,

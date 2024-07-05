@@ -19,9 +19,6 @@ profile_get_spec = {
                     'email': {
                         '$ref': '#/definitions/email'
                     },
-                    'preferences': {
-                        '$ref': '#/definitions/preferences'
-                    }
                 }
             },
         },
@@ -42,20 +39,20 @@ profile_update_details_spec = {
                 'email': {
                     '$ref': '#/definitions/email',
                 },
-                'username': {
-                    '$ref': '#/definitions/username',
+                'full_name': {
+                    '$ref': '#/definitions/full_name',
                 },
-                'old_password': {
-                    '$ref': '#/definitions/password',
+                'description': {
+                    '$ref': '#/definitions/desciption',
                 },
-                'new_password': {
-                    '$ref': '#/definitions/password',
+                'fun_fact': {
+                    '$ref': '#/definitions/fun_fact',
                 },
-                're_password': {
-                    '$ref': '#/definitions/password',
+                'job_title': {
+                    '$ref': '#/definitions/job_title',
                 },
-                'preferences': {
-                    '$ref': '#/definitions/preferences',
+                'profile_pic': {
+                    '$ref': '#/definitions/profile_pic',
                 }
             }
         },
