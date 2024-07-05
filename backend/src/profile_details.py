@@ -21,7 +21,7 @@ def get_profile_details(token):
     user_id = token['user_id']
 
     # check token validity
-    user = db.users.find_one({"_id": ObjectId(user_id)})
+    user = db['users'].find_one({"_id": ObjectId(user_id)})
 
     return {'username': f"{user['username']}",
             'email': f"{user['email']}",
@@ -46,7 +46,7 @@ def update_profile_details(token, username, description, full_name, job_title, f
 
     filter = {'_id': ObjectId(user_id)}
 
-    user = db.users.find_one({"_id": ObjectId(user_id)})
+    user = db['users'].find_one({"_id": ObjectId(user_id)})
     changed_values = {"$set": {}}
 
     if username:
@@ -64,7 +64,7 @@ def update_profile_details(token, username, description, full_name, job_title, f
     # if profile_pic:
     # 	changed_values['$set']['profile_pic'] = profile_pic
 
-    result = db.users.update_one(filter, changed_values)
+    result = db['users'].update_one(filter, changed_values)
     if result.matched_count == 0:
         raise AccessError('User ID not found on database')
 
@@ -81,7 +81,7 @@ def update_profile_password(token, old_password, new_password, re_password):
 
     filter = {'_id': ObjectId(user_id)}
 
-    user = db.users.find_one({"_id": ObjectId(user_id)})
+    user = db['users'].find_one({"_id": ObjectId(user_id)})
     changed_values = {"$set": {}}
 
     if old_password is not None:
@@ -108,6 +108,6 @@ def update_profile_password(token, old_password, new_password, re_password):
 
     if old_password and hashed_old_password == user['password'] and new_password == re_password:
         changed_values['$set']['password'] = hash(new_password)
-    result = db.users.update_one(filter, changed_values)
+    result = db['users'].update_one(filter, changed_values)
     if result.matched_count == 0:
         raise AccessError('User ID not found on database')

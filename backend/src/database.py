@@ -5,18 +5,25 @@ from backend.src.config import config
 
 # to run: python3 -m backend.src.database
 
-client = MongoClient('mongodb+srv://comp3900:wowilovecompsci123@comp3900-database.dkmw7l9.mongodb.net/?retryWrites=true&w=majority&appName=COMP3900-Database')
-db = client[config['DATABASE_NAME']]
+class Database:
+    def __init__(self, test):
+        self.client = MongoClient('mongodb+srv://comp3900:wowilovecompsci123@comp3900-database.dkmw7l9.mongodb.net/?retryWrites=true&w=majority&appName=COMP3900-Database')
+        if test == True:
+            self.db = self.client[config['TESTDB_NAME']]
+        else:
+            self.db = self.client[config['DATABASE_NAME']]
 
-def add_user(username, password):
-    db.users.insert_one({ 'username': username, 'password': password })
+    def __getitem__(self, key):
+        return self.db[key]
+    
+    def set_test_db(self):
+        self.db = self.client[config['TESTDB_NAME']]
+    
+    def set_real_db(self):
+        self.db = self.client[config['DATABASE_NAME']]
 
-# client = MongoClient("mongodb+srv://Braian:LCFJJxvpu80LxtU3@comp3900-database.dkmw7l9.mongodb.net/?retryWrites=true&w=majority&appName=COMP3900-Database")
-# db = client.test_database
+global db
+db = Database(False)
 
 def clear(collection):
     db[collection].delete_many({})
-
-
-if __name__ == '__main__':
-    add_user('testusr', 'testpwd')
