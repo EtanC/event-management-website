@@ -12,11 +12,11 @@ const inputStyles = {
     '& .MuiInputAdornment-root .MuiSvgIcon-root': { color: 'white' }
 };
 
-const SearchBar = ({ eventType, setEventType, location, setLocation, locations, date, setDate }) => (
+const SearchBar = ({ labelOne, labelTwo, eventType, setEventType, location, setLocation, locations, date, setDate }) => (
     <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '40px', backgroundColor: '#1E4830', padding: '20px', borderRadius: '15px' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', maxWidth: '800px', gap: '10px' }}>
             <TextField
-                label="Looking For"
+                label={labelOne}
                 value={eventType}
                 onChange={(e) => setEventType(e.target.value)}
                 fullWidth
@@ -32,7 +32,7 @@ const SearchBar = ({ eventType, setEventType, location, setLocation, locations, 
                 renderInput={(params) => (
                     <TextField
                         {...params}
-                        label="Location"
+                        label={labelTwo}
                         variant="outlined"
                         fullWidth
                     />

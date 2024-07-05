@@ -5,13 +5,13 @@ import logo from '../Image/CompanyLogo.png';
 import profile from '../Image/defaultProfile.png';
 
 import {
-    AppBar, 
-    Box, 
-    Toolbar, 
-    IconButton, 
-    Button, 
-    MenuItem, 
-    Menu, 
+    AppBar,
+    Box,
+    Toolbar,
+    IconButton,
+    Button,
+    MenuItem,
+    Menu,
 } from '@mui/material';
 
 function NavBar() {
@@ -43,6 +43,10 @@ function NavBar() {
     const handleProfile = () => {
         navigate('/profile');
     };
+
+    const handleAdmin = () => {
+        navigate('/admin');
+    }
 
     return (
         <Box sx={{ flexGrow: 1 }}>
@@ -90,6 +94,7 @@ function NavBar() {
                                 <MenuItem onClick={handleProfile}>Profile</MenuItem>
                                 <MenuItem onClick={handleClose}>My Events</MenuItem>
                                 <MenuItem onClick={() => handleLogout(navigate, setAuth)}>Log Out</MenuItem>
+                                <MenuItem onClick={handleAdmin}>Admin</MenuItem>
                             </Menu>
                         </div>
                     ) : (

@@ -33,6 +33,8 @@ function MainEventCard() {
     return (
         <Box sx={{ backgroundColor: '#f5f5f5', padding: '20px 0' }}>
             <SearchBar
+                labelOne='Looking For'
+                labelTwo='Location'
                 eventType={eventType}
                 setEventType={setEventType}
                 location={location}
