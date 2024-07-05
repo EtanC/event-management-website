@@ -5,13 +5,13 @@ import logo from '../Image/CompanyLogo.png';
 import profile from '../Image/defaultProfile.png';
 
 import {
-    AppBar, 
-    Box, 
-    Toolbar, 
-    IconButton, 
-    Button, 
-    MenuItem, 
-    Menu, 
+    AppBar,
+    Box,
+    Toolbar,
+    IconButton,
+    Button,
+    MenuItem,
+    Menu,
 } from '@mui/material';
 
 function NavBar() {
