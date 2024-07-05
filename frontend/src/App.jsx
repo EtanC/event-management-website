@@ -8,6 +8,7 @@ import EventDetailPage from "./pages/EventDetailPage";
 import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage"
+import UserCalendar from "./pages/UserCalendar";
 
 const App = () => {
 
@@ -24,6 +25,7 @@ const App = () => {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/event/:id" element={<EventDetailPage />} />
+        <Route path="/MyCalendar" element={<UserCalendar />} />
       </Routes>
     </Router>
   );
