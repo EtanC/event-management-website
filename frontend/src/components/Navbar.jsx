@@ -92,7 +92,7 @@ function NavBar() {
                                 sx={{ mt: 1.5 }}
                             >
                                 <MenuItem onClick={handleProfile}>Profile</MenuItem>
-                                <MenuItem onClick={handleCalendar}>My Events</MenuItem>
+                                <MenuItem onClick={handleCalendar}>Calendar</MenuItem>
                                 <MenuItem onClick={() => handleLogout(navigate, setAuth)}>Log Out</MenuItem>
                             </Menu>
                         </div>
