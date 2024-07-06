@@ -80,14 +80,13 @@ def event_create_route():
 
 @app.put('/event/update/<event_id>')
 @swag_from(event_update_spec)
-def event_update_route():
-    event_id = request.view_args('event_id')
+def event_update_route(event_id):
     body = request.get_json()
     event = {
         'deadline': body['deadline'],
         'details': body['details'],
         'details_link': body['details_link'],
-        'event_name': body['event_name'],
+        'name': body['name'],
         'location': body['location'],
         'start_date': body['start_date']
     }
@@ -96,8 +95,7 @@ def event_update_route():
 
 @app.delete('/event/delete/<event_id>')
 @swag_from(event_delete_spec)
-def event_delete_route():
-    event_id = request.view_args('event_id')
+def event_delete_route(event_id):
     return json.dumps(event_delete(event_id))
 
 

@@ -56,6 +56,7 @@ def event_create(event):
     }
 
 def get_event(event_id):
+    print(event_id)
     return db.events.find_one({ '_id': ObjectId(event_id) })
 
 def event_update(event_id, new_event):

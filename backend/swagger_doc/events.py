@@ -94,7 +94,7 @@ event_update_spec = {
     'tags': ['Events'],
     'parameters': [
         {
-            'name': 'Event Id',
+            'name': 'event_id',
             'in': 'path',
             'type': 'string',
             'required': 'true'
@@ -141,7 +141,7 @@ event_delete_spec = {
     'tags': ['Events'],
     'parameters': [
         {
-            'name': 'Event Id',
+            'name': 'event_id',
             'in': 'path',
             'type': 'string',
             'required': 'true'
