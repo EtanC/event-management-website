@@ -1,5 +1,5 @@
 import pytest
-from backend.src.profile_details import get_profile_details, update_profile_details, update_profile_password
+from backend.src.profile_details import get_profile_details, update_profile_details, update_profile_password, update_preferences, get_user_preferences
 from backend.src.auth import auth_register, auth_login
 from backend.src.error import InputError, AccessError
 from backend.src.database import clear
@@ -133,24 +133,7 @@ def test_update_profile(reset, user1):
         img_data = img.read()
 
     assert decoded_image == img_data
-    
-    
-    
-    # ignoring these tests for now until preferences is complete
 
-    # # test update preferences
-    # update_profile_details(token, None, None, None, None, None, None, {   'AI': True,
-    #                                                                 'Machine Learning': False,
-    #                                                                 'Computer Vision': True,
-    #                                                                 'Computer Science': False
-    #                                                             })
-    # assert(get_profile_details(token) == {  'username': new_usr,
-    #                                         'email': new_email,
-    #                                         'preferences': {    'AI': True,
-    #                                                             'Machine Learning': False,
-    #                                                             'Computer Vision': True,
-    #                                                             'Computer Science': False
-    #                                                         }})
 
     # # test update all
     # update_profile_details(token, 'John', 'john@gmail.com', None, None, None, None, {   'AI': False,
@@ -220,3 +203,11 @@ def test_update_password_error(reset, user1):
     with pytest.raises(InputError):
         update_profile_password(token, user1['password'], no_number, no_number)
     
+def test_update_preferences(reset, user1):
+    token = auth_register(user1['username'], user1['email'], user1['password'])['token']
+
+    preferences = ['AI', 'Computer Vision', 'Deep Learning', 'Block Chain']
+
+    update_preferences(token, preferences)
+
+    assert(get_user_preferences(token) == { 'preferences': preferences })

@@ -2,7 +2,7 @@ from flask import Flask, request
 from flasgger import Swagger, swag_from
 from backend.swagger_doc.auth import auth_login_spec, auth_register_spec, auth_logout_spec
 from backend.swagger_doc.events import events_crawl_spec, events_clear_spec, events_get_all_spec, event_create_spec, event_update_spec, event_delete_spec, events_ai_description_spec
-from backend.swagger_doc.profile import profile_get_spec, profile_update_details_spec, profile_update_password_spec
+from backend.swagger_doc.profile import profile_get_spec, profile_update_details_spec, profile_update_password_spec, profile_update_preferences_spec
 from backend.swagger_doc.user import user_events_spec, user_register_event_spec
 from backend.swagger_doc.definitions import definitions
 from backend.src.error import AccessError, InputError
@@ -10,7 +10,7 @@ import json
 from werkzeug.exceptions import HTTPException
 from backend.src.auth import auth_login, auth_register, auth_logout
 from backend.src.events import events_crawl, events_clear, events_get_all, event_create, event_update, event_delete, events_ai_description
-from backend.src.profile_details import get_profile_details, update_profile_details, update_profile_password
+from backend.src.profile_details import get_profile_details, update_profile_details, update_profile_password, update_preferences
 from backend.src.user import user_register_event, user_events
 from flask_cors import CORS
 from backend.src.config import config
@@ -136,6 +136,17 @@ def profile_update_details_route():
             profile_pic = file.read()  # Read the file content
 
     return json.dumps(update_profile_details(token, username, description, full_name, job_title, fun_fact, profile_pic))
+
+@app.post('/profile/update/preferences')
+@swag_from(profile_update_preferences_spec)
+def profile_update_preferences_route():
+    token = request.headers.get('Authorization')
+
+    if token.startswith('Bearer '):
+        token = token[len('Bearer '):]
+
+    body = request.get_json()
+    return json.dumps(update_preferences(token, body['new_preferences']))
 
 
 @app.post('/profile/update/password')

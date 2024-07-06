@@ -133,3 +133,31 @@ profile_update_password_spec = {
         }
     }
 }
+
+profile_update_preferences_spec = {
+    'parameters': [
+        {
+            '$ref': '#/definitions/parameters/update_preferences'
+        },
+    ],
+    'definitions': definitions_profile,
+    'responses': {
+        200: {
+            'description': 'Successful Preferences Change',
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'new_preferences': {
+                        '$ref': '#/definitions/data/new_preferences',
+                    }
+                }
+            },
+        },
+        403: {
+            'description': 'Invalid Token'
+        },
+        400: {
+            'description': "Invalid preferences input"
+        }
+    }
+}

@@ -60,6 +60,8 @@ def update_profile_details(token, username, description, full_name, job_title, f
     filter = {'_id': ObjectId(user_id)}
 
     user = db.users.find_one({"_id": ObjectId(user_id)})
+    if not user:
+        raise AccessError('User not found')
     changed_values = {"$set": {}}
 
     if username:
@@ -96,6 +98,8 @@ def update_profile_password(token, old_password, new_password, re_password):
     filter = {'_id': ObjectId(user_id)}
 
     user = db.users.find_one({"_id": ObjectId(user_id)})
+    if not user:
+        raise AccessError('User not found')
     changed_values = {"$set": {}}
 
     if old_password is not None:
@@ -125,3 +129,43 @@ def update_profile_password(token, old_password, new_password, re_password):
     result = db.users.update_one(filter, changed_values)
     if result.matched_count == 0:
         raise AccessError('User ID not found on database')
+
+def update_preferences(token, new_preferences):
+	try:
+		token = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
+	except jwt.ExpiredSignatureError:
+		raise AccessError('Token has expired')
+	except jwt.InvalidTokenError:
+		raise AccessError('Invalid token')
+
+	user_id = token['user_id']
+
+	filter = {'_id': ObjectId(user_id)}
+
+	changed_values = {"$set": 	{
+									'preferences': new_preferences
+								}}
+
+	result = db.users.update_one(filter, changed_values)
+	if result.matched_count == 0:
+		raise AccessError('User ID not found on database')
+
+def get_user_preferences(token):
+    #  split from profile details for now, will see if it needs to be integrated together later
+	try:
+		token = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
+	except jwt.ExpiredSignatureError:
+		raise AccessError('Token has expired')
+	except jwt.InvalidTokenError:
+		raise AccessError('Invalid token')
+
+	user_id = token['user_id']
+
+	# Check token validity
+	user = db.users.find_one({"_id": ObjectId(user_id)})
+	if not user:
+		raise AccessError('User not found')
+
+	return {
+		'preferences': user.get('preferences', [])
+	}
