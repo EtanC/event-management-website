@@ -123,8 +123,19 @@ def profile_update_details_route():
     if token.startswith('Bearer '):
         token = token[len('Bearer '):]
 
-    body = request.get_json()
-    return json.dumps(update_profile_details(token, body['username'], body['description'], body['full_name'], body['job_title'], body['fun_fact'], body['preferences']))
+    username = request.form.get('username')
+    description = request.form.get('description')
+    full_name = request.form.get('full_name')
+    job_title = request.form.get('job_title')
+    fun_fact = request.form.get('fun_fact')
+
+    profile_pic = None
+    if 'profile_pic' in request.files:
+        file = request.files['profile_pic']
+        if file and file.filename:
+            profile_pic = file.read()  # Read the file content
+
+    return json.dumps(update_profile_details(token, username, description, full_name, job_title, fun_fact, profile_pic))
 
 
 @app.post('/profile/update/password')
@@ -156,6 +167,8 @@ def user_register_event_route(event_id):
 
     if token and token.startswith('Bearer '):
         token = token[len('Bearer '):]
+
+    event_id = request.view_args('event_id')
 
     return json.dumps(user_register_event(token, event_id))
 
