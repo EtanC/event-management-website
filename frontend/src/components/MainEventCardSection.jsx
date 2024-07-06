@@ -27,7 +27,7 @@ function MainEventCard() {
     }, [eventType, location, date, events]);
 
     const handleCardClick = (event) => {
-        navigate(`/event/${event.name}`, { state: { event } });
+        navigate(`/event/${event._id}`, { state: { event } });
     };
 
     return (
