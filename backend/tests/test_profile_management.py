@@ -40,10 +40,10 @@ def test_get_profile(reset, user1):
     assert(details == { 'username': 'John',
                     	'email': 'johnsmith1234@outlook.com',
                         'profile_pic': None,
-                        'description': 'None',
-                        'full_name': 'None',
-                        'fun_fact': 'None',
-                        'job_title': 'None'})
+                        'description': None,
+                        'full_name': None,
+                        'fun_fact': None,
+                        'job_title': None})
 
 def test_get_profile_error(reset, user1):
     random_token = generate_random_jwt()
@@ -67,47 +67,47 @@ def test_update_profile(reset, user1):
     new_fun_fact = 'imthegoat'
 
     # test update username
-    update_profile_details(token, new_usr, None, None, None, None, None, None)
+    update_profile_details(token, new_usr, None, None, None, None, None)
     assert(get_profile_details(token) == {  'username': new_usr,
                                             'email': 'johnsmith1234@outlook.com',
-                                            'description': 'None',
-                                            'full_name': 'None',
-                                            'fun_fact': 'None',
-                                            'job_title': 'None',
+                                            'description': None,
+                                            'full_name': None,
+                                            'fun_fact': None,
+                                            'job_title': None,
                                             'profile_pic': None })
 
     # test update description
-    update_profile_details(token, None, new_description, None, None, None, None, None)
+    update_profile_details(token, None, new_description, None, None, None, None)
     assert(get_profile_details(token) == {  'username': new_usr,
                                             'email': user1['email'],
                                             'description': new_description,
-                                            'full_name': 'None',
-                                            'fun_fact': 'None',
-                                            'job_title': 'None',
+                                            'full_name': None,
+                                            'fun_fact': None,
+                                            'job_title': None,
                                             'profile_pic': None })
     
     # test update full name
-    update_profile_details(token, None, None, new_full_name, None, None, None, None)
+    update_profile_details(token, None, None, new_full_name, None, None, None)
     assert(get_profile_details(token) == {  'username': new_usr,
                                             'email': user1['email'],
                                             'description': new_description,
                                             'full_name': new_full_name,
-                                            'fun_fact': 'None',
-                                            'job_title': 'None',
+                                            'fun_fact': None,
+                                            'job_title': None,
                                             'profile_pic': None })
     
     # test update job title
-    update_profile_details(token, None, None, None, new_job_title, None, None, None)
+    update_profile_details(token, None, None, None, new_job_title, None, None)
     assert(get_profile_details(token) == {  'username': new_usr,
                                             'email': user1['email'],
                                             'description': new_description,
                                             'full_name': new_full_name,
-                                            'fun_fact': 'None',
+                                            'fun_fact': None,
                                             'job_title': new_job_title,
                                             'profile_pic': None })
     
      # test update fun fact
-    update_profile_details(token, None, None, None, None, new_fun_fact, None, None)
+    update_profile_details(token, None, None, None, None, new_fun_fact, None)
     assert(get_profile_details(token) == {  'username': new_usr,
                                             'email': user1['email'],
                                             'description': new_description,
@@ -119,7 +119,7 @@ def test_update_profile(reset, user1):
     
     # test update profile pic
     with open('backend/src/profile_imgs/test_img.jpeg', 'rb') as img:
-        update_profile_details(token, None, None, None, None, None, img, None)
+        update_profile_details(token, None, None, None, None, None, img)
 
     profile_details = get_profile_details(token)
     encoded_image = profile_details.get('profile_pic')
@@ -174,7 +174,7 @@ def test_update_profile_error(reset, user1):
 
     # test invalid token
     with pytest.raises(AccessError):
-        update_profile_details(random_token, 'newusr', 'newemail', None, None, None, None, None)
+        update_profile_details(random_token, 'newusr', 'newemail', None, None, None, None)
 
 def test_update_password(reset, user1):
     token = auth_register(
