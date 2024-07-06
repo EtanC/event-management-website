@@ -131,6 +131,8 @@ def update_profile_password(token, old_password, new_password, re_password):
         raise AccessError('User ID not found on database')
 
 def update_preferences(token, new_preferences):
+    # preferences set as a list of topics the user may be interested in
+    # perhaps a later improvement could be adding some form of rankings amongst preferences for order in which events show up
 	try:
 		token = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
 	except jwt.ExpiredSignatureError:
