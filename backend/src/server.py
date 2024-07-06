@@ -74,13 +74,19 @@ def events_clear_route():
 @app.post('/event/create')
 @swag_from(event_create_spec)
 def event_create_route():
+    token = request.headers.get('Authorization')
+    if token.startswith('Bearer '):
+        token = token[len('Bearer '):]
     body = request.get_json()
-    return json.dumps(event_create(body['event']))
+    return json.dumps(event_create(token, body['event']))
 
 
 @app.put('/event/update/<event_id>')
 @swag_from(event_update_spec)
 def event_update_route(event_id):
+    token = request.headers.get('Authorization')
+    if token.startswith('Bearer '):
+        token = token[len('Bearer '):]
     body = request.get_json()
     event = {
         'deadline': body['deadline'],
@@ -90,13 +96,16 @@ def event_update_route(event_id):
         'location': body['location'],
         'start_date': body['start_date']
     }
-    return json.dumps(event_update(event_id, event))
+    return json.dumps(event_update(token, event_id, event))
 
 
 @app.delete('/event/delete/<event_id>')
 @swag_from(event_delete_spec)
 def event_delete_route(event_id):
-    return json.dumps(event_delete(event_id))
+    token = request.headers.get('Authorization')
+    if token.startswith('Bearer '):
+        token = token[len('Bearer '):]
+    return json.dumps(event_delete(token, event_id))
 
 
 @app.get('/profile/get')

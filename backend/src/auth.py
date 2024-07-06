@@ -6,6 +6,16 @@ from backend.src.config import config
 import jwt
 from bson.objectid import ObjectId
 
+def decode_token(token):
+    try:
+        data = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
+    except (jwt.InvalidSignatureError, jwt.DecodeError) as e:
+        raise AccessError('Invalid token')
+    if db.active_sessions.find_one({ '_id': ObjectId(data['session_id'])}) is None:
+        raise AccessError('Expired token')
+    if db.users.find_one({ '_id': ObjectId(data['user_id'])}) is None:
+        raise AccessError('Invalid user')
+    return data['user_id']
 
 def encode_jwt(data):
     return jwt.encode(data, config['SECRET'], algorithm='HS256')
