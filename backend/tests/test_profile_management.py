@@ -118,7 +118,7 @@ def test_update_profile(reset, user1):
     
     
     # test update profile pic
-    with open('backend/src/profile_imgs/test_img.jpg', 'rb') as img:
+    with open('backend/src/profile_imgs/test_img.jpeg', 'rb') as img:
         update_profile_details(token, None, None, None, None, None, img, None)
 
     profile_details = get_profile_details(token)
@@ -126,10 +126,10 @@ def test_update_profile(reset, user1):
     decoded_image = base64.b64decode(encoded_image)
 
     # image will be shown on the folder for visual testing
-    with open('backend/src/profile_imgs/retrieved_img.jpg', 'wb') as img:
+    with open('backend/src/profile_imgs/retrieved_img.jpeg', 'wb') as img:
         img.write(decoded_image)
 
-    with open('backend/src/profile_imgs/test_img.jpg', 'rb') as img:
+    with open('backend/src/profile_imgs/test_img.jpeg', 'rb') as img:
         img_data = img.read()
 
     assert decoded_image == img_data
