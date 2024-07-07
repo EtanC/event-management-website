@@ -48,6 +48,10 @@ function NavBar() {
         navigate('/profile');
     };
 
+    const handleAdmin = () => {
+        navigate('/admin');
+    }
+
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static" sx={{ padding: "25px 10px 25px", backgroundColor: 'white', borderBottom: '1px solid #e0e0e0' }}>
@@ -93,6 +97,7 @@ function NavBar() {
                             >
                                 <MenuItem onClick={handleProfile}>Profile</MenuItem>
                                 <MenuItem onClick={handleCalendar}>Calendar</MenuItem>
+                                <MenuItem onClick={handleAdmin}>Admin</MenuItem>
                                 <MenuItem onClick={() => handleLogout(navigate, setAuth)}>Log Out</MenuItem>
                             </Menu>
                         </div>
