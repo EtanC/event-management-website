@@ -35,7 +35,6 @@ import '../styles/EventDetailPage.css';
 function EventDetailPage() {
     const location = useLocation();
     const { event } = location.state;
-    console.log(event)
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
