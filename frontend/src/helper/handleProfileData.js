@@ -16,25 +16,29 @@ export const fetchProfileData = async (setProfile) => {
 }
 
 export const updateProfileDetails = async (updatedProfileData) => {
-    const { username, description, job_title, fun_fact, full_name, email } = updatedProfileData;
+    const { username, description, job_title, fun_fact, full_name, email, profile_pic } = updatedProfileData;
     try {
         const token = localStorage.getItem('token');
-        const response = await axios.post('http://127.0.0.1:5000/profile/update/details', {
-            email: email,
-            username: username,
-            description: description,
-            full_name: full_name,
-            job_title: job_title,
-            fun_fact: fun_fact,
-            preferences: {},
-        }, {
+        const formData = new FormData();
+        formData.append('email', email);
+        formData.append('username', username);
+        formData.append('description', description);
+        formData.append('full_name', full_name);
+        formData.append('job_title', job_title);
+        formData.append('fun_fact', fun_fact);
+        if (profile_pic) {
+            formData.append('profile_pic', profile_pic);
+        }
+
+        const response = await axios.post('http://127.0.0.1:5000/profile/update/details', formData, {
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data'
             }
-        })
-        return response.status
+        });
+        return response.status;
     } catch (error) {
-        console.log('Failed to update profile:', error.response ? error.response.data.description : error.message)
+        console.log('Failed to update profile:', error.response ? error.response.data.description : error.message);
     }
 }
 
