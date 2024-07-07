@@ -44,6 +44,11 @@ events_get_all_spec = {
 
 event_create_spec = {
     'tags': ['Events'],
+    'security': [
+        {
+            "bearerAuth": []
+        }
+    ],
     'parameters': [
         {
             'name': 'Body',
@@ -92,6 +97,11 @@ event_create_spec = {
 
 event_update_spec = {
     'tags': ['Events'],
+    'security': [
+        {
+            "bearerAuth": []
+        }
+    ],
     'parameters': [
         {
             'name': 'event_id',
@@ -139,6 +149,11 @@ event_update_spec = {
 
 event_delete_spec = {
     'tags': ['Events'],
+    'security': [
+        {
+            "bearerAuth": []
+        }
+    ],
     'parameters': [
         {
             'name': 'event_id',
@@ -153,6 +168,39 @@ event_delete_spec = {
         },
         400: {
             'description': 'No event matches event_id'
+        }
+    }
+}
+
+event_authorize_spec = {
+    'tags': ['Events'],
+    'security': [
+        {
+            "bearerAuth": []
+        }
+    ],
+    'parameters': [
+        {
+            'name': 'Body',
+            'in': 'body',
+            'type': 'object',
+            'required': 'true',
+            'properties': {
+                'event_id': {
+                    '$ref': '#/definitions/event_id',
+                },
+                'user_id': {
+                    '$ref': '#/definitions/user_id',
+                }
+            }
+        }
+    ],
+    'responses': {
+        200: {
+            'description': 'Sucessfully authorized user to manage this event'
+        },
+        403: {
+            'description': 'Invalid token or user is not creator'
         }
     }
 }

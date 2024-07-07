@@ -51,20 +51,29 @@ def event_create(token, event):
         raise InputError('Event already exists')
     if not event_is_valid(event):
         raise InputError('Invalid event')
+    user = db['users'].find({ '_id': user_id })
     event['ranking'] = 0
-    event['authorized_users'] = [user_id]
+    event['authorized_users'] = []
     event['creator'] = user_id
     result = db.events.insert_one(event)
+    db['users'].update_one(
+        { '_id': ObjectId(user_id) },
+        { '$addToSet': {
+            'owned_events': str(result.inserted_id)
+        }}
+    )
     return {
         'event_id': str(result.inserted_id)
     }
 
 def get_event(event_id):
-    print(event_id)
     return db.events.find_one({ '_id': ObjectId(event_id) })
 
 def user_is_authorized(user_id, event_id):
-    return user_id in db['events'].find({ '_id': ObjectId(event_id) })['authorized_users']
+    event = get_event(event_id)
+    if user_id in event['authorized_users'] or user_id == event['creator']:
+        return True
+    return False
 
 def event_update(token, event_id, new_event):
     user_id = decode_token(token)
@@ -89,7 +98,7 @@ def event_update(token, event_id, new_event):
     return {}
 
 def user_is_creator(user_id, event_id):
-    return user_id == db['events'].find({ '_id': ObjectId(event_id) })['creator']
+    return user_id == db['events'].find_one({ '_id': ObjectId(event_id) })['creator']
 
 def event_delete(token, event_id):
     user_id = decode_token(token)
@@ -103,6 +112,20 @@ def event_delete(token, event_id):
 
 def event_authorize(token, event_id, to_be_added_id):
     user_id = decode_token(token)
-    if not user_is_creator(user_id, event_id):
+    if not user_is_creator(user_id, ObjectId(event_id)):
         raise AccessError('User is not authorized to allow other people to manage event')
+    # Add user to authorized list
+    db['events'].update_one(
+        { '_id': ObjectId(event_id) },
+        { '$addToSet': {
+            'authorized_users': to_be_added_id,
+        }}
+    )
+    # add event to users list of managed events
+    db['users'].update_one(
+        { '_id': ObjectId(to_be_added_id) },
+        { '$addToSet': {
+            'managed_events': ObjectId(event_id)
+        }}
+    )
     return {}

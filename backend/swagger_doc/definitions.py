@@ -12,6 +12,9 @@ definitions = {
         'token': {
             'type': 'string'
         },
+        'user_id': {
+            'type': 'string'
+        },
         'event': {
             'type': 'object',
             'properties': {

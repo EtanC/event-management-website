@@ -18,12 +18,8 @@ def sample_event():
 
 @pytest.fixture
 def sample_user():
-    user = {
-        'email': 'johnsmith123@outlook.com',
-        'password': 'testing',
-        'username': 'johncena'
-    }
-    return user
+    token = auth_register('johncena', 'johnsmith123@outlook.com', 'testing')['token']
+    return token
 
 @pytest.fixture
 def reset():
@@ -32,12 +28,11 @@ def reset():
 
 def test_user(reset, sample_event, sample_user):
     # create event
-    event_id = event_create(sample_event)['event_id']
+    event_id = event_create(sample_user, sample_event)['event_id']
     expected_event = {
         **sample_event,
         '_id': event_id
     }
     assert events_get_all()['events'] == [expected_event]
-    token = auth_register(**sample_user)['token']
-    user_register_event(token, event_id)
-    assert user_events(token)['events'] == [expected_event]
+    user_register_event(sample_user, event_id)
+    assert user_events(sample_user)['events'] == [expected_event]

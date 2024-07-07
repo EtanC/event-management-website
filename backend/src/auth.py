@@ -66,7 +66,9 @@ def auth_register(username, email, password):
         'description': None,
         'profile_pic': None,
         'password': hash(password),
-        'registered_events': []
+        'registered_events': [],
+        'managed_events': [],
+        'owned_events': []
     })
     session_id, session_end_time = add_login_session(user.inserted_id)
     token = encode_jwt({
