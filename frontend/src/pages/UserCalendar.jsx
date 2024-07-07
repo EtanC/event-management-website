@@ -12,6 +12,8 @@ import bin from '../Image/bin.png';
 import edit from '../Image/edit.png';
 import cross from '../Image/close.png';
 import HtmlTagRender from '../components/HtmlTagRender';
+import theme from '../styles/Theme';
+import { ThemeProvider } from '@mui/material/styles';
 
 const localizer = momentLocalizer(moment);
 
@@ -119,6 +121,7 @@ const UserCalendar = () => {
     
     return (
         <>
+            <ThemeProvider theme={theme}></ThemeProvider>
             <Navbar />
             <Box sx={{ display: 'flex', backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
                 <CalendarSidebar 
@@ -126,8 +129,8 @@ const UserCalendar = () => {
                     onSearchResultClick={handleSearchResultClick} 
                     onRankingChange={handleRankingChange} 
                 />
-                <Container maxWidth="lg" sx={{ flexGrow: 1, padding: 0 }}>
-                    <Box sx={{ marginTop: '20px', height: '100%', padding: '20px', backgroundColor: 'white', borderRadius: '8px' }}>
+                <Container>
+                    <Box sx={{ width: '100%', height: '100%', padding: '20px', backgroundColor: 'white' }}>
                         {isLoading ? (
                             <Box display="flex" justifyContent="center" alignItems="center" height="100%">
                                 <CircularProgress />

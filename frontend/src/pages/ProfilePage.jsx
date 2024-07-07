@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from "../components/Navbar";
 import { Container, Box, Typography, Switch, Button, Card, CardContent, Grid, TextField, Tooltip, IconButton, Alert } from '@mui/material';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import profilePic from '../Image/defaultProfile.png';
 import { fetchProfileData, updateProfileDetails, updateProfilePassword } from '../helper/handleProfileData';
+import theme from '../styles/Theme';
+import { ThemeProvider } from '@mui/material/styles';
 
 function ProfilePage() {
     const [isEditing, setIsEditing] = useState(false);
@@ -113,6 +115,7 @@ function ProfilePage() {
 
     return (
         <>
+            <ThemeProvider theme={theme}></ThemeProvider>
             <Navbar />
             <Box sx={{ backgroundColor: '#f5f5f5', padding: '50px 0', minHeight: '90vh' }}>
                 <Container maxWidth="md" sx={{ mt: 2 }} >
