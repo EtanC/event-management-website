@@ -35,7 +35,7 @@ function EventDetailPage() {
         // Simulate loading delay
         const timer = setTimeout(() => {
             setIsLoading(false);
-        }, 2000);
+        }, 1000);
 
         return () => clearTimeout(timer);
     }, []);
@@ -72,7 +72,7 @@ function EventDetailPage() {
                         {event.name}
                     </Typography>
                     </Box>
-                    <EventDetail date={event.start_date} />
+                    <EventDetail event={event} />
                 </Box>
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={8}>

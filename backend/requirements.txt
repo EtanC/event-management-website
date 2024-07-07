@@ -46,6 +46,7 @@ pymongo==4.7.3
 pyOpenSSL==24.1.0
 pytest==8.2.2
 python-dateutil==2.9.0.post0
+python-dotenv==0.21.0
 pytz==2024.1
 PyYAML==6.0.1
 queuelib==1.7.0

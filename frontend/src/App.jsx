@@ -11,6 +11,8 @@ import LoginPage from "./pages/LoginPage"
 import AdminPage from "./pages/AdminPage"
 import AdminUsersPage from "./pages/AdminUsersPage"
 import AdminEventsPage from "./pages/AdminEventsPage"
+import UserCalendar from "./pages/UserCalendar";
+
 
 const App = () => {
 
@@ -30,6 +32,7 @@ const App = () => {
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/admin/users" element={<AdminUsersPage />} />
         <Route path="/admin/events" element={<AdminEventsPage />} />
+        <Route path="/MyCalendar" element={<UserCalendar />} />
       </Routes>
     </Router>
   );
