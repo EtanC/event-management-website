@@ -1,9 +1,11 @@
 import { useLocation } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import HtmlTagRender from '../components/HtmlTagRender';
 import EventDetail from '../components/EventDetail';
 import defaultImage from '../Image/eventInfo-background.jpeg';
+import theme from '../styles/Theme';
+import { ThemeProvider } from '@mui/material/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import {
@@ -47,6 +49,7 @@ function EventDetailPage() {
 
     return (
         <>
+            <ThemeProvider theme={theme}></ThemeProvider>
             <Navbar />
             <Box sx={{ backgroundColor: '#f5f5f5', padding: '20px 0' }}>
                 <Container maxWidth="lg">
