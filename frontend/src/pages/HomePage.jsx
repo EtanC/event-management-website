@@ -35,7 +35,7 @@ function HomePage() {
                     </Box>
 
                     <EventLoading />
-                    
+
                 </Container>
             </Box>
         </>

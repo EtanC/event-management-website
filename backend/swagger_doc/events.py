@@ -156,3 +156,16 @@ event_delete_spec = {
         }
     }
 }
+
+events_ai_description_spec = {
+    'tags': ['Events'],
+    'parameters': [],
+    'responses': {
+        200: {
+            'description': 'Successfully added ai descriptions',
+        },
+        500: {
+            'description': 'Error',
+        }
+    }
+}
