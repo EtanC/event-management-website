@@ -7,6 +7,21 @@ const theme = createTheme({
         main: '#1E4830'
         },
     },
+    typography: {
+        fontFamily: 'Inter, sans-serif',
+        allVariants: {
+            color: '#1E4830',
+        },
+    },
+    components: {
+        MuiAccordionSummary: {
+            styleOverrides: {
+                expandIcon: {
+                    color: '#1E4830',
+                },
+            },
+        },
+    },
 });
 
 export default theme;
