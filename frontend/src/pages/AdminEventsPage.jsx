@@ -5,6 +5,8 @@ import Navbar from '../components/Navbar';
 import SearchBar from '../components/SearchBar';
 import AdminTable from '../components/AdminTable';
 
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+
 const AdminEventsPage = () => {
     const [eventName, setEventName] = useState('');
     const [location, setLocation] = useState('');
@@ -54,8 +56,9 @@ const AdminEventsPage = () => {
                             <MuiLink component={Link} to="/admin" sx={{ textDecoration: 'none', color: 'gray' }}>
                                 Admin
                             </MuiLink>
-                            {' > Events'}
                         </Typography>
+                        <ArrowForwardIosIcon sx={{ marginTop: '10px', marginLeft: '15px', marginRight: '15px' }} />
+                        <Typography variant="h4"> Events</Typography>
                     </Box>
                     <SearchBar
                         labelOne='Event Name'
@@ -91,7 +94,6 @@ const AdminEventsPage = () => {
 const styles = {
     flexBox: {
         display: 'flex',
-        justifyContent: 'space-between',
         marginBottom: 5
     }
 };

@@ -1,16 +1,17 @@
 from backend.src.error import AccessError, InputError
-from backend.src.database import db
+from backend.src.database import db, fs
 from backend.src.config import config
 from backend.src.auth import hash
 from bson import ObjectId
 import jwt
+import hashlib
+import base64
 import string
 
 # NOTE: keeping contact info as just email for now until we hear more
 
 
 def get_profile_details(token):
-
     try:
         token = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
@@ -20,21 +21,33 @@ def get_profile_details(token):
 
     user_id = token['user_id']
 
-    # check token validity
+    # Check token validity
     user = db.users.find_one({"_id": ObjectId(user_id)})
+    if not user:
+        raise AccessError('User not found')
 
-    return {'username': f"{user['username']}",
-            'email': f"{user['email']}",
-            'description': f"{user['description']}",
-            'full_name': f"{user['full_name']}",
-            'job_title': f"{user['job_title']}",
-            'fun_fact': f"{user['fun_fact']}"}
+    file_id = user.get('profile_pic_id')
+    if file_id:
+        file_data = fs.get(file_id).read()
+        encoded_image = base64.b64encode(file_data).decode(
+            'utf-8')  # Encode and convert to string
+    else:
+        encoded_image = None  # Or set a default profile pic
+
+    return {
+        'username': user.get('username', ''),
+        'email': user.get('email', ''),
+        'description': user.get('description', ''),
+        'full_name': user.get('full_name', ''),
+        'job_title': user.get('job_title', ''),
+        'fun_fact': user.get('fun_fact', ''),
+        'profile_pic': encoded_image
+    }
 
 # mayeb won't deal with profile pics first, but might have to use GridFS to store on mongoDB
 
 
-def update_profile_details(token, username, description, full_name, job_title, fun_fact, preferences):
-
+def update_profile_details(token, username, description, full_name, job_title, fun_fact, profile_pic):
     try:
         token = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
@@ -59,10 +72,11 @@ def update_profile_details(token, username, description, full_name, job_title, f
         changed_values['$set']['job_title'] = job_title
     if fun_fact:
         changed_values['$set']['fun_fact'] = fun_fact
-    if preferences:
-        changed_values['$set']['preferences'] = preferences
-    # if profile_pic:
-    # 	changed_values['$set']['profile_pic'] = profile_pic
+    if profile_pic:
+        file_id = fs.put(profile_pic, filename=f"profile_pic_{user_id}")
+        if 'profile_pic_id' in user:
+            fs.delete(user['profile_pic_id'])
+        changed_values['$set']['profile_pic_id'] = file_id
 
     result = db.users.update_one(filter, changed_values)
     if result.matched_count == 0:

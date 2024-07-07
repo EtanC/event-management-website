@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 import { Container, Box, Typography, Switch, Button, Card, CardContent, Grid, TextField, Tooltip, IconButton, Alert } from '@mui/material';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import EditIcon from '@mui/icons-material/Edit';
-import profilePic from '../Image/defaultProfile.png';
+import defaultProfilePic from '../Image/defaultProfile.png';
 import { fetchProfileData, updateProfileDetails, updateProfilePassword } from '../helper/handleProfileData';
 import theme from '../styles/Theme';
 import { ThemeProvider } from '@mui/material/styles';
@@ -19,7 +19,9 @@ function ProfilePage() {
         job_title: "",
         fun_fact: "",
         pw: "",
+        profile_pic: null,
     });
+    const [new_profile_pic, setNewProfilePic] = useState(null)
 
     useEffect(() => {
         fetchProfileData(setProfile);
@@ -69,9 +71,9 @@ function ProfilePage() {
     };
 
     const handleProfilePicChange = (event) => {
-        const { name, value } = event.target;
-        set
-    }
+        const file = event.target.files[0];
+        setNewProfilePic(file)
+    };
 
     const updateProfile = async () => {
         const updatedProfile = {
@@ -80,13 +82,14 @@ function ProfilePage() {
             full_name: newProfile.full_name !== "" ? newProfile.full_name : profile.full_name,
             job_title: newProfile.job_title !== "" ? newProfile.job_title : profile.job_title,
             fun_fact: newProfile.fun_fact !== "" ? newProfile.fun_fact : profile.fun_fact,
+            profile_pic: new_profile_pic,
             username: profile.username,
         };
         try {
             const result = await updateProfileDetails(updatedProfile);
             if (result === 200) {
                 alert("Profile successfully updated.");
-                setProfile(updatedProfile)
+                await fetchProfileData(setProfile);
             }
             setNewProfile({
                 description: "",
@@ -94,6 +97,7 @@ function ProfilePage() {
                 job_title: "",
                 fun_fact: "",
             });
+            setNewProfilePic(null)
             setIsEditing(false);
 
         } catch (err) {
@@ -123,27 +127,34 @@ function ProfilePage() {
                         <Grid item xs={6}>
                             <Card sx={styles.flexCard}>
                                 <CardContent>
-                                    <Box sx={{ mt: 2, mb: 2, position: 'relative' }}>
+                                    <Box sx={{ mt: 2, mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                                         <img
-                                            src={profilePic}
+                                            src={profile.profile_pic ? `data:image/jpeg;base64,${profile.profile_pic}` : defaultProfilePic}
                                             alt="Profile"
                                             style={{ width: 100, height: 100, borderRadius: '50%' }}
                                         />
-                                        {isEditing && (
-                                            <IconButton
-                                                color="primary"
-                                                aria-label="edit profile picture"
-                                                component="label"
-                                                sx={{ position: 'absolute', bottom: 0, right: 0 }}
-                                            >
-                                                <EditIcon />
-                                                <input
-                                                    type="file"
-                                                    hidden
-                                                    onChange={handleProfilePicChange}
-                                                />
-                                            </IconButton>
-                                        )}
+                                        <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                            {(new_profile_pic && isEditing) && (
+                                                <Typography variant="caption" display="block" sx={{ mt: 1 }}>
+                                                    {new_profile_pic.name}
+                                                </Typography>
+                                            )}
+                                            {isEditing && (
+                                                <IconButton
+                                                    color="primary"
+                                                    aria-label="edit profile picture"
+                                                    component="label"
+                                                    sx={{ bottom: 0, right: 0 }}
+                                                >
+                                                    <EditIcon />
+                                                    <input
+                                                        type="file"
+                                                        hidden
+                                                        onChange={handleProfilePicChange}
+                                                    />
+                                                </IconButton>
+                                            )}
+                                        </Box>
                                     </Box>
                                     <Typography variant="h4" sx={{ mb: 2 }}>{profile.full_name}</Typography>
                                     {isEditing ? (

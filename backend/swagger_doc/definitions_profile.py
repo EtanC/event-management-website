@@ -24,8 +24,8 @@ definitions_profile = {
         'token': {
             'type': 'string'
         },
-        'preferences': {
-            'type': 'dict'
+        'profile_pic': {
+            'type': 'object'
         }
     },
     'parameters': {
@@ -53,8 +53,8 @@ definitions_profile = {
                 'fun_fact': {
                     '$ref': '#/definitions/data/fun_fact',
                 },
-                'preferences': {
-                    '$ref': '#/definitions/data/preferences',
+                'profile_pic': {
+                    '$ref': '#/definitions/data/profile_pic',
                 },
             }
         },
