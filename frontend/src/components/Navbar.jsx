@@ -93,8 +93,8 @@ function NavBar() {
                             >
                                 <MenuItem onClick={handleProfile}>Profile</MenuItem>
                                 <MenuItem onClick={handleClose}>My Events</MenuItem>
-                                <MenuItem onClick={() => handleLogout(navigate, setAuth)}>Log Out</MenuItem>
                                 <MenuItem onClick={handleAdmin}>Admin</MenuItem>
+                                <MenuItem onClick={() => handleLogout(navigate, setAuth)}>Log Out</MenuItem>
                             </Menu>
                         </div>
                     ) : (

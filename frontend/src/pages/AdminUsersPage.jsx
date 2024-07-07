@@ -5,6 +5,8 @@ import Navbar from '../components/Navbar';
 import SearchBar from '../components/SearchBar';
 import AdminTable from '../components/AdminTable';
 
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+
 const AdminUsersPage = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -55,8 +57,9 @@ const AdminUsersPage = () => {
                             <MuiLink component={Link} to="/admin" sx={{ textDecoration: 'none', color: 'gray' }}>
                                 Admin
                             </MuiLink>
-                            {' > Users'}
                         </Typography>
+                        <ArrowForwardIosIcon sx={{ marginTop: '10px', marginLeft: '15px', marginRight: '15px' }} />
+                        <Typography variant="h4"> Users</Typography>
                     </Box>
                     <SearchBar
                         labelOne='Full Name'
@@ -92,7 +95,6 @@ const AdminUsersPage = () => {
 const styles = {
     flexBox: {
         display: 'flex',
-        justifyContent: 'space-between',
         marginBottom: 5
     }
 };
