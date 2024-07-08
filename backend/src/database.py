@@ -14,6 +14,7 @@ class Database:
             self.db = self.client[config['TESTDB_NAME']]
         else:
             self.db = self.client[config['DATABASE_NAME']]
+        self.test = test
         self.gridfs = gridfs.GridFS(self.db)
         self.changed_db = False
 
@@ -36,6 +37,8 @@ class Database:
             self.gridfs = gridfs.GridFS(self.db)
             self.changed_db = False
         return self.gridfs
+    def clear_all(self):
+        self.client.drop_database(config['TESTDB_NAME'] if self.test else config['DATABASE_NAME'])
 
 global db
 db = Database(False)

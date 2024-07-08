@@ -21,10 +21,6 @@ def user1():
 def reset():
     clear('users')
 
-@pytest.fixture(scope='session', autouse=True)
-def move_to_test_db():
-    db.set_test_db()
-
 def generate_random_jwt():
     payload = {
         'user_id': str('random'),

@@ -25,10 +25,6 @@ def reset():
     clear('users')
     clear('events')
 
-@pytest.fixture(scope='session', autouse=True)
-def move_to_test_db():
-    db.set_test_db()
-
 def test_event(reset, sample_event, sample_user):
     assert events_get_all()['events'] == []
     expected_event = {

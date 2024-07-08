@@ -14,6 +14,8 @@ from backend.src.profile_details import get_profile_details, update_profile_deta
 from backend.src.user import user_register_event, user_events
 from flask_cors import CORS
 from backend.src.config import config
+from backend.src.database import db
+import sys
 
 app = Flask(__name__)
 cors = CORS(app, expose_headers='Authorization')
@@ -194,6 +196,12 @@ def user_register_event_route(event_id):
         token = token[len('Bearer '):]
 
     return json.dumps(user_register_event(token, event_id))
+@app.post('/clear')
+def clear_all():
+    db.clear_all()
+    return json.dumps({})
 
 if __name__ == '__main__':
+    if sys.argv[1] == 'test':
+        db.set_test_db()
     app.run(port=config['BACKEND_PORT'], debug=True)
