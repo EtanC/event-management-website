@@ -1,7 +1,7 @@
 import pytest
 from backend.src.auth import auth_register
 from backend.src.events import event_create, event_update, event_delete, events_get_all
-from backend.src.database import clear
+from backend.src.database import clear, db
 
 @pytest.fixture
 def sample_event():
@@ -24,6 +24,10 @@ def sample_user():
 def reset():
     clear('users')
     clear('events')
+
+@pytest.fixture(scope='session', autouse=True)
+def move_to_test_db():
+    db.set_test_db()
 
 def test_event(reset, sample_event, sample_user):
     assert events_get_all()['events'] == []

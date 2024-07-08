@@ -68,8 +68,8 @@ definitions = {
         'event_id': {
             'type': 'string'
         },
-        'preferences': {
-            'type': 'dict'
+        'profile_pic': {
+            'type': 'object'
         },
     },
     "securityDefinitions": {
