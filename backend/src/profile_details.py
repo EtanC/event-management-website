@@ -48,39 +48,42 @@ def get_profile_details(token):
 
 
 def update_profile_details(token, username, description, full_name, job_title, fun_fact, profile_pic):
-    try:
-        token = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
-    except jwt.ExpiredSignatureError:
-        raise AccessError('Token has expired')
-    except jwt.InvalidTokenError:
-        raise AccessError('Invalid token')
+	try:
+		token = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
+	except jwt.ExpiredSignatureError:
+		raise AccessError('Token has expired')
+	except jwt.InvalidTokenError:
+		raise AccessError('Invalid token')
 
-    user_id = token['user_id']
+	user_id = token['user_id']
 
-    filter = {'_id': ObjectId(user_id)}
+	filter = {'_id': ObjectId(user_id)}
 
-    user = db.users.find_one({"_id": ObjectId(user_id)})
-    changed_values = {"$set": {}}
+	user = db.users.find_one({"_id": ObjectId(user_id)})
+	changed_values = {"$set": {}}
 
-    if username:
-        changed_values['$set']['username'] = username
-    if description:
-        changed_values['$set']['description'] = description
-    if full_name:
-        changed_values['$set']['full_name'] = full_name
-    if job_title:
-        changed_values['$set']['job_title'] = job_title
-    if fun_fact:
-        changed_values['$set']['fun_fact'] = fun_fact
-    if profile_pic:
-        file_id = db.fs().put(profile_pic, filename=f"profile_pic_{user_id}")
-        if 'profile_pic_id' in user:
-            db.fs().delete(user['profile_pic_id'])
-        changed_values['$set']['profile_pic_id'] = file_id
+	if username:
+		if db.users.find_one({'username': username}) is not None:
+			raise InputError('Username is already taken')
+		else:
+			changed_values['$set']['username'] = username
+	if description:
+		changed_values['$set']['description'] = description
+	if full_name:
+		changed_values['$set']['full_name'] = full_name
+	if job_title:
+		changed_values['$set']['job_title'] = job_title
+	if fun_fact:
+		changed_values['$set']['fun_fact'] = fun_fact
+	if profile_pic:
+		file_id = db.fs().put(profile_pic, filename=f"profile_pic_{user_id}")
+		if 'profile_pic_id' in user:
+			db.fs().delete(user['profile_pic_id'])
+		changed_values['$set']['profile_pic_id'] = file_id
 
-    result = db.users.update_one(filter, changed_values)
-    if result.matched_count == 0:
-        raise AccessError('User ID not found on database')
+	result = db.users.update_one(filter, changed_values)
+	if result.matched_count == 0:
+		raise AccessError('User ID not found on database')
 
 
 def update_profile_password(token, old_password, new_password, re_password):

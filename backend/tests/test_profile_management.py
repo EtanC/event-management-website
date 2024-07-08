@@ -61,9 +61,6 @@ def test_update_profile(reset, user1):
 
     new_usr = 'Steven'
     new_email = 'steven@gmail.com'
-
-    # description, full_name, job_title, fun_fact
-
     new_description = 'thegoat'
     new_full_name = 'Goat'
     new_job_title = 'King'
@@ -172,12 +169,20 @@ def test_update_profile(reset, user1):
 def test_update_profile_error(reset, user1):
     token = auth_register(
         user1['username'], user1['email'], user1['password'])['token']
+    
+    matchingUsername = 'randomUsername'
+    
+    token2 = auth_register(matchingUsername, 'randomEmail@outlook.com', 'randomPassword')['token']
 
     random_token = generate_random_jwt()
 
     # test invalid token
     with pytest.raises(AccessError):
         update_profile_details(random_token, 'newusr', 'newemail', None, None, None, None)
+
+    # test username already taken
+    with pytest.raises(InputError):
+        update_profile_details(token2, matchingUsername, None, None, None, None, None)
 
 def test_update_password(reset, user1):
     token = auth_register(

@@ -34,7 +34,12 @@ def test_auth_error(user1):
     # registering with the same email gives an error
     auth_register(user1['username'], user1['email'], user1['password'])['token']
     with pytest.raises(InputError):
-        auth_register(user1['username'], user1['email'], user1['password'])
+        auth_register('randomUsername', user1['email'], user1['password'])
+
+    # registering with same username gives an error
+    with pytest.raises(InputError):
+            auth_register(user1['username'], 'randomEmail@outlook.com', user1['password'])
+
     # logging in with the wrong email gives an error
     with pytest.raises(InputError):
         auth_login("wrong email", user1['password'])

@@ -57,6 +57,8 @@ def auth_login(email, password):
 def auth_register(username, email, password):
     if db.users.find_one({'email': email}) is not None:
         raise InputError('Email is already being used')
+    elif db.users.find_one({'username': username}) is not None:
+        raise InputError('Username is already taken')
     user = db.users.insert_one({
         'username': username,
         'email': email,
@@ -69,7 +71,8 @@ def auth_register(username, email, password):
         'password': hash(password),
         'registered_events': [],
         'managed_events': [],
-        'owned_events': []
+        'owned_events': [],
+        'isAdmin': False
     })
     session_id, session_end_time = add_login_session(user.inserted_id)
     token = encode_jwt({
