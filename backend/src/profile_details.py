@@ -1,7 +1,7 @@
 from backend.src.error import AccessError, InputError
 from backend.src.database import db
 from backend.src.config import config
-from backend.src.auth import hash
+from backend.src.auth import hash, decode_token
 from bson import ObjectId
 import jwt
 import hashlib
@@ -12,14 +12,7 @@ import string
 
 
 def get_profile_details(token):
-    try:
-        token = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
-    except jwt.ExpiredSignatureError:
-        raise AccessError('Token has expired')
-    except jwt.InvalidTokenError:
-        raise AccessError('Invalid token')
-
-    user_id = token['user_id']
+    user_id = decode_token(token)
 
     # Check token validity
     user = db.users.find_one({"_id": ObjectId(user_id)})
@@ -48,14 +41,7 @@ def get_profile_details(token):
 
 
 def update_profile_details(token, username, description, full_name, job_title, fun_fact, profile_pic):
-	try:
-		token = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
-	except jwt.ExpiredSignatureError:
-		raise AccessError('Token has expired')
-	except jwt.InvalidTokenError:
-		raise AccessError('Invalid token')
-
-	user_id = token['user_id']
+	user_id = decode_token(token)
 
 	filter = {'_id': ObjectId(user_id)}
 
@@ -87,14 +73,7 @@ def update_profile_details(token, username, description, full_name, job_title, f
 
 
 def update_profile_password(token, old_password, new_password, re_password):
-    try:
-        token = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
-    except jwt.ExpiredSignatureError:
-        raise AccessError('Token has expired')
-    except jwt.InvalidTokenError:
-        raise AccessError('Invalid token')
-
-    user_id = token['user_id']
+    user_id = decode_token(token)
 
     filter = {'_id': ObjectId(user_id)}
 
