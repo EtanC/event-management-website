@@ -1,8 +1,8 @@
 import pytest
-from backend.src.profile_details import get_profile_details, update_profile_details, update_profile_password
-from backend.src.auth import auth_register, auth_login
+from backend.test_src.profile_details import get_profile_details, update_profile_details, update_profile_password
+from backend.test_src.auth import auth_register, auth_login
 from backend.src.error import InputError, AccessError
-from backend.src.database import clear, db
+from backend.test_src.database import clear_all
 import jwt
 from io import BytesIO
 import base64
@@ -19,7 +19,7 @@ def user1():
 
 @pytest.fixture
 def reset():
-    clear('users')
+    clear_all()
 
 def generate_random_jwt():
     payload = {

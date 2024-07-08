@@ -1,7 +1,7 @@
 import pytest
-from backend.test.auth import auth_login, auth_logout, auth_register
+from backend.test_src.auth import auth_login, auth_logout, auth_register
 from backend.src.error import InputError
-from backend.src.database import clear, db
+from backend.test_src.database import clear_all
 import jwt
 from backend.src.config import config
 import datetime
@@ -15,8 +15,7 @@ def user1():
     }
 @pytest.fixture(autouse=True)
 def reset():
-    clear('users')
-    clear('active_sessions')
+    clear_all()
 
 def test_auth(user1):
     # user is given a token when registering

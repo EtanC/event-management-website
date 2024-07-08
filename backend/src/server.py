@@ -4,6 +4,7 @@ from backend.swagger_doc.auth import auth_login_spec, auth_register_spec, auth_l
 from backend.swagger_doc.events import events_crawl_spec, events_clear_spec, events_get_all_spec, event_create_spec, event_update_spec, event_delete_spec, event_authorize_spec, events_ai_description_spec
 from backend.swagger_doc.profile import profile_get_spec, profile_update_details_spec, profile_update_password_spec
 from backend.swagger_doc.user import user_events_spec, user_register_event_spec
+from backend.swagger_doc.database import clear_spec
 from backend.swagger_doc.definitions import definitions
 from backend.src.error import AccessError, InputError
 import json
@@ -196,12 +197,16 @@ def user_register_event_route(event_id):
         token = token[len('Bearer '):]
 
     return json.dumps(user_register_event(token, event_id))
-@app.post('/clear')
+@app.delete('/clear')
+@swag_from(clear_spec)
 def clear_all():
     db.clear_all()
     return json.dumps({})
 
 if __name__ == '__main__':
-    if sys.argv[1] == 'test':
+    if len(sys.argv) > 1 and sys.argv[1] == 'test':
         db.set_test_db()
+        print("==========================================")
+        print("running server.py on test mode")
+        print("==========================================")
     app.run(port=config['BACKEND_PORT'], debug=True)

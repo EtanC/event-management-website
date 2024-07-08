@@ -12,3 +12,8 @@ def parse_response(response):
     elif response.status_code == 400:
         raise InputError(response.json()['description'])
     raise Exception(response.json()['description'])
+
+def token_header(token):
+    return {
+        'Authorization': f'Bearer {token}'
+    }

@@ -27,10 +27,12 @@ class Database:
     def set_test_db(self):
         self.db = self.client[config['TESTDB_NAME']]
         self.changed_db = True
+        self.test = True
     
     def set_real_db(self):
         self.db = self.client[config['DATABASE_NAME']]
         self.changed_db = True
+        self.test = False
 
     def fs(self):
         if self.changed_db:
@@ -42,6 +44,9 @@ class Database:
 
 global db
 db = Database(False)
+
+def clear_all():
+    db.clear_all()
 
 def clear(collection):
     db[collection].delete_many({})
