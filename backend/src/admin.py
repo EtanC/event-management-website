@@ -4,6 +4,12 @@ from backend.src.config import config
 from backend.src.auth import decode_token
 from bson import ObjectId
 
+def make_admin(username):
+    # ONLY FOR TESTING
+    # for testing, as there has to be an admin initially to invite and / or remove admin
+    filter = {'username': username}
+    result = db.users.update_one(filter, {'$set': {'isAdmin': True}})
+
 def is_admin(token):
     user_id = decode_token(token)
     return db.users.find_one({"_id": ObjectId(user_id)}).get('isAdmin')

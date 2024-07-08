@@ -58,7 +58,7 @@ admin_remove_spec = {
     ],
     'responses': {
         200: {
-            'description': 'Successful Invite',
+            'description': 'Successful Removal',
             'schema': {
                 'type': 'object',
                 'properties': {
@@ -74,3 +74,30 @@ admin_remove_spec = {
     }
 }
 
+
+is_admin_spec = {
+    'tags': ['Admin'],
+    'security': [
+        {
+            "bearerAuth": []
+        }
+    ],
+    'parameters': [],
+    'responses': {
+        200: {
+            'description': 'Success',
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'is_admin': '#/definitions/is_admin'
+                }
+            },
+        },
+        400: {
+            'description': 'Provided username doesn\'t exist'
+        },
+        403: {
+            'description': 'User is not an admin'
+        }
+    }
+}

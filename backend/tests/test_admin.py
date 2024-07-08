@@ -80,3 +80,50 @@ def test_remove_admin(reset, user1, user2):
     remove_admin(token, user2['username'])
 
     assert is_admin(token2) == False
+
+def test_is_admin_error(reset):
+    random_token = generate_random_jwt()
+
+    with pytest.raises(AccessError):
+        is_admin(random_token)
+
+def test_invite_admin_error(reset, user1, user2):
+    token = auth_register(user1['username'], user1['email'], user1['password'])['token']
+    token2 = auth_register(user2['username'], user2['email'], user2['password'])['token']
+
+    random_token = generate_random_jwt()
+
+    # test wrong token
+    with pytest.raises(AccessError):
+        invite_admin(random_token, user2['username'])
+
+    # test user is not an admin
+    with pytest.raises(AccessError):
+        invite_admin(token, user2['username'])
+
+    make_admin(user1['username'])
+
+    # test provided username doesn't exist
+    with pytest.raises(InputError):
+        invite_admin(token, 'wawawathisusernamedoestexist')
+
+def test_remove_admin_error(reset, user1, user2):
+    token = auth_register(user1['username'], user1['email'], user1['password'])['token']
+    token2 = auth_register(user2['username'], user2['email'], user2['password'])['token']
+
+    random_token = generate_random_jwt()
+
+    # test wrong token
+    with pytest.raises(AccessError):
+        remove_admin(random_token, user2['username'])
+
+    # test user is not an admin
+    with pytest.raises(AccessError):
+        remove_admin(token, user2['username'])
+
+    make_admin(user1['username'])
+
+    # test provided username doesn't exist
+    with pytest.raises(InputError):
+        remove_admin(token, 'wawawathisusernamedoestexist')
+
