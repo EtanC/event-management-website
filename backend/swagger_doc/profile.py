@@ -19,6 +19,21 @@ profile_get_spec = {
                     'email': {
                         '$ref': '#/definitions/email'
                     },
+                    'description': {
+                        '$ref': '#/definitions/description'
+                    },
+                    'full_name': {
+                        '$ref': '#/definitions/full_name'
+                    },
+                    'fun_fact': {
+                        '$ref': '#/definitions/fun_fact'
+                    },
+                    'job_title': {
+                        '$ref': '#/definitions/job_title'
+                    },
+                    'profile_pic': {
+                        '$ref': '#/definitions/profile_pic'
+                    }
                 }
             },
         },
@@ -76,18 +91,6 @@ profile_update_details_spec = {
             'schema': {
                 'type': 'object',
                 'properties': {
-                    'description': {
-                        '$ref': '#/definitions/data/description'
-                    },
-                    'job_title': {
-                        '$ref': '#/definitions/data/job_title'
-                    },
-                    'fun_fact': {
-                        '$ref': '#/definitions/data/fun_fact'
-                    },
-                    'full_name': {
-                        '$ref': '#/definitions/data/full_name'
-                    },
                 }
             },
         },
@@ -113,15 +116,6 @@ profile_update_password_spec = {
             'schema': {
                 'type': 'object',
                 'properties': {
-                    'old_password': {
-                        '$ref': '#/definitions/data/password',
-                    },
-                    'new_password': {
-                        '$ref': '#/definitions/data/password',
-                    },
-                    're_password': {
-                        '$ref': '#/definitions/data/password',
-                    },
                 }
             },
         },

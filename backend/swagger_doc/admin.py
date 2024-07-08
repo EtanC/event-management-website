@@ -7,11 +7,8 @@ admin_invite_spec = {
             'type': 'object',
             'required': 'true',
             'properties': {
-                'email': {
-                    '$ref': '#/definitions/email',
-                },
-                'password': {
-                    '$ref': '#/definitions/password',
+                'username': {
+                    '$ref': '#/definitions/username',
                 }
             }
         },
@@ -22,14 +19,11 @@ admin_invite_spec = {
             'schema': {
                 'type': 'object',
                 'properties': {
-                    'token': {
-                        '$ref': '#/definitions/token'
-                    }
                 }
             },
         },
         400: {
-            'description': 'Wrong email or password'
+            'description': 'Username doesn\'t exist'
         }
     }
 }
