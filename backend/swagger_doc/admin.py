@@ -28,7 +28,10 @@ admin_invite_spec = {
             },
         },
         400: {
-            'description': 'Username doesn\'t exist'
+            'description': 'Provided username doesn\'t exist'
+        },
+        403: {
+            'description': 'User is not an admin'
         }
     }
 }
@@ -63,7 +66,10 @@ admin_remove_spec = {
             },
         },
         400: {
-            'description': 'Username doesn\'t exist'
+            'description': 'Provided username doesn\'t exist'
+        },
+        403: {
+            'description': 'User is not an admin'
         }
     }
 }
