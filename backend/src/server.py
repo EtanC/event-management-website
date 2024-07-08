@@ -193,8 +193,6 @@ def user_register_event_route(event_id):
     if token and token.startswith('Bearer '):
         token = token[len('Bearer '):]
 
-    event_id = request.view_args('event_id')
-
     return json.dumps(user_register_event(token, event_id))
 
 if __name__ == '__main__':
