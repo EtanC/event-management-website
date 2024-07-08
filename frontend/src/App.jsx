@@ -9,6 +9,11 @@ import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage"
 import MyEventsPage from "./pages/MyEventsPage";
+import AdminPage from "./pages/AdminPage"
+import AdminUsersPage from "./pages/AdminUsersPage"
+import AdminEventsPage from "./pages/AdminEventsPage"
+import UserCalendar from "./pages/UserCalendar";
+
 
 const App = () => {
 
@@ -26,6 +31,10 @@ const App = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/event/:id" element={<EventDetailPage />} />
         <Route path="/my-events" element={<MyEventsPage />} />
+        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/admin/users" element={<AdminUsersPage />} />
+        <Route path="/admin/events" element={<AdminEventsPage />} />
+        <Route path="/MyCalendar" element={<UserCalendar />} />
       </Routes>
     </Router>
   );

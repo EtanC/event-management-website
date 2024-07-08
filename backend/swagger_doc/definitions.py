@@ -12,6 +12,9 @@ definitions = {
         'token': {
             'type': 'string'
         },
+        'user_id': {
+            'type': 'string'
+        },
         'event': {
             'type': 'object',
             'properties': {
@@ -39,6 +42,9 @@ definitions = {
                 'image': {
                     '$ref': '#/definitions/event_image'
                 },
+                'ranking': {
+                    '$ref': '#definitions/event_rank'
+                }
             }
         },
         'name': {
@@ -58,6 +64,9 @@ definitions = {
         },
         'event_start_date': {
             '$ref': '#definitions/date'
+        },
+        'event_rank': {
+            'type': 'integer',
         },
         'date': {
             'type': 'string'
@@ -79,7 +88,9 @@ definitions = {
         "bearerAuth": {
             "type": "apiKey",
             "scheme": "bearer",
-            "bearerFormat": "JWT"
+            'in': 'header',
+            "bearerFormat": "JWT",
+            'name': 'Authorization',
         }
     }
 }

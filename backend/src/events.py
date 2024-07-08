@@ -1,15 +1,18 @@
+import sys
 from backend.src.database import clear, db
 import subprocess
+import requests
+import os
+from dotenv import load_dotenv
 import datetime
-from backend.src.error import InputError
+from backend.src.error import InputError, AccessError
+from backend.src.auth import decode_token
 from bson import ObjectId
 
 
 def events_crawl():
-    subprocess.run(
-        ["cd backend/easychair_scraper && python3 -m scrapy crawl easychair"], shell=True)
-    subprocess.run(
-        ["cd backend/easychair_scraper && python3 -m scrapy crawl wikicfp"], shell=True)
+    subprocess.run(["python3 -m scrapy crawl easychair"], shell=True)
+    subprocess.run(["python3 -m scrapy crawl wikicfp"], shell=True)
     return {}
 
 
@@ -19,12 +22,40 @@ def stringify_id(x):
 
 
 def events_get_all():
-    return list(map(stringify_id, db.events.find({})))
+    return {
+        'events': list(map(stringify_id, db.events.find({})))
+    }
 
 
 def events_clear():
     clear('events')
     return {}
+
+
+def events_ai_description():
+    load_dotenv()
+    AI_TOKEN = os.getenv("AI_TOKEN")
+    # loop through each event listing
+    cursor = db.events.find()
+    # ai API
+    API_URL = "https://api-inference.huggingface.co/models/pszemraj/led-large-book-summary"
+    headers = {"Authorization": f"Bearer {AI_TOKEN}"}
+    for event in cursor:
+        ai_description = event.get("ai_description")
+        if ai_description is None or (ai_description and 'error' in ai_description):
+            query_filter = {"_id": event["_id"]}
+            output = query({
+                "inputs": event.get("details"),
+                "options": {"wait_for_model": True}
+            }, API_URL, headers)
+            db.events.update_one(
+                query_filter, {"$set": {"ai_description": output}})
+    return {}
+
+
+def query(payload, url, headers):
+    response = requests.post(url, headers=headers, json=payload)
+    return response.json()
 
 
 def event_already_exists(event):
@@ -53,12 +84,23 @@ def event_is_valid(event):
     return True
 
 
-def event_create(event):
+def event_create(token, event):
+    user_id = decode_token(token)
     if event_already_exists(event):
         raise InputError('Event already exists')
     if not event_is_valid(event):
         raise InputError('Invalid event')
+    user = db['users'].find({'_id': user_id})
+    event['ranking'] = 0
+    event['authorized_users'] = []
+    event['creator'] = user_id
     result = db.events.insert_one(event)
+    db['users'].update_one(
+        {'_id': ObjectId(user_id)},
+        {'$addToSet': {
+            'owned_events': str(result.inserted_id)
+        }}
+    )
     return {
         'event_id': str(result.inserted_id)
     }
@@ -68,7 +110,17 @@ def get_event(event_id):
     return db.events.find_one({'_id': ObjectId(event_id)})
 
 
-def event_update(event_id, new_event):
+def user_is_authorized(user_id, event_id):
+    event = get_event(event_id)
+    if user_id in event['authorized_users'] or user_id == event['creator']:
+        return True
+    return False
+
+
+def event_update(token, event_id, new_event):
+    user_id = decode_token(token)
+    if not user_is_authorized(user_id, event_id):
+        raise AccessError('User not authorized to update event')
     event = get_event(event_id)
     if event is None:
         raise InputError('No event in database with specified event_id')
@@ -90,9 +142,38 @@ def event_update(event_id, new_event):
     return {}
 
 
-def event_delete(event_id):
+def user_is_creator(user_id, event_id):
+    return user_id == db['events'].find_one({'_id': ObjectId(event_id)})['creator']
+
+
+def event_delete(token, event_id):
+    user_id = decode_token(token)
+    if not user_is_creator(user_id, event_id):
+        raise AccessError('User not authorized to delete event')
     event = get_event(event_id)
     if event is None:
         raise InputError('No event in database with specified event_id')
     db.events.delete_one({'_id': ObjectId(event_id)})
+    return {}
+
+
+def event_authorize(token, event_id, to_be_added_id):
+    user_id = decode_token(token)
+    if not user_is_creator(user_id, ObjectId(event_id)):
+        raise AccessError(
+            'User is not authorized to allow other people to manage event')
+    # Add user to authorized list
+    db['events'].update_one(
+        {'_id': ObjectId(event_id)},
+        {'$addToSet': {
+            'authorized_users': to_be_added_id,
+        }}
+    )
+    # add event to users list of managed events
+    db['users'].update_one(
+        {'_id': ObjectId(to_be_added_id)},
+        {'$addToSet': {
+            'managed_events': ObjectId(event_id)
+        }}
+    )
     return {}

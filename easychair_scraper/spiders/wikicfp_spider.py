@@ -5,7 +5,7 @@ import re
 class EasychairSpider(scrapy.Spider):
     name = 'wikicfp'
     allowed_domains = ['wikicfp.com']
-    start_urls = ['http://www.wikicfp.com/cfp/allcfp?page=1']
+    start_urls = ['http://www.wikicfp.com/cfp/allcfp?page=15']
 
     def parse(self, response):
         table = response.css('.contsec table > tr:nth-child(3) table')
@@ -22,6 +22,8 @@ class EasychairSpider(scrapy.Spider):
 
 
     def get_start_date(self, date_range):
+        if date_range == 'N/A':
+            return date_range
         start_date = re.search("(.*) - .*", date_range).group(1)
         return start_date
     

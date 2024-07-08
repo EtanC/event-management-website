@@ -1,11 +1,15 @@
 import { useLocation } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import HtmlTagRender from '../components/HtmlTagRender';
 import EventDetail from '../components/EventDetail';
 import defaultImage from '../Image/eventInfo-background.jpeg';
+import theme from '../styles/Theme';
+import { ThemeProvider } from '@mui/material/styles';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import {
+    Accordion,
     Box,
     Container,
     Grid,
@@ -14,6 +18,8 @@ import {
     Typography,
     IconButton,
     CircularProgress,
+    AccordionSummary,
+    AccordionDetails,
 } from '@mui/material';
 
 import {
@@ -35,13 +41,14 @@ function EventDetailPage() {
         // Simulate loading delay
         const timer = setTimeout(() => {
             setIsLoading(false);
-        }, 2000);
+        }, 1000);
 
         return () => clearTimeout(timer);
     }, []);
 
     return (
         <>
+            <ThemeProvider theme={theme}></ThemeProvider>
             <Navbar />
             <Box sx={{ backgroundColor: '#f5f5f5', padding: '20px 0' }}>
                 <Container maxWidth="lg">
@@ -72,7 +79,7 @@ function EventDetailPage() {
                         {event.name}
                     </Typography>
                     </Box>
-                    <EventDetail date={event.start_date} />
+                    <EventDetail event={event} />
                 </Box>
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={8}>
@@ -82,7 +89,21 @@ function EventDetailPage() {
                                 <CircularProgress />
                             </Box>
                         ) : (
-                            <HtmlTagRender htmlString={event.details} />
+                            <div>
+                              {Array.isArray(event.ai_description) && <Accordion defaultExpanded>
+                                <AccordionSummary 
+                                  expandIcon={<ExpandMoreIcon />}
+                                >
+                                  <Typography variant="h6" component="h2">AI Summary</Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                  <Typography>
+                                    {event.ai_description[0]['summary_text']}
+                                  </Typography>
+                                </AccordionDetails>
+                              </Accordion>}
+                              <HtmlTagRender htmlString={event.details} />
+                            </div>
                         )}
                     </Box>
                     </Grid>

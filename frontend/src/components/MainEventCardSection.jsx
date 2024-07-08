@@ -27,12 +27,14 @@ function MainEventCard() {
     }, [eventType, location, date, events]);
 
     const handleCardClick = (event) => {
-        navigate(`/event/${event.name}`, { state: { event } });
+        navigate(`/event/${event._id}`, { state: { event } });
     };
 
     return (
         <Box sx={{ backgroundColor: '#f5f5f5', padding: '20px 0' }}>
             <SearchBar
+                labelOne='Looking For'
+                labelTwo='Location'
                 eventType={eventType}
                 setEventType={setEventType}
                 location={location}
