@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchEventsData } from '../helper/handleEventData';
+import fetchEventsData from '../helper/fetchEventData';
 import filterEvents from '../helper/filterEvent';
 import SearchBar from './SearchBar';
 import EventCard from './EventCard';

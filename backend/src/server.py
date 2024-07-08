@@ -64,15 +64,18 @@ def events_crawl_route():
 def events_get_all_route():
     return json.dumps(events_get_all())
 
+
 @app.delete('/events/clear')
 @swag_from(events_clear_spec)
 def events_clear_route():
     return json.dumps(events_clear())
 
+
 @app.post('/events/ai-description')
 @swag_from(events_ai_description_spec)
 def events_ai_description_route():
-  return json.dumps(events_ai_description())
+    return json.dumps(events_ai_description())
+
 
 @app.post('/event/create')
 @swag_from(event_create_spec)
@@ -80,7 +83,7 @@ def event_create_route():
     token = request.headers.get('Authorization')
     if token.startswith('Bearer '):
         token = token[len('Bearer '):]
-    body = request.get_json()
+    body = request.get_json()['event']
     event = {
         'deadline': body['deadline'],
         'details': body['details'],
@@ -158,7 +161,7 @@ def profile_update_details_route():
     if 'profile_pic' in request.files:
         file = request.files['profile_pic']
         if file and file.filename:
-            profile_pic = file.read()  # Read the file content
+            profile_pic = file.read()
 
     return json.dumps(update_profile_details(token, username, description, full_name, job_title, fun_fact, profile_pic))
 
@@ -179,7 +182,7 @@ def profile_update_password_route():
 def user_events_route():
     token = request.headers.get('Authorization')
 
-    if token.startswith('Bearer '):
+    if token and token.startswith('Bearer '):
         token = token[len('Bearer '):]
 
     return json.dumps(user_events(token))
@@ -194,6 +197,7 @@ def user_register_event_route(event_id):
         token = token[len('Bearer '):]
 
     return json.dumps(user_register_event(token, event_id))
+
 
 if __name__ == '__main__':
     app.run(port=config['BACKEND_PORT'], debug=True)

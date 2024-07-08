@@ -64,8 +64,8 @@ const NewEvent = ({ open, handleClose }) => {
         name: '',
         location: '',
         start_date: '',
-        end_date: '',
-        registration_link: '',
+        deadline: '',
+        details_link: '',
         details: '',
         tags: [],
         image: null
@@ -82,8 +82,8 @@ const NewEvent = ({ open, handleClose }) => {
                     name: '',
                     location: '',
                     start_date: null,
-                    end_date: null,
-                    registration_link: '',
+                    deadline: null,
+                    details_link: '',
                     details: '',
                     tags: [],
                     image: null
@@ -103,9 +103,10 @@ const NewEvent = ({ open, handleClose }) => {
     };
 
     const handleDateChange = (field) => (date_data) => {
+        const formattedDate = date_data.$d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
         setEventData(prevState => ({
             ...prevState,
-            [field]: date_data.$d
+            [field]: formattedDate
         }));
     };
 
@@ -161,7 +162,7 @@ const NewEvent = ({ open, handleClose }) => {
                                 <Box sx={styles.textContainer}>
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <DatePicker
-                                            label="Event Start Date"
+                                            label="Start Date"
                                             onChange={handleDateChange('start_date')}
                                             slotProps={{
                                                 textField: { sx: { borderRadius: '40px', width: '400px', fieldset: { borderRadius: '40px' }, } }
@@ -170,8 +171,8 @@ const NewEvent = ({ open, handleClose }) => {
                                     </LocalizationProvider>
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <DatePicker
-                                            label="Event End Date"
-                                            onChange={handleDateChange('end_date')}
+                                            label="Deadline"
+                                            onChange={handleDateChange('deadline')}
                                             slotProps={{
                                                 textField: { sx: { borderRadius: '40px', width: '400px', fieldset: { borderRadius: '40px' }, } }
                                             }}
@@ -180,10 +181,10 @@ const NewEvent = ({ open, handleClose }) => {
                                 </Box>
                                 <TextField
                                     fullWidth
-                                    label="Registration Link"
+                                    label="Details Link"
                                     variant="outlined"
-                                    name="registration_link"
-                                    value={eventData.registration_link}
+                                    name="details_link"
+                                    value={eventData.details_link}
                                     onChange={handleChange}
                                     InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                 />

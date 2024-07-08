@@ -20,7 +20,7 @@ const TagItem = ({ data, handleDelete }) => {
             }}
         >
             <Stack direction='row' gap={1}>
-                <Typography sx={{ fontSize: '15px' }}>{data}</Typography>
+                <Typography sx={{ fontSize: '15px', color: 'white' }}>{data}</Typography>
                 <Cancel
                     sx={{ cursor: "pointer" }}
                     onClick={() => {

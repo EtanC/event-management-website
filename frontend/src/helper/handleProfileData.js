@@ -38,7 +38,7 @@ export const updateProfileDetails = async (updatedProfileData) => {
         });
         return response.status;
     } catch (error) {
-        console.log('Failed to update profile:', error.response ? error.response.data.description : error.message);
+        console.error('Failed to update profile:', error.response ? error.response.data.description : error.message);
     }
 }
 
@@ -55,10 +55,9 @@ export const updateProfilePassword = async (password, setErrorMessage) => {
                 'Authorization': `Bearer ${token}`
             }
         })
-        console.log(response)
         return response.status
     } catch (error) {
-        console.log('Failed to change password:', error.response ? error.response.data.description : error.message)
+        console.error('Failed to change password:', error.response ? error.response.data.description : error.message)
         setErrorMessage(error.response ? error.response.data.description : error.message);
     }
 }
