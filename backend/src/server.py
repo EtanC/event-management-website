@@ -12,6 +12,7 @@ from werkzeug.exceptions import HTTPException
 from backend.src.auth import auth_login, auth_register, auth_logout
 from backend.src.events import events_crawl, events_clear, events_get_all, event_create, event_update, event_delete, event_authorize, events_ai_description
 from backend.src.profile_details import get_profile_details, update_profile_details, update_profile_password
+from backend.src.admin import is_admin, invite_admin, remove_admin
 from backend.src.user import user_register_event, user_events
 from flask_cors import CORS
 from backend.src.config import config
@@ -174,6 +175,37 @@ def profile_update_password_route():
     body = request.get_json()
     return json.dumps(update_profile_password(token, body['old_password'], body['new_password'], body['re_password']))
 
+@app.get('/user/is_admin')
+@swag_from(is_admin_spec)
+def is_admin_route():
+    token = request.headers.get('Authorization')
+
+    if token.startswith('Bearer '):
+        token = token[len('Bearer '):]
+
+    return json.dumps(is_admin(token))
+
+@app.post('/admin/invite_admin')
+@swag_from(admin_invite_spec)
+def invite_admin_route():
+    token = request.headers.get('Authorization')
+
+    if token.startswith('Bearer '):
+        token = token[len('Bearer '):]
+    body = request.get_json()
+
+    return json.dumps(invite_admin(token, body['username']))
+
+@app.post('/admin/remove_admin')
+@swag_from(admin_remove_spec)
+def remove_admin_route():
+    token = request.headers.get('Authorization')
+
+    if token.startswith('Bearer '):
+        token = token[len('Bearer '):]
+    body = request.get_json()
+
+    return json.dumps(remove_admin(token, body['username']))
 
 @app.get('/user/events')
 @swag_from(user_events_spec)

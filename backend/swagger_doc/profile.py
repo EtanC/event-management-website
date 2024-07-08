@@ -25,11 +25,11 @@ profile_get_spec = {
                     'full_name': {
                         '$ref': '#/definitions/full_name'
                     },
-                    'fun_fact': {
-                        '$ref': '#/definitions/fun_fact'
-                    },
                     'job_title': {
                         '$ref': '#/definitions/job_title'
+                    },
+                    'fun_fact': {
+                        '$ref': '#/definitions/fun_fact'
                     },
                     'profile_pic': {
                         '$ref': '#/definitions/profile_pic'
@@ -44,6 +44,12 @@ profile_get_spec = {
 }
 
 profile_update_details_spec = {
+    'tags': ['Profile'],
+    'security': [
+        {
+            "bearerAuth": []
+        }
+    ],
     'parameters': [
         {
             'name': 'Body',
@@ -84,7 +90,6 @@ profile_update_details_spec = {
             }
         }
     ],
-    'definitions': definitions_profile,
     'responses': {
         200: {
             'description': 'Successful Details Change',
@@ -104,12 +109,17 @@ profile_update_details_spec = {
 }
 
 profile_update_password_spec = {
+    'tags': ['Profile'],
+    'security': [
+        {
+            "bearerAuth": []
+        }
+    ],
     'parameters': [
         {
             '$ref': '#/definitions/parameters/update_password'
         },
     ],
-    'definitions': definitions_profile,
     'responses': {
         200: {
             'description': 'Successful Password Change',

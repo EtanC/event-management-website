@@ -13,22 +13,17 @@ admin_invite_spec = {
             'required': 'true',
             'properties': {
                 'username': {
-                    '$ref': '#/definitions/username',
+                    '$ref': '#/definitions/username'
                 }
             }
-        },
+        }
     ],
     'responses': {
         200: {
-            'description': 'Successful Invite',
-            'schema': {
-                'type': 'object',
-                'properties': {
-                }
-            },
+            'description': 'Successful Invite'
         },
         400: {
-            'description': 'Provided username doesn\'t exist'
+            'description': 'Provided username does not exist'
         },
         403: {
             'description': 'User is not an admin'
@@ -51,22 +46,17 @@ admin_remove_spec = {
             'required': 'true',
             'properties': {
                 'username': {
-                    '$ref': '#/definitions/username',
+                    '$ref': '#/definitions/username'
                 }
             }
-        },
+        }
     ],
     'responses': {
         200: {
-            'description': 'Successful Removal',
-            'schema': {
-                'type': 'object',
-                'properties': {
-                }
-            },
+            'description': 'Successful Removal'
         },
         400: {
-            'description': 'Provided username doesn\'t exist'
+            'description': 'Provided username does not exist'
         },
         403: {
             'description': 'User is not an admin'
@@ -74,9 +64,8 @@ admin_remove_spec = {
     }
 }
 
-
 is_admin_spec = {
-    'tags': ['Admin'],
+    'tags': ['User'],
     'security': [
         {
             "bearerAuth": []
@@ -89,12 +78,14 @@ is_admin_spec = {
             'schema': {
                 'type': 'object',
                 'properties': {
-                    'is_admin': '#/definitions/is_admin'
+                    'is_admin': {
+                        '$ref': '#/definitions/is_admin'
+                    }
                 }
             },
         },
         400: {
-            'description': 'Provided username doesn\'t exist'
+            'description': 'Provided username does not exist'
         },
         403: {
             'description': 'User is not an admin'
