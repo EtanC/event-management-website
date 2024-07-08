@@ -1,7 +1,7 @@
 import pytest
 from backend.src.auth import auth_login, auth_logout, auth_register
 from backend.src.error import InputError
-from backend.src.database import clear
+from backend.src.database import clear, db
 import jwt
 from backend.src.config import config
 import datetime
@@ -13,13 +13,16 @@ def user1():
         'email': 'johnsmith1234@outlook.com',
         'password': '12345678',
     }
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def reset():
     clear('users')
     clear('active_sessions')
 
+@pytest.fixture(scope='session', autouse=True)
+def move_to_test_db():
+    db.set_test_db()
 
-def test_auth(reset, user1):
+def test_auth(user1):
     # user is given a token when registering
     tkn1 = auth_register(user1['username'], user1['email'], user1['password'])['token']
     assert isinstance(tkn1, str)
@@ -27,7 +30,7 @@ def test_auth(reset, user1):
     tkn2 = auth_login(user1['email'], user1['password'])['token']
     assert isinstance(tkn2, str)
 
-def test_auth_error(reset, user1):
+def test_auth_error(user1):
     # registering with the same email gives an error
     auth_register(user1['username'], user1['email'], user1['password'])['token']
     with pytest.raises(InputError):
@@ -36,7 +39,7 @@ def test_auth_error(reset, user1):
     with pytest.raises(InputError):
         auth_login("wrong email", user1['password'])
 
-def test_auth_register_token_contents(reset, user1):
+def test_auth_register_token_contents(user1):
     tkn1 = auth_register(user1['username'], user1['email'], user1['password'])['token']
     data = jwt.decode(tkn1, config['SECRET'], algorithms=['HS256'])
     
@@ -49,7 +52,7 @@ def test_auth_register_token_contents(reset, user1):
     # Assuming default datetime date format, which is YYYY-MM-DDTHH:MM:SS. mmmmmm
     assert isinstance(datetime.datetime.strptime(data['session_end_time'], "%Y-%m-%d %H:%M:%S.%f"), datetime.datetime)
 
-def test_auth_login_token_contents(reset, user1):
+def test_auth_login_token_contents(user1):
     auth_register(user1['username'], user1['email'], user1['password'])
     tkn1 = auth_login(user1['email'], user1['password'])['token']
     data = jwt.decode(tkn1, config['SECRET'], algorithms=['HS256'])
