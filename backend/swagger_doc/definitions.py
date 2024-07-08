@@ -12,6 +12,9 @@ definitions = {
         'token': {
             'type': 'string'
         },
+        'user_id': {
+            'type': 'string'
+        },
         'event': {
             'type': 'object',
             'properties': {
@@ -65,8 +68,8 @@ definitions = {
         'event_id': {
             'type': 'string'
         },
-        'preferences': {
-            'type': 'dict'
+        'profile_pic': {
+            'type': 'object'
         },
     },
     "securityDefinitions": {

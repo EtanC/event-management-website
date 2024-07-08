@@ -5,17 +5,7 @@ from backend.src.config import config
 from backend.src.error import AccessError, InputError
 from bson import ObjectId
 from backend.src.events import stringify_id
-
-def decode_token(token):
-    try:
-        data = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
-    except (jwt.InvalidSignatureError, jwt.DecodeError) as e:
-        raise AccessError('Invalid token')
-    if db.active_sessions.find_one({ '_id': ObjectId(data['session_id'])}) is None:
-        raise AccessError('Expired token')
-    if db.users.find_one({ '_id': ObjectId(data['user_id'])}) is None:
-        raise AccessError('Invalid user')
-    return data['user_id']
+from backend.src.auth import decode_token
 
 def user_exists(user_id):
     return db.users.find_one({ '_id': ObjectId(user_id) }) is not None
