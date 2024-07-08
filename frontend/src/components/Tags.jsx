@@ -14,7 +14,7 @@ const TagItem = ({ data, handleDelete }) => {
                 margin: "0 0.5rem 0 0",
                 justifyContent: "center",
                 alignContent: "center",
-                color: "#FFFFFF",
+                color: "white",
                 backgroundColor: "#1E4830",
                 borderRadius: '40px',
             }}
