@@ -22,7 +22,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.23.1",
     "styled-components": "^6.1.11", 
-    "react-big-calendar": "^0.33.6",
+    "react-big-calendar": "^1.13.0",
     "moment": "^2.29.1"
   },
   "devDependencies": {

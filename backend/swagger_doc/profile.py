@@ -19,9 +19,6 @@ profile_get_spec = {
                     'email': {
                         '$ref': '#/definitions/email'
                     },
-                    'preferences': {
-                        '$ref': '#/definitions/preferences'
-                    }
                 }
             },
         },
@@ -34,8 +31,43 @@ profile_get_spec = {
 profile_update_details_spec = {
     'parameters': [
         {
-            '$ref': '#/definitions/parameters/update_details'
+            'name': 'Body',
+            'in': 'body',
+            'type': 'object',
+            'required': 'true',
+            'properties': {
+                'email': {
+                    '$ref': '#/definitions/email',
+                },
+                'full_name': {
+                    '$ref': '#/definitions/full_name',
+                },
+                'description': {
+                    '$ref': '#/definitions/desciption',
+                },
+                'fun_fact': {
+                    '$ref': '#/definitions/fun_fact',
+                },
+                'job_title': {
+                    '$ref': '#/definitions/job_title',
+                },
+                'profile_pic': {
+                    '$ref': '#/definitions/profile_pic',
+                }
+            }
         },
+        {
+            'name': 'Files',
+            'in': 'formData',
+            'type': 'file',
+            'required': 'true',
+            'properties': {
+                'profile_pic': {
+                    'type': 'string',
+                    'format': 'binary'
+                }
+            }
+        }
     ],
     'definitions': definitions_profile,
     'responses': {

@@ -20,7 +20,7 @@ def add_login_session(user_id):
     session_end_time = datetime.datetime.today(
     ) + datetime.timedelta(minutes=config['MINUTES_TILL_TIMEOUT'])
     # Use separate table to keep track of sessions
-    response = db['active_sessions'].insert_one(
+    response = db.active_sessions.insert_one(
         {
             'user_id': user_id,
             'session_end_time': session_end_time
@@ -30,7 +30,7 @@ def add_login_session(user_id):
 
 
 def auth_login(email, password):
-    match = db['users'].find_one({'email': email, 'password': hash(password)})
+    match = db.users.find_one({'email': email, 'password': hash(password)})
     if match is None:
         raise InputError('Incorrect email or password')
     session_id, session_end_time = add_login_session(match['_id'])
@@ -45,11 +45,12 @@ def auth_login(email, password):
 
 
 def auth_register(username, email, password):
-    if db['users'].find_one({'email': email}) is not None:
+    if db.users.find_one({'email': email}) is not None:
         raise InputError('Email is already being used')
-    user = db['users'].insert_one({
+    user = db.users.insert_one({
         'username': username,
         'email': email,
+        'profile_pic_id': None,
         'full_name': None,
         'job_title': None,
         'fun_fact': None,
@@ -71,5 +72,5 @@ def auth_register(username, email, password):
 
 def auth_logout(token):
     data = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
-    db['active_sessions'].delete_one({'_id': ObjectId(data['session_id'])})
+    db.active_sessions.delete_one({'_id': ObjectId(data['session_id'])})
     return {}
