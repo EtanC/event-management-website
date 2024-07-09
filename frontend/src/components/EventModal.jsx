@@ -12,11 +12,8 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Tags from './Tags.jsx';
-import { createEvent } from '../helper/handleEventData.js';
+import { handleCreateEvent, handleEditEvent } from '../helper/handleEventData.js';
 
 const styles = {
     modal: {
@@ -48,18 +45,15 @@ const styles = {
 };
 
 const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
     height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
     width: 1,
 });
 
-const NewEvent = ({ open, handleClose }) => {
+const EventModal = ({ open, handleClose, headerText, event }) => {
+    const [dates, setDates] = useState({
+        start_date: '',
+        deadline: ''
+    })
     const [eventData, setEventData] = useState({
         name: '',
         location: '',
@@ -73,12 +67,15 @@ const NewEvent = ({ open, handleClose }) => {
     const [errorMessage, setErrorMessage] = useState('')
 
     const handleSave = async () => {
-        console.log(eventData);
+        setErrorMessage(null)
         try {
-            const result = await createEvent(eventData)
+            let result;
+            if (event && event._id) result = await handleEditEvent(event._id, eventData);
+            else result = await handleCreateEvent(eventData);
+
             if (result === 200) {
                 handleClose();
-                setEventData(preState => ({
+                setEventData({
                     name: '',
                     location: '',
                     start_date: null,
@@ -87,10 +84,10 @@ const NewEvent = ({ open, handleClose }) => {
                     details: '',
                     tags: [],
                     image: null
-                }));
+                });
             }
         } catch (error) {
-            console.log(`Failed to save new event: ${error.message}`)
+            setErrorMessage(`Failed to ${event && event._id ? 'update' : 'save new'} event: ${error.message}`);
         }
     };
 
@@ -102,14 +99,20 @@ const NewEvent = ({ open, handleClose }) => {
         }));
     };
 
-    const handleDateChange = (field) => (date_data) => {
-        const formattedDate = date_data.$d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+    const handleDateChange = (field) => (event) => {
+        const inputDate = event.target.value;
+        const date = new Date(inputDate);
+        const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
         setEventData(prevState => ({
             ...prevState,
-            [field]: formattedDate
+            [field]: formattedDate,
+        }));
+        setDates(prevState => ({
+            ...prevState,
+            [field]: inputDate
         }));
     };
-
     const handleTagsChange = (tags) => {
         setEventData(prevState => ({
             ...prevState,
@@ -135,7 +138,7 @@ const NewEvent = ({ open, handleClose }) => {
                 <Fade in={open}>
                     <Card sx={styles.card}>
                         <Typography variant="h5" sx={{ mb: 4 }}>
-                            Create New Event
+                            {headerText}
                         </Typography>
                         <Grid container spacing={5}>
                             <Grid item xs={12}>
@@ -160,30 +163,43 @@ const NewEvent = ({ open, handleClose }) => {
                                     InputProps={{ sx: { borderRadius: '40px', mb: 2, width: '100%' }, }}
                                 />
                                 <Box sx={styles.textContainer}>
-                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                        <DatePicker
-                                            label="Start Date"
-                                            onChange={handleDateChange('start_date')}
-                                            slotProps={{
-                                                textField: { sx: { borderRadius: '40px', width: '400px', fieldset: { borderRadius: '40px' }, } }
-                                            }}
-                                        />
-                                    </LocalizationProvider>
-                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                        <DatePicker
-                                            label="Deadline"
-                                            onChange={handleDateChange('deadline')}
-                                            slotProps={{
-                                                textField: { sx: { borderRadius: '40px', width: '400px', fieldset: { borderRadius: '40px' }, } }
-                                            }}
-                                        />
-                                    </LocalizationProvider>
+                                    <TextField
+                                        label="Start Date"
+                                        name="start_date"
+                                        type="date"
+                                        required
+                                        value={dates.start_date}
+                                        onChange={handleDateChange('start_date')}
+                                        fullWidth
+                                        InputLabelProps={{ shrink: true, }}
+                                        sx={{
+                                            '& .MuiOutlinedInput-root': {
+                                                borderRadius: '40px',
+                                            },
+                                        }}
+                                    />
+                                    <TextField
+                                        label="Deadline"
+                                        name="deadline"
+                                        type="date"
+                                        required
+                                        value={dates.deadline}
+                                        onChange={handleDateChange('deadline')}
+                                        fullWidth
+                                        InputLabelProps={{ shrink: true, }}
+                                        sx={{
+                                            '& .MuiOutlinedInput-root': {
+                                                borderRadius: '40px',
+                                            },
+                                        }}
+                                    />
                                 </Box>
                                 <TextField
                                     fullWidth
                                     label="Details Link"
                                     variant="outlined"
                                     name="details_link"
+                                    required
                                     value={eventData.details_link}
                                     onChange={handleChange}
                                     InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
@@ -192,6 +208,7 @@ const NewEvent = ({ open, handleClose }) => {
                                     fullWidth
                                     label="Details"
                                     variant="outlined"
+                                    required
                                     multiline
                                     rows={4}
                                     name="details"
@@ -229,4 +246,4 @@ const NewEvent = ({ open, handleClose }) => {
     );
 };
 
-export default NewEvent;
+export default EventModal;

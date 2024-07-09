@@ -101,7 +101,8 @@ def event_update_route(event_id):
     token = request.headers.get('Authorization')
     if token.startswith('Bearer '):
         token = token[len('Bearer '):]
-    body = request.get_json()
+    body = request.get_json()['event']
+    print(body)
     event = {
         'deadline': body['deadline'],
         'details': body['details'],

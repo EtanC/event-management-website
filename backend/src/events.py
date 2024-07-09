@@ -132,11 +132,11 @@ def event_update(token, event_id, new_event):
             'name': new_event['name'],
             'location': new_event['location'],
             'start_date': new_event['start_date'],
-            'end_date': new_event['end_date'],
-            'tags': new_event['tags'],
+            'deadline': new_event['deadline'],
+            # 'tags': new_event['tags'],
             'details': new_event['details'],
-            'registration_link': new_event['registration_link'],
-            'image': new_event['image'],
+            'details_link': new_event['details_link'],
+            # 'image': new_event['image'],
         }}
     )
     return {}

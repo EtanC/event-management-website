@@ -20,7 +20,7 @@ export const fetchEventsData = async (setEvents, setLocations, setError, setIsLo
     }
 };
 
-export const createEvent = async (eventData) => {
+export const handleCreateEvent = async (eventData) => {
     try {
         const token = localStorage.getItem('token');
         const response = await axios.post('http://127.0.0.1:5000/event/create',
@@ -49,6 +49,7 @@ export const fetchUserCreatedEvents = async () => {
         }
     } catch (error) {
         console.error('Error fetching user created events: ', error.response ? error.response.data : error.message);
+        throw (error);
     }
 }
 
@@ -57,7 +58,7 @@ export const fetchUserRegisteredEvents = async () => {
         const token = localStorage.getItem('token');
         const response = await axios.get('http://127.0.0.1:5000/user/events', {
             headers: {
-                Authorization: `Bearer ${token}`
+                'Authorization': `Bearer ${token}`
             }
         });
         if (response) {
@@ -65,12 +66,29 @@ export const fetchUserRegisteredEvents = async () => {
         }
     } catch (error) {
         console.error('Error fetching user registered events: ', error.response ? error.response.data : error.message);
+        throw (error);
     }
 }
 
-export const handleEditEvent = async () => {
-    console.log('edit event')
+export const handleEditEvent = async (event_id, eventData) => {
+    console.log('edit event', event_id, eventData)
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.put(`http://127.0.0.1:5000/event/update/${event_id}`,
+            { event: eventData },
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+        return response.status;
+    } catch (error) {
+        console.error('Error editing event: ', error.response ? error.response.data : error.message);
+        throw (error);
+    }
 }
+
 
 export const handleDeleteEvent = async (event_id) => {
     try {
@@ -78,10 +96,12 @@ export const handleDeleteEvent = async (event_id) => {
         const response = await axios.delete(`http://127.0.0.1:5000/event/delete/${event_id}`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
             }
         });
         return response.data;
     } catch (error) {
         console.error('Error deleting event: ', error.response ? error.response.data : error.message);
+        throw (error);
     }
 }

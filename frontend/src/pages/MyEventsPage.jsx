@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import {
     Box, Container, Card, Typography, Grid, CircularProgress,
-    Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button
 } from '@mui/material';
 import Navbar from '../components/Navbar';
-import { fetchUserCreatedEvents, fetchUserRegisteredEvents, handleDeleteEvent, handleEditEvent } from '../helper/handleEventData';
+import { fetchUserCreatedEvents, fetchUserRegisteredEvents, handleDeleteEvent } from '../helper/handleEventData';
 import EventCard from '../components/EventCard';
+import AlertPopup from '../components/AlertPopup';
 import { useNavigate } from 'react-router-dom';
+import EventModal from '../components/EventModal';
 
 function MyEvents() {
     const navigate = useNavigate();
@@ -16,6 +17,8 @@ function MyEvents() {
     const [error, setError] = useState(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [eventToDelete, setEventToDelete] = useState(null);
+    const [openEditEvent, setOpenEditEvent] = useState(false);
+    const [eventToEdit, setEventToEdit] = useState(null);
 
     const fetchEvents = async () => {
         try {
@@ -53,7 +56,6 @@ function MyEvents() {
                 await handleDeleteEvent(eventToDelete._id);
                 setDeleteDialogOpen(false);
                 setEventToDelete(null);
-                // After successful deletion, refresh the events list
                 fetchEvents();
             } catch (error) {
                 console.error('Failed to delete event:', error);
@@ -67,10 +69,16 @@ function MyEvents() {
         setEventToDelete(null);
     };
 
-    const onEditEvent = (event) => {
-        console.log('Edit event:', event);
-        // Implement edit functionality here
+    const handleEditClick = (event) => {
+        setEventToEdit(event);
+        console.log(event)
+        setOpenEditEvent(true);
     };
+
+    const handleEditClose = (event) => {
+        setOpenEditEvent(false)
+        fetchEvents();
+    }
 
     const renderEventCards = (events, isCreatedEvents) => {
         if (loading) return <CircularProgress />;
@@ -85,7 +93,7 @@ function MyEvents() {
                         event={event}
                         handleCardClick={handleCardClick}
                         isMyEventsPage={isCreatedEvents}
-                        onEditEvent={onEditEvent}
+                        onEditEvent={() => handleEditClick(event)}
                         onDeleteEvent={() => handleDeleteClick(event)}
                     />
                 ))}
@@ -95,26 +103,14 @@ function MyEvents() {
 
     return (
         <>
-            <Dialog
+            <AlertPopup
                 open={deleteDialogOpen}
                 onClose={handleDeleteCancel}
-                PaperProps={{
-                    style: {
-                        padding: '20px',
-                    },
-                }}
-            >
-                <DialogTitle>{"Confirm Delete"}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Are you sure you want to delete this event? This action cannot be undone.
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button variant="outlined" color="primary" sx={styles.button} onClick={handleDeleteCancel}>Cancel</Button>
-                    <Button variant="contained" color="primary" sx={styles.button} onClick={handleDeleteConfirm}>Delete</Button>
-                </DialogActions>
-            </Dialog>
+                onConfirm={handleDeleteConfirm}
+                title={'Confirm Delete'}
+                content={'Are you sure you want to delete this event? This action cannot be undone.'}
+            />
+            <EventModal open={openEditEvent} handleClose={handleEditClose} headerText={'Edit Event'} event={eventToEdit} />
             <Navbar />
             <Box sx={{ backgroundColor: '#f5f5f5', padding: '40px 0', minHeight: '90vh' }}>
                 <Container maxWidth="lg">
