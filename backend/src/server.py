@@ -11,7 +11,7 @@ from werkzeug.exceptions import HTTPException
 from backend.src.auth import auth_login, auth_register, auth_logout
 from backend.src.events import events_crawl, events_clear, events_get_all, event_create, event_update, event_delete, event_authorize, events_ai_description
 from backend.src.profile_details import get_profile_details, update_profile_details, update_profile_password
-from backend.src.user import user_register_event, user_events
+from backend.src.user import user_register_event, user_events, user_manage_events
 from flask_cors import CORS
 from backend.src.config import config
 
@@ -184,6 +184,15 @@ def user_events_route():
 
     return json.dumps(user_events(token))
 
+
+@app.get('/user/manage/events')
+def user_manage_events_route():
+    token = request.headers.get('Authorization')
+
+    if token.startswith('Bearer '):
+        token = token[len('Bearer '):]
+
+    return json.dumps(user_manage_events(token))
 
 @app.post('/user/register/<event_id>')
 @swag_from(user_register_event_spec)
