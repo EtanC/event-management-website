@@ -24,7 +24,16 @@ def user_register_event(token, event_id):
         raise InputError('Already registered to event')
     return {}
 
-
+# Convert a list of event_ids to event objects by finding the corresponding
+# event in the database
+def event_ids_to_events(event_ids):
+    return list(map(stringify_id, db.events.find(
+        { '_id':
+            {
+                '$in': list(map(ObjectId, event_ids))
+            }
+        }
+    )))
 
 def user_events(token):
     # Get the user document
@@ -32,7 +41,22 @@ def user_events(token):
     user = db.users.find_one({ '_id': ObjectId(user_id) })
     # 1. Get user's list of "registered_events" event_ids
     # 2. Search for events in events collection that match these ids
-    events = list(map(stringify_id, db.events.find({ '_id': { '$in': list(map(ObjectId, user['registered_events'])) }})))
+    events = event_ids_to_events(user['registered_events'])
     return {
         'events': events,
+    }
+
+def get_user(user_id):
+    return db.users.find_one({ '_id': ObjectId(user_id) })
+
+def user_manage_events(token):
+    user_id = decode_token(token)
+    user = get_user(user_id)
+    if user is None:
+        raise AccessError('User does not exist')
+    creator_events = event_ids_to_events(user['owned_events'])
+    managed_events = event_ids_to_events(user['managed_events'])
+    return {
+        'creator': creator_events,
+        'manager': managed_events
     }
