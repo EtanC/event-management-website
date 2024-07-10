@@ -3,5 +3,7 @@
     "MINUTES_TILL_TIMEOUT": 15,
     "SECRET": "BUTTERFLY",
     "DATABASE_NAME": "real_database",
-    "TESTDB_NAME": "test_database"
+    "TESTDB_NAME": "test_database",
+    "APP_PASSWORD": "junp aluu zwky ofus",
+    "APP_EMAIL": "project41pls@gmail.com"
 }

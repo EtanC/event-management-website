@@ -6,6 +6,9 @@ from backend.src.error import AccessError, InputError
 from bson import ObjectId
 from backend.src.events import stringify_id
 from backend.src.auth import decode_token
+from email.message import EmailMessage
+import ssl
+from smtplib import SMTP_SSL, SMTPRecipientsRefused 
 
 def user_exists(user_id):
     return db.users.find_one({ '_id': ObjectId(user_id) }) is not None
@@ -22,6 +25,18 @@ def user_register_event(token, event_id):
     )
     if result.modified_count == 0:
         raise InputError('Already registered to event')
+    else:
+        # call notification email
+        subject = "You've just registered to an event!"
+
+        event = db.events.find_one({ "_id": ObjectId(event_id) })
+
+        user = db.users.find_one({ '_id': ObjectId(user_id) })
+
+        body = f"""
+You've just registered to an event: {event['name']} at {event['start_date']} in {event['location']} 
+"""
+        send_email(subject, body, user['email'])
     return {}
 
 
@@ -36,3 +51,26 @@ def user_events(token):
     return {
         'events': events,
     }
+
+def send_email(subject, body, receiver):
+    em = EmailMessage()
+    em['From'] = config['APP_EMAIL']
+    em['To'] = receiver
+    em['Subject'] = subject
+    em.set_content(body)
+
+    context = ssl.create_default_context()
+
+    with SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
+        smtp.login(config['APP_EMAIL'], config['APP_PASSWORD'])
+        try:
+            smtp.sendmail(config['APP_EMAIL'], receiver, em.as_string())
+        except SMTPRecipientsRefused:
+            raise InputError('User email is not valid')
+        # if SSL error, go to python folder on ur computer and double click Install Certificates.command
+
+
+if __name__ == '__main__':
+    send_email('test subject', 'test body', 'kchen397@gmail.com')
+
+    send_email('test subject', 'test body', 'aiygwduaigwydagwdia@gmail.com')
