@@ -74,8 +74,20 @@ def update_profile_details(token, username, description, full_name, job_title, f
 	response = make_response({ 'message': 'Successful Details Change' })
 	return response
 
+    result = db.users.update_one(filter, changed_values)
+    if result.matched_count == 0:
+        raise AccessError('User ID not found on database')
+
+
 def update_profile_password(token, old_password, new_password, re_password):
-    user_id = decode_token(token)
+    try:
+        token = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
+    except jwt.ExpiredSignatureError:
+        raise AccessError('Token has expired')
+    except jwt.InvalidTokenError:
+        raise AccessError('Invalid token')
+
+    user_id = token['user_id']
 
     filter = {'_id': ObjectId(user_id)}
 
