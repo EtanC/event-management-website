@@ -3,7 +3,7 @@ from flasgger import Swagger, swag_from
 from backend.swagger_doc.auth import auth_login_spec, auth_register_spec, auth_logout_spec
 from backend.swagger_doc.events import events_crawl_spec, events_clear_spec, events_get_all_spec, event_create_spec, event_update_spec, event_delete_spec, event_authorize_spec, events_ai_description_spec, events_get_page_spec
 from backend.swagger_doc.profile import profile_get_spec, profile_update_details_spec, profile_update_password_spec
-from backend.swagger_doc.user import user_events_spec, user_register_event_spec
+from backend.swagger_doc.user import user_events_spec, user_register_event_spec, user_manage_events_spec
 from backend.swagger_doc.definitions import definitions
 from backend.src.error import AccessError, InputError
 import json
@@ -11,7 +11,7 @@ from werkzeug.exceptions import HTTPException
 from backend.src.auth import auth_login, auth_register, auth_logout
 from backend.src.events import events_crawl, events_clear, events_get_all, event_create, event_update, event_delete, event_authorize, events_ai_description, events_get_page
 from backend.src.profile_details import get_profile_details, update_profile_details, update_profile_password
-from backend.src.user import user_register_event, user_events
+from backend.src.user import user_register_event, user_events, user_manage_events
 from flask_cors import CORS
 from backend.src.config import config
 
@@ -186,6 +186,16 @@ def user_events_route():
 
     return json.dumps(user_events(token))
 
+
+@app.get('/user/manage/events')
+@swag_from(user_manage_events_spec)
+def user_manage_events_route():
+    token = request.headers.get('Authorization')
+
+    if token.startswith('Bearer '):
+        token = token[len('Bearer '):]
+
+    return json.dumps(user_manage_events(token))
 
 @app.post('/user/register/<event_id>')
 @swag_from(user_register_event_spec)
