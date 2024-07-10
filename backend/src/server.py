@@ -205,7 +205,7 @@ def user_register_event_route(event_id):
     if not token:
         raise AccessError('Authorization token is missing')
 
-    return user_register_event(token, event_id)
+    return jsonify(user_register_event(token, event_id))
 
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == 'test':
