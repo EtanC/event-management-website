@@ -38,7 +38,6 @@ def add_login_session(user_id):
     )
     return (response.inserted_id, session_end_time)
 
-
 def auth_login(email, password):
     match = db.users.find_one({'email': email, 'password': hash(password)})
     if match is None:
@@ -60,11 +59,11 @@ def auth_login(email, password):
         value=token,
         httponly=False,  
         secure=False, 
-        samesite=None, 
+        samesite='Lax', 
         expires=session_end_time,  
         path='/'
     )
-    return response 
+    return response
 
 def auth_register(username, email, password):
     if db.users.find_one({'email': email}) is not None:
@@ -91,7 +90,7 @@ def auth_register(username, email, password):
     })
 
     response = make_response({'message': 'Registration successful', 'session_end_time': session_end_time})
-    response.set_cookie('token', token, httponly=False, secure=False, samesite='Lax', expires=session_end_time, domain='http://localhost:5173/')
+    response.set_cookie('token', token, httponly=True, secure=False, samesite='Lax', expires=session_end_time)
     return response
 
 

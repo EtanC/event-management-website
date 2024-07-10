@@ -16,7 +16,7 @@ from flask_cors import CORS
 from backend.src.config import config
 
 app = Flask(__name__)
-CORS(app, expose_headers='Authorization', supports_credentials=True, resources={r"/*": {"origins": "http://localhost:5173"}})
+CORS(app, expose_headers='Authorization', supports_credentials=True)
 swagger = Swagger(app, template=definitions)
 
 
@@ -187,7 +187,7 @@ def user_register_event_route(event_id):
     if not token:
         raise AccessError('Authorization token is missing')
 
-    return user_register_event(token, event_id)
+    return jsonify(user_register_event(token, event_id))
 
 if __name__ == '__main__':
     app.run(port=config['BACKEND_PORT'], debug=True)
