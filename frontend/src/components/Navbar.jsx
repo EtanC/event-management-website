@@ -8,6 +8,8 @@ import { fetchProfileData } from '../helper/handleProfileData';
 import Cookies from 'js-cookie';
 
 import { useProfile } from '../ProfileProvider';
+import { fetchProfileData } from '../helper/handleProfileData';
+import Cookies from 'js-cookie';
 
 import {
     AppBar,
@@ -22,6 +24,7 @@ import {
 
 function NavBar() {
     const navigate = useNavigate();
+<<<<<<< HEAD
 
     const [auth, setAuth] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -31,6 +34,17 @@ function NavBar() {
 
     useEffect(() => {
         const token = Cookies.get('token');
+=======
+    const [auth, setAuth] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const { fethcedProfileData, loading } = useProfile();
+
+    const [profileData, setProfileData] = useState(null);
+
+    useEffect(() => {
+        const token = Cookies.get('token');
+        console.log(token)
+>>>>>>> 02f46f0 (first attempt at incoporating cookies, does not work atm)
         setAuth(!!token);
         if (token) {
             setAuth(true);
@@ -100,7 +114,7 @@ function NavBar() {
                             {profileData ? (
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <Typography sx={{ mr: 2, color: 'black' }}>
-                                        {profileData.full_name || ''}
+                                        {fethcedProfileData.full_name || ''}
                                     </Typography>
                                     <IconButton
                                         aria-label="account of current user"
@@ -111,15 +125,19 @@ function NavBar() {
                                         sx={{ padding: 0 }}
                                     >
                                         <img
-                                            src={profileData.profile_pic
-                                                ? `data:image/jpeg;base64,${profileData.profile_pic}`
+                                            src={fethcedProfileData.profile_pic
+                                                ? `data:image/jpeg;base64,${fethcedProfileData.profile_pic}`
                                                 : defaultProfilePic}
                                             alt="Profile"
                                             style={{ cursor: 'pointer', height: '50px', width: '50px', borderRadius: '50%' }}
                                         />
                                     </IconButton>
                                 </div>
+<<<<<<< HEAD
                         ) : null}
+=======
+                            ) : null}
+>>>>>>> 02f46f0 (first attempt at incoporating cookies, does not work atm)
                             <Menu
                                 id="menu-appbar"
                                 anchorEl={anchorEl}
@@ -151,7 +169,10 @@ function NavBar() {
                 </Toolbar>
             </AppBar>
         </Box>
+<<<<<<< HEAD
                     
+=======
+>>>>>>> 02f46f0 (first attempt at incoporating cookies, does not work atm)
     );
 }
 

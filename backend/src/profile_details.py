@@ -86,7 +86,8 @@ def update_profile_details(token, username, description, full_name, job_title, f
     return response
 
 
-def update_profile_password(token, old_password, new_password, re_password):
+def update_profile_password(old_password, new_password, re_password):
+    token = request.cookies.get('token')
     if not token:
         raise AccessError('Authorization token is missing or invalid')
     try:

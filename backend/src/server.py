@@ -25,11 +25,11 @@ swagger = Swagger(app, template=definitions)
 @app.errorhandler(HTTPException)
 def access_error_handler(e):
     response = e.get_response()
-    response.data = json.dumps({
+    response.data = {
         "code": e.code,
         "name": e.name,
         "description": e.description,
-    })
+    }
     response.content_type = "application/json"
     return response
     
@@ -205,13 +205,7 @@ def user_register_event_route(event_id):
     if not token:
         raise AccessError('Authorization token is missing')
 
-    return json.dumps(user_register_event(token, event_id))
-
-@app.delete('/clear')
-@swag_from(clear_spec)
-def clear_all():
-    db.clear_all()
-    return json.dumps({})
+    return user_register_event(token, event_id)
 
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == 'test':
