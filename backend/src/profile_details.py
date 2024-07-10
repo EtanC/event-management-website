@@ -7,6 +7,7 @@ import jwt
 import hashlib
 import base64
 import string
+from flask import request
 
 # NOTE: keeping contact info as just email for now until we hear more
 
@@ -83,7 +84,10 @@ def update_profile_details(token, username, description, full_name, job_title, f
         raise AccessError('User ID not found on database')
 
 
-def update_profile_password(token, old_password, new_password, re_password):
+def update_profile_password(old_password, new_password, re_password):
+    token = request.cookies.get('token')
+    if not token:
+        raise AccessError('Authorization token is missing or invalid')
     try:
         token = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
