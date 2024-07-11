@@ -7,6 +7,16 @@ import jwt
 from io import BytesIO
 import base64
 
+@pytest.fixture(scope='session')
+def app():
+    app = create_app()
+    app.config.update({
+        "TESTING": True,
+    })
+
+    with app.app_context():
+        yield app
+
 
 @pytest.fixture
 def user1():
