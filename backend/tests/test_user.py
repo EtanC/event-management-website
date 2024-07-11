@@ -1,8 +1,11 @@
 import pytest
 from backend.src.events import event_create, events_get_all
 from backend.src.auth import auth_register
-from backend.src.user import user_events, user_register_event
+from backend.src.user import user_events, user_register_event, user_manage_events
+from backend.src.events import event_authorize
 from backend.src.database import clear, db
+from backend.src.config import config
+import jwt
 
 @pytest.fixture(scope='session')
 def app():
