@@ -22,11 +22,11 @@ const LoginPage = () => {
 
     return (
         <>
-            <Grid container sx={{ height: '100vh' }}>
+            <Grid container sx={{ height: '100vh', backgroundColor: '#FFFFFF' }}>
                 {/* Left Side */}
-                <Grid 
-                    item 
-                    xs={12} 
+                <Grid
+                    item
+                    xs={12}
                     md={4}
                     sx={{
                         backgroundColor: '#1E4830',
@@ -43,16 +43,16 @@ const LoginPage = () => {
                 >
                     <Typography variant="h4" sx={{ marginBottom: 2, fontWeight: 'bold', fontSize: '1.8em', color: 'white' }}>Don't have an account?</Typography>
                     <Typography variant="body1" sx={{ marginBottom: 2, color: 'white' }}>Register with us today!</Typography>
-                    <Button 
-                        variant="contained" 
-                        sx={{ 
-                            fontWeight: 'bold', 
-                            borderRadius: '15px', 
-                            mt: 2, 
-                            backgroundColor: '#91b748', 
-                            color: '#FFFFF', 
-                            '&:hover': { backgroundColor: '#1E4830' } 
-                        }} 
+                    <Button
+                        variant="contained"
+                        sx={{
+                            fontWeight: 'bold',
+                            borderRadius: '15px',
+                            mt: 2,
+                            backgroundColor: '#91b748',
+                            color: '#FFFFF',
+                            '&:hover': { backgroundColor: '#1E4830' }
+                        }}
                         onClick={() => navigate('/register')}
                     >
                         Sign up
@@ -63,10 +63,10 @@ const LoginPage = () => {
                 <Grid item xs={12} md={8} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 4, position: 'relative' }}>
                     <Box elevation={6} sx={{ padding: 4, width: '100%', maxWidth: 600 }}>
                         <Logo navigate={navigate} />
-                        <Typography variant="h4" align="center" gutterBottom sx={{ color: '#1E4830', fontWeight: 'bold'}}>
+                        <Typography variant="h4" align="center" gutterBottom sx={{ color: '#1E4830', fontWeight: 'bold' }}>
                             Login To Your Account
                         </Typography>
-                        <Typography variant="body2" align="center" sx={{ color: '#1E4830'}}>
+                        <Typography variant="body2" align="center" sx={{ color: '#1E4830' }}>
                             Login Using Social Networks
                         </Typography>
                         <LoginWithSocial />

@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { fetchProfileData } from './helper/handleProfileData';
 
 const ProfileContext = createContext();
 
@@ -13,11 +12,24 @@ export const ProfileProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (localStorage.getItem('token')) {
-            fetchProfileData(setProfileData);
-        } else {
-            setLoading(false);
-        }
+        const fetchProfileData = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await axios.get('http://127.0.0.1:5000/profile/get', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                setProfileData(response.data);
+            } catch (err) {
+                console.log(`Failed to fetch profile: ${err.message}`);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (localStorage.getItem('token')) fetchProfileData();
+        else setLoading(false);
     }, []);
 
     return (
