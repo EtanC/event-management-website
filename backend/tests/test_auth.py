@@ -33,17 +33,17 @@ def move_to_test_db():
     db.set_test_db()
 
 def test_auth_register_sets_cookie(user1):
-with app.test_request_context():
-    response = auth_register(user1['username'], user1['email'], user1['password'])
-    cookies = response.headers.getlist('Set-Cookie')
-    assert any('token=' in cookie for cookie in cookies)
+    with app.test_request_context():
+        response = auth_register(user1['username'], user1['email'], user1['password'])
+        cookies = response.headers.getlist('Set-Cookie')
+        assert any('token=' in cookie for cookie in cookies)
 
 def test_auth_login_sets_cookie(user1):
-with app.test_request_context():
-    auth_register(user1['username'], user1['email'], user1['password'])
-    response = auth_login(user1['email'], user1['password'])
-    cookies = response.headers.getlist('Set-Cookie')
-    assert any('token=' in cookie for cookie in cookies)
+    with app.test_request_context():
+        auth_register(user1['username'], user1['email'], user1['password'])
+        response = auth_login(user1['email'], user1['password'])
+        cookies = response.headers.getlist('Set-Cookie')
+        assert any('token=' in cookie for cookie in cookies)
 
 def test_auth(user1):
     with app.test_request_context():
