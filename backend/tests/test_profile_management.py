@@ -7,19 +7,6 @@ import jwt
 from io import BytesIO
 import base64
 
-<<<<<<< HEAD
-=======
-@pytest.fixture(scope='session')
-def app():
-    app = create_app()
-    app.config.update({
-        "TESTING": True,
-    })
-
-    with app.app_context():
-        yield app
-
->>>>>>> eac1c0c (fixed test)
 @pytest.fixture
 def user1():
     return {
@@ -46,7 +33,6 @@ def generate_random_jwt():
     return token
 
 def test_get_profile(reset, user1):
-<<<<<<< HEAD
     response = auth_register(user1['username'], user1['email'], user1['password'])
     token = response.headers.get('Set-Cookie').split('=')[1].split(';')[0]
     details = get_profile_details(token)
@@ -57,20 +43,6 @@ def test_get_profile(reset, user1):
                         'full_name': None,
                         'fun_fact': None,
                         'job_title': None}
-=======
-    with app.test_request_context():
-        response = auth_register(user1['username'], user1['email'], user1['password'])
-        token = response.cookies.get('token')
-        request.cookies = {'token': token}
-        details = get_profile_details(token)
-        assert(details == { 'username': 'John',
-                            'email': 'johnsmith1234@outlook.com',
-                            'profile_pic': None,
-                            'description': None,
-                            'full_name': None,
-                            'fun_fact': None,
-                            'job_title': None})
->>>>>>> eac1c0c (fixed test)
 
 def test_get_profile_error(reset, user1):
     random_token = generate_random_jwt()
@@ -146,7 +118,6 @@ def test_update_profile(reset, user1):
         with open('backend/src/profile_imgs/test_img.jpeg', 'rb') as img:
             img_data = img.read()
 
-<<<<<<< HEAD
     # image will be shown on the folder for visual testing
     with open('backend/src/profile_imgs/retrieved_img.jpeg', 'wb') as img:
         img.write(decoded_image)
@@ -184,47 +155,12 @@ def test_update_password_error(reset, user1):
     # test old password doesn't match on update password
     with pytest.raises(InputError):
         update_profile_password(token, 'ahuwdbawdahd123!', None, None)
-=======
-        assert decoded_image == img_data
-
-def test_update_profile_error(reset, user1):
-    with app.test_request_context():
-        response = auth_register(user1['username'], user1['email'], user1['password'])
-        token = response.cookies.get('token')
-        request.cookies = {'token': token}
-        
-        random_token = generate_random_jwt()
-
-        # test invalid token
-        with pytest.raises(AccessError):
-            update_profile_details(random_token, 'newusr', 'newemail', None, None, None, None)
-
-def test_update_password(reset, user1):
-    with app.test_request_context():
-        response = auth_register(user1['username'], user1['email'], user1['password'])
-        token = response.cookies.get('token')
-        request.cookies = {'token': token}
-
-        new_password = 'ilovejohn312*'
-
-        update_profile_password(token, user1['password'], new_password, new_password)
-        response = auth_login(user1['email'], new_password)
-        new_token = response.cookies.get('token')
-        assert isinstance(new_token, str)
-
-def test_update_password_error(reset, user1):
-    with app.test_request_context():
-        response = auth_register(user1['username'], user1['email'], user1['password'])
-        token = response.cookies.get('token')
-        request.cookies = {'token': token}
->>>>>>> eac1c0c (fixed test)
 
         new_password = 'ilovejohn312*'
         # test old password doesn't match on update password
         with pytest.raises(InputError):
             update_profile_password(token, 'ahuwdbawdahd123!', None, None)
 
-<<<<<<< HEAD
     # test new passsword and re-entered password don't match on update password
     with pytest.raises(InputError):
         update_profile_password(token, user1['password'], new_password, 'auiwdawbd123$')
@@ -241,25 +177,3 @@ def test_update_password_error(reset, user1):
     no_number = 'abcdef!@#$%'
     with pytest.raises(InputError):
         update_profile_password(token, user1['password'], no_number, no_number)
-=======
-        # test old password not given when trying to update password
-        with pytest.raises(InputError):
-            update_profile_password(token, None,  new_password, new_password)
-
-        # test new passsword and re-entered password don't match on update password
-        with pytest.raises(InputError):
-            update_profile_password(token, user1['password'], new_password, 'auiwdawbd123$')
-
-        # test invalid password formats
-        short_password = 'a1!'
-        with pytest.raises(InputError):
-            update_profile_password(token, user1['password'], short_password, short_password)
-
-        no_special_character = 'abcdef123'
-        with pytest.raises(InputError):
-            update_profile_password(token, user1['password'], no_special_character, no_special_character)
-
-        no_number = 'abcdef!@#$%'
-        with pytest.raises(InputError):
-            update_profile_password(token, user1['password'], no_number, no_number)
->>>>>>> eac1c0c (fixed test)
