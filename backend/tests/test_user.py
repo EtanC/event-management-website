@@ -39,8 +39,7 @@ def test_user(reset, sample_event, sample_user):
     for key in expected_event.keys():
         assert events_get_all()['events'][0][key] == expected_event[key]
     user_register_event(sample_user, event_id)
-    for key in expected_event.keys():
-        assert user_events(sample_user)['events'][0][key] == expected_event[key]
+    assert user_events(sample_user)['events'] == [expected_event]
 
 def test_user_register_event_twice(sample_event, sample_user):
     event_id = event_create(sample_user, sample_event)['event_id']
@@ -102,19 +101,29 @@ def decode_token(token):
     data = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
     return data['user_id']
 
-def assert_event_equal(event, expected_event):
-    for key in expected_event.keys():    
-        assert event[key] == expected_event[key]
+def test_user_event_deleted(reset, sample_event, sample_user):
+    # create event
+    event_id = event_create(sample_user, sample_event)['event_id']
+    user_register_event(sample_user, event_id)
+    event_delete(sample_user, event_id)
+    assert user_events(sample_user)['events'] == []
 
-def test_user_manage_events(reset, sample_event, sample_user):
-    event1 = sample_event
-    event2 = {
-        'deadline': '2 July 2024',
-        'details': 'This is a somewhat ok event, everyone should come',
-        'details_link': 'http://www.notrealeventpage.com',
-        'name': 'A not so real event',
-        'location': 'Benin, West Africa',
-        'start_date': '1 July 2024'
+def test_no_events_for_user(reset, sample_user):
+    assert user_events(sample_user)['events'] == []
+
+def test_event_created_by_different_user(reset, sample_event):
+    # Register two users
+    response1 = auth_register('user1', 'user1@example.com', 'password1')
+    token1 = response1.cookies.get('token')
+
+    response2 = auth_register('user2', 'user2@example.com', 'password2')
+    token2 = response2.cookies.get('token')
+
+    # User 1 creates an event
+    event_id = event_create(token1, sample_event)['event_id']
+    expected_event = {
+        **sample_event,
+        '_id': event_id
     }
     expected_event1 = { **event1 }
     expected_event2 = { **event2 }
