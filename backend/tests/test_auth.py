@@ -22,46 +22,67 @@ def reset():
 def move_to_test_db():
     db.set_test_db()
 
+def test_auth_register_sets_cookie(user1):
+with app.test_request_context():
+    response = auth_register(user1['username'], user1['email'], user1['password'])
+    cookies = response.headers.getlist('Set-Cookie')
+    assert any('token=' in cookie for cookie in cookies)
+
+def test_auth_login_sets_cookie(user1):
+with app.test_request_context():
+    auth_register(user1['username'], user1['email'], user1['password'])
+    response = auth_login(user1['email'], user1['password'])
+    cookies = response.headers.getlist('Set-Cookie')
+    assert any('token=' in cookie for cookie in cookies)
+
 def test_auth(user1):
-    # user is given a token when registering
-    tkn1 = auth_register(user1['username'], user1['email'], user1['password'])['token']
-    assert isinstance(tkn1, str)
-    # user is given a token when logging in
-    tkn2 = auth_login(user1['email'], user1['password'])['token']
-    assert isinstance(tkn2, str)
+    with app.test_request_context():
+        # User is given a token when registering
+        response = auth_register(user1['username'], user1['email'], user1['password'])
+        token = response.cookies.get('token')
+        assert isinstance(token, str)
+        
+        # User is given a token when logging in
+        response = auth_login(user1['email'], user1['password'])
+        token = response.cookies.get('token')
+        assert isinstance(token, str)
+
 
 def test_auth_error(user1):
-    # registering with the same email gives an error
-    auth_register(user1['username'], user1['email'], user1['password'])['token']
-    with pytest.raises(InputError):
+    with app.test_request_context():
         auth_register(user1['username'], user1['email'], user1['password'])
-    # logging in with the wrong email gives an error
-    with pytest.raises(InputError):
-        auth_login("wrong email", user1['password'])
+        # Registering with the same email gives an error
+        with pytest.raises(InputError):
+            auth_register(user1['username'], user1['email'], user1['password'])
+        # Logging in with the wrong email gives an error
+        with pytest.raises(InputError):
+            auth_login("wrong email", user1['password'])
 
 def test_auth_register_token_contents(user1):
-    tkn1 = auth_register(user1['username'], user1['email'], user1['password'])['token']
-    data = jwt.decode(tkn1, config['SECRET'], algorithms=['HS256'])
-    
-    # Check jwt token contains the right things
-    assert sorted(data.keys()) == ['session_end_time', 'session_id', 'user_id']
-    
-    # Check data type of values
-    assert isinstance(data['user_id'], str)
-    assert isinstance(data['session_id'], str)
-    # Assuming default datetime date format, which is YYYY-MM-DDTHH:MM:SS. mmmmmm
-    assert isinstance(datetime.datetime.strptime(data['session_end_time'], "%Y-%m-%d %H:%M:%S.%f"), datetime.datetime)
+    with app.test_request_context():
+        response = auth_register(user1['username'], user1['email'], user1['password'])
+        token = response.cookies.get('token')
+        data = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
+        
+        # Check JWT token contains the right things
+        assert sorted(data.keys()) == ['session_end_time', 'session_id', 'user_id']
+        
+        # Check data type of values
+        assert isinstance(data['user_id'], str)
+        assert isinstance(data['session_id'], str)
+        assert isinstance(datetime.datetime.strptime(data['session_end_time'], "%Y-%m-%d %H:%M:%S.%f"), datetime.datetime)
 
 def test_auth_login_token_contents(user1):
-    auth_register(user1['username'], user1['email'], user1['password'])
-    tkn1 = auth_login(user1['email'], user1['password'])['token']
-    data = jwt.decode(tkn1, config['SECRET'], algorithms=['HS256'])
+    with app.test_request_context():
+        auth_register(user1['username'], user1['email'], user1['password'])
+        response = auth_login(user1['email'], user1['password'])
+        token = response.cookies.get('token')
+        data = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
 
-    # Check jwt token contains the right things
-    assert sorted(data.keys()) == ['session_end_time', 'session_id', 'user_id']
+        # Check JWT token contains the right things
+        assert sorted(data.keys()) == ['session_end_time', 'session_id', 'user_id']
 
-    # Check data type of values
-    assert isinstance(data['user_id'], str)
-    assert isinstance(data['session_id'], str)
-    # Assuming default datetime date format, which is YYYY-MM-DDTHH:MM:SS. mmmmmm
-    assert isinstance(datetime.datetime.strptime(data['session_end_time'], "%Y-%m-%d %H:%M:%S.%f"), datetime.datetime)
+        # Check data type of values
+        assert isinstance(data['user_id'], str)
+        assert isinstance(data['session_id'], str)
+        assert isinstance(datetime.datetime.strptime(data['session_end_time'], "%Y-%m-%d %H:%M:%S.%f"), datetime.datetime)
