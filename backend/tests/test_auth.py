@@ -6,6 +6,17 @@ import jwt
 from backend.src.config import config
 import datetime
 
+@pytest.fixture(scope='session')
+def app():
+    app = create_app()
+    app.config.update({
+        "TESTING": True,
+    })
+
+    with app.app_context():
+        yield app
+        yield app 
+
 @pytest.fixture
 def user1():
     return {
