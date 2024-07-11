@@ -19,10 +19,10 @@ def sample_event():
 @pytest.fixture
 def sample_user():
     response = auth_register('John', 'johnsmith1234@outlook.com', '12345678')
-    token = response.headers.get('Set-Cookie').split('=')[1].split(';')[0]
+    token = response.cookies.get('token')
     return token
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def reset():
     clear('users')
     clear('events')
