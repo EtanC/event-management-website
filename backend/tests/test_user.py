@@ -7,7 +7,7 @@ from backend.src.error import InputError
 
 @pytest.fixture
 def sample_event():
-    event = {
+    return {
         'deadline': '1 July 2024',
         'details': 'This is a great event, everyone should come',
         'details_link': 'http://www.realeventpage.com',
@@ -15,7 +15,6 @@ def sample_event():
         'location': 'Lesotho, South Africa',
         'start_date': '30 June 2024'
     }
-    return event
 
 @pytest.fixture
 def sample_user():
@@ -27,10 +26,6 @@ def sample_user():
 def reset():
     clear('events')
     clear('users')
-
-@pytest.fixture(scope='session', autouse=True)
-def move_to_test_db():
-    db.set_test_db()
 
 def test_user(sample_event, sample_user):
     event_id = event_create(sample_user, sample_event)['event_id']
