@@ -8,16 +8,6 @@ from backend.src.error import InputError, AccessError
 from backend.src.config import config
 import jwt
 
-@pytest.fixture(scope='session')
-def app():
-    app = create_app()
-    app.config.update({
-        "TESTING": True,
-    })
-
-    with app.app_context():
-        yield app
-
 @pytest.fixture
 def sample_event():
     return {
