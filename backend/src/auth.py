@@ -95,7 +95,6 @@ def auth_register(username, email, password):
 
 
 
-
 def auth_logout():
     token = request.cookies.get('token')
     if not token:
