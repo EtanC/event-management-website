@@ -29,7 +29,7 @@ const EventCard = ({ event, handleCardClick }) => (
                 }}
             >
                 <img
-                    src={defaultImage}
+                    src={event.image_link ? event.image_link : defaultImage}
                     alt={event.name}
                     style={{
                         maxHeight: '100%',
