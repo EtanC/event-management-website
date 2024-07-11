@@ -4,8 +4,11 @@ const theme = createTheme({
     fontFamily: 'Impact, scans-serif',
     palette: {
         primary: {
-        main: '#1E4830'
+            main: '#1E4830'
         },
+        secondary: {
+            main: '#FFFFFF'
+        }
     },
     typography: {
         fontFamily: 'Inter, sans-serif',

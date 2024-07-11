@@ -1,3 +1,5 @@
+import { jwtDecode } from 'jwt-decode';
+
 export const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     let date;
@@ -8,4 +10,19 @@ export const formatDate = (dateString) => {
     date = new Date(Date.parse(dateString));
     if (!isNaN(date)) return date.toLocaleDateString('en-US', options);
     return "Invalid date format";
+}
+
+const getUserId = () => {
+    const token = localStorage.getItem('token');
+    try {
+        return jwtDecode(token).user_id;
+    } catch (error) {
+        console.error("Invalid Token");
+        throw (error);
+    }
+}
+
+export const checkUserIsEventOwner = (user_id) => {
+    if (user_id === getUserId()) return true
+    else return false
 }

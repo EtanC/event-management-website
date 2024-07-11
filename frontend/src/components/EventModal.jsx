@@ -9,11 +9,15 @@ import {
     Typography,
     Box,
     Alert,
+    Snackbar,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import Tags from './Tags.jsx';
 import { handleCreateEvent, handleEditEvent } from '../helper/handleEventData.js';
+
+
+const MAX_NAME_LENGTH = 100;
 
 const styles = {
     modal: {
@@ -50,10 +54,6 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 const EventModal = ({ open, handleClose, headerText, event }) => {
-    const [dates, setDates] = useState({
-        start_date: '',
-        deadline: ''
-    })
     const [eventData, setEventData] = useState({
         name: '',
         location: '',
@@ -64,6 +64,8 @@ const EventModal = ({ open, handleClose, headerText, event }) => {
         tags: [],
         image: null
     });
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
 
     useEffect(() => {
         if (event) {
@@ -77,10 +79,6 @@ const EventModal = ({ open, handleClose, headerText, event }) => {
                 tags: event.tags || [],
                 image: event.image || null
             });
-            setDates({
-                start_date: event.start_date || '',
-                deadline: event.deadline || ''
-            });
         }
     }, [event]);
 
@@ -88,12 +86,22 @@ const EventModal = ({ open, handleClose, headerText, event }) => {
 
     const handleSave = async () => {
         setErrorMessage(null)
+        console.log(eventData)
+        if (new Date(eventData.start_date) > new Date(eventData.deadline)) {
+            setErrorMessage('Start date must be before the deadline');
+            return;
+        }
+        if (new Date(eventData.start_date) < new Date()) {
+            setErrorMessage('Start date cannot be in the past');
+            return
+        }
         try {
             let result;
             if (event && event._id) result = await handleEditEvent(event._id, eventData);
             else result = await handleCreateEvent(eventData);
-
             if (result === 200) {
+                setSnackbarMessage(`Event successfully ${event && event._id ? 'updated' : 'created'}!`);
+                setSnackbarOpen(true);
                 handleClose();
                 setEventData({
                     name: '',
@@ -111,8 +119,16 @@ const EventModal = ({ open, handleClose, headerText, event }) => {
         }
     };
 
+    const handleSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        setSnackbarOpen(false);
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
+        // max character limit on event name
+        if (name === 'name' && value.length > MAX_NAME_LENGTH) return;
+
         setEventData(prevState => ({
             ...prevState,
             [name]: value
@@ -121,7 +137,6 @@ const EventModal = ({ open, handleClose, headerText, event }) => {
 
     const handleDateChange = (field) => (event) => {
         const inputDate = event.target.value;
-
         setEventData(prevState => ({
             ...prevState,
             [field]: inputDate,
@@ -164,7 +179,7 @@ const EventModal = ({ open, handleClose, headerText, event }) => {
                                     name="name"
                                     value={eventData.name}
                                     onChange={handleChange}
-                                    InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
+                                    InputProps={{ maxLength: MAX_NAME_LENGTH, sx: { borderRadius: '40px', mb: 2 }, }}
                                 />
                                 <TextField
                                     fullWidth
@@ -231,7 +246,7 @@ const EventModal = ({ open, handleClose, headerText, event }) => {
                                     InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                 />
                                 <Tags tags={eventData.tags} setTags={handleTagsChange} />
-                                <Box sx={{ display: 'flex', gap: '20px', alignItems: 'center', mb: 5 }}>
+                                <Box sx={{ display: 'flex', gap: '20px', alignItems: 'center', mb: '20px' }}>
                                     <Button
                                         component="label"
                                         variant="contained"
@@ -256,6 +271,12 @@ const EventModal = ({ open, handleClose, headerText, event }) => {
                     </Card>
                 </Fade>
             </Modal>
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={6000}
+                onClose={handleSnackbarClose}
+                message={snackbarMessage}
+            />
         </>
     );
 };
