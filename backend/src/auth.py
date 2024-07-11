@@ -95,7 +95,11 @@ def auth_register(username, email, password):
 
 
 
-def auth_logout(token):
+
+def auth_logout():
+    token = request.cookies.get('token')
+    if not token:
+        raise AccessError('Authorization token is missing or invalid')
     data = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
     db.active_sessions.delete_one({'_id': ObjectId(data['session_id'])})
 

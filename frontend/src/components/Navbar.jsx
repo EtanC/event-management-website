@@ -26,6 +26,10 @@ function NavBar() {
 
     useEffect(() => {
         const token = Cookies.get('token');
+<<<<<<< HEAD
+=======
+        console.log(token)
+>>>>>>> ef6f0ce (first attempt at incoporating cookies, does not work atm)
         setAuth(!!token);
         if (token) {
             setAuth(true);
