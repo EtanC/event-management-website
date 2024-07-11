@@ -2,6 +2,7 @@ import pytest
 from backend.src.auth import auth_register
 from backend.src.events import event_create, event_update, event_delete, events_get_all
 from backend.src.database import clear, db
+from backend.src.app import create_app
 
 @pytest.fixture(scope='session')
 def app():

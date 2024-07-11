@@ -19,7 +19,6 @@ app = Flask(__name__)
 CORS(app, expose_headers='Authorization', supports_credentials=True)
 swagger = Swagger(app, template=definitions)
 
-
 @app.errorhandler(HTTPException)
 def access_error_handler(e):
     response = e.get_response()
