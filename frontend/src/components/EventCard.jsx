@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardMedia, Typography, Grid, IconButton, Menu, MenuItem } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import defaultImage from '../Image/loading.png';
+import { formatDate } from '../helper/helpers'
 
 const EventCard = ({ event, handleCardClick, isMyEventsPage, onEditEvent, onDeleteEvent }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+    const formattedDate = formatDate(event.start_date)
 
     const handleMenuClick = (event) => {
         event.stopPropagation();
@@ -71,7 +73,7 @@ const EventCard = ({ event, handleCardClick, isMyEventsPage, onEditEvent, onDele
                     anchorEl={anchorEl}
                     open={open}
                     onClose={handleClose}
-                    onClick={(event) => event.stopPropagation()} // Add this line
+                    onClick={(event) => event.stopPropagation()}
                 >
                     <MenuItem onClick={handleEdit}>Edit Event</MenuItem>
                     <MenuItem onClick={handleDelete}>Delete Event</MenuItem>
@@ -106,7 +108,7 @@ const EventCard = ({ event, handleCardClick, isMyEventsPage, onEditEvent, onDele
                         {event.name}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                        {event.start_date}
+                        {formattedDate}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                         {event.location}

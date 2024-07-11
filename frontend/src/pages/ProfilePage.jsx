@@ -101,7 +101,7 @@ function ProfilePage() {
             setIsEditing(false);
 
         } catch (err) {
-            console.log(`Failed to update profile: ${err.message}`);
+            console.error(`Failed to update profile: ${err.message}`);
         }
     };
 
@@ -113,7 +113,7 @@ function ProfilePage() {
                 setIsEditingPW(false);
             }
         } catch (err) {
-            console.log(`Failed to change password: ${err.message}`);
+            console.error(`Failed to change password: ${err.message}`);
         }
     }
 

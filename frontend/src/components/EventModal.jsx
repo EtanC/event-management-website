@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Button,
     Modal,
@@ -64,6 +64,26 @@ const EventModal = ({ open, handleClose, headerText, event }) => {
         tags: [],
         image: null
     });
+
+    useEffect(() => {
+        if (event) {
+            setEventData({
+                name: event.name || '',
+                location: event.location || '',
+                start_date: event.start_date || '',
+                deadline: event.deadline || '',
+                details_link: event.details_link || '',
+                details: event.details || '',
+                tags: event.tags || [],
+                image: event.image || null
+            });
+            setDates({
+                start_date: event.start_date || '',
+                deadline: event.deadline || ''
+            });
+        }
+    }, [event]);
+
     const [errorMessage, setErrorMessage] = useState('')
 
     const handleSave = async () => {
@@ -101,16 +121,10 @@ const EventModal = ({ open, handleClose, headerText, event }) => {
 
     const handleDateChange = (field) => (event) => {
         const inputDate = event.target.value;
-        const date = new Date(inputDate);
-        const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 
         setEventData(prevState => ({
             ...prevState,
-            [field]: formattedDate,
-        }));
-        setDates(prevState => ({
-            ...prevState,
-            [field]: inputDate
+            [field]: inputDate,
         }));
     };
     const handleTagsChange = (tags) => {
@@ -168,7 +182,7 @@ const EventModal = ({ open, handleClose, headerText, event }) => {
                                         name="start_date"
                                         type="date"
                                         required
-                                        value={dates.start_date}
+                                        value={eventData.start_date}
                                         onChange={handleDateChange('start_date')}
                                         fullWidth
                                         InputLabelProps={{ shrink: true, }}
@@ -183,7 +197,7 @@ const EventModal = ({ open, handleClose, headerText, event }) => {
                                         name="deadline"
                                         type="date"
                                         required
-                                        value={dates.deadline}
+                                        value={eventData.deadline}
                                         onChange={handleDateChange('deadline')}
                                         fullWidth
                                         InputLabelProps={{ shrink: true, }}

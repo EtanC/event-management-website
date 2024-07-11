@@ -71,7 +71,6 @@ export const fetchUserRegisteredEvents = async () => {
 }
 
 export const handleEditEvent = async (event_id, eventData) => {
-    console.log('edit event', event_id, eventData)
     try {
         const token = localStorage.getItem('token');
         const response = await axios.put(`http://127.0.0.1:5000/event/update/${event_id}`,

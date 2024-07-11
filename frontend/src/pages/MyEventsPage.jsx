@@ -71,7 +71,6 @@ function MyEvents() {
 
     const handleEditClick = (event) => {
         setEventToEdit(event);
-        console.log(event)
         setOpenEditEvent(true);
     };
 

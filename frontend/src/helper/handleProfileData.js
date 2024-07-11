@@ -11,7 +11,7 @@ export const fetchProfileData = async (setProfile) => {
         const profileData = response.data;
         setProfile(profileData);
     } catch (err) {
-        console.log(`Failed to fetch profile ${err.message}`);
+        console.error(`Failed to fetch profile ${err.message}`);
     }
 }
 
