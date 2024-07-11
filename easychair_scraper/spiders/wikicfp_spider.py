@@ -32,4 +32,5 @@ class EasychairSpider(scrapy.Spider):
         details_html = response.css('body > .contsec:nth-child(5) .cfp').get()
         details = re.search('<div class="cfp" align="left">((?:(.|[\n\r\t])*))', details_html).group(1)
         conference_deets['details'] = details
+        conference_deets['conference_link'] = response.xpath('//a[@target="_newtab"]/@href').get()
         yield conference_deets
