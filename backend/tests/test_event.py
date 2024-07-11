@@ -4,16 +4,6 @@ from backend.test_src.events import event_create, event_update, event_delete, ev
 from backend.test_src.database import clear_all
 from backend.src.error import AccessError, InputError
 
-@pytest.fixture(scope='session')
-def app():
-    app = create_app()
-    app.config.update({
-        "TESTING": True,
-    })
-
-    with app.app_context():
-        yield app
-
 @pytest.fixture
 def sample_event():
     event = {
