@@ -48,7 +48,10 @@ def auth_register_route():
 @app.post('/auth/logout')
 @swag_from(auth_logout_spec)
 def auth_logout_route():
-    return auth_logout()
+    token = request.cookies.get('token')
+    if not token:
+        raise AccessError('Authorization token is missing')
+    return auth_logout(token)
 
 
 @app.post('/events/crawl')
@@ -167,7 +170,8 @@ def profile_update_password_route():
         raise AccessError('Authorization token is missing')
 
     body = request.get_json()
-    return update_profile_password(token, body['old_password'], body['new_password'], body['re_password'])
+    
+    return jsonify(update_profile_password(token, body['old_password'], body['new_password'], body['re_password']))
 
 
 @app.get('/user/events')

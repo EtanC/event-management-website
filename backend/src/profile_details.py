@@ -126,3 +126,5 @@ def update_profile_password(token, old_password, new_password, re_password):
     result = db.users.update_one(filter, changed_values)
     if result.matched_count == 0:
         raise AccessError('User ID not found on database')
+
+    return {'message': 'Password updated successfully'}
