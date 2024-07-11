@@ -5,6 +5,11 @@
 }
 
 body {
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
+}
+
+.content {
+  padding-top: 125px;
+  background-color: #f5f5f5;
 }
