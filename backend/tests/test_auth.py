@@ -25,7 +25,6 @@ def app():
     })
 
     with app.app_context():
-        yield app
         yield app 
 
 @pytest.fixture
