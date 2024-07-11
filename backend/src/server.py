@@ -11,7 +11,7 @@ from werkzeug.exceptions import HTTPException
 from backend.src.auth import auth_login, auth_register, auth_logout
 from backend.src.events import events_crawl, events_clear, events_get_all, event_create, event_update, event_delete, event_authorize, events_ai_description, events_get_page
 from backend.src.profile_details import get_profile_details, update_profile_details, update_profile_password
-from backend.src.user import user_register_event, user_events
+from backend.src.user import user_register_event, user_events, user_unregister_event
 from flask_cors import CORS
 from backend.src.config import config
 
@@ -196,6 +196,15 @@ def user_register_event_route(event_id):
         token = token[len('Bearer '):]
 
     return json.dumps(user_register_event(token, event_id))
+
+@app.post('/user/unregister/<event_id>')
+def user_unregister_event_route(event_id):
+    token = request.headers.get('Authorization')
+
+    if token and token.startswith('Bearer '):
+        token = token[len('Bearer '):]
+
+    return json.dumps(user_unregister_event(token, event_id))
 
 if __name__ == '__main__':
     app.run(port=config['BACKEND_PORT'], debug=True)
