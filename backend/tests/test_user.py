@@ -5,6 +5,16 @@ from backend.src.user import user_events, user_register_event
 from backend.src.database import clear, db
 from backend.src.error import InputError
 
+@pytest.fixture(scope='session')
+def app():
+    app = create_app()
+    app.config.update({
+        "TESTING": True,
+    })
+
+    with app.app_context():
+        yield app
+
 @pytest.fixture
 def sample_event():
     return {
