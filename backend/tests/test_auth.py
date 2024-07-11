@@ -5,6 +5,7 @@ from backend.test_src.database import clear_all
 import jwt
 from backend.src.config import config
 import datetime
+from backend.src.app import create_app
 
 @pytest.fixture(scope='session')
 def app():

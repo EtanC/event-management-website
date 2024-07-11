@@ -6,6 +6,7 @@ from backend.test_src.database import clear_all
 import jwt
 from io import BytesIO
 import base64
+from backend.src.app import create_app
 
 @pytest.fixture
 def user1():
