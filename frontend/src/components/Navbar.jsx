@@ -4,9 +4,6 @@ import { handleLogout } from '../helper/handleAuth';
 import logo from '../Image/CompanyLogo.png';
 import defaultProfilePic from '../Image/defaultProfile.png';
 
-import { fetchProfileData } from '../helper/handleProfileData';
-import Cookies from 'js-cookie';
-
 import { useProfile } from '../ProfileProvider';
 import { fetchProfileData } from '../helper/handleProfileData';
 import Cookies from 'js-cookie';
@@ -24,17 +21,6 @@ import {
 
 function NavBar() {
     const navigate = useNavigate();
-<<<<<<< HEAD
-
-    const [auth, setAuth] = useState(false);
-    const [anchorEl, setAnchorEl] = useState(null);
-
-    const [profileData, setProfileData] = useState(null);
-    const { profileData, loading } = useProfile();
-
-    useEffect(() => {
-        const token = Cookies.get('token');
-=======
     const [auth, setAuth] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const { fethcedProfileData, loading } = useProfile();
@@ -43,8 +29,6 @@ function NavBar() {
 
     useEffect(() => {
         const token = Cookies.get('token');
-        console.log(token)
->>>>>>> 02f46f0 (first attempt at incoporating cookies, does not work atm)
         setAuth(!!token);
         if (token) {
             setAuth(true);
@@ -99,19 +83,19 @@ function NavBar() {
     }
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static" sx={{ padding: "25px 10px 25px", backgroundColor: 'white', borderBottom: '1px solid #e0e0e0' }}>
-                <Toolbar>
-                    <img
-                        src={logo}
-                        alt="Company Logo"
-                        style={{ cursor: 'pointer', height: '50px' }}
-                        onClick={handleLogoClick}
-                    />
-                    <Box sx={{ flexGrow: 1 }} />
-                    {auth ? (
-                        <div>
-                            {profileData ? (
+        <>
+            <Box sx={{ flexGrow: 1 }}>
+                <AppBar position="fixed" elevation={0} sx={{ padding: "25px 10px 25px", backgroundColor: 'white', borderBottom: '1px solid #e0e0e0' }}>
+                    <Toolbar>
+                        <img
+                            src={logo}
+                            alt="Company Logo"
+                            style={{ cursor: 'pointer', height: '50px' }}
+                            onClick={handleLogoClick}
+                        />
+                        <Box sx={{ flexGrow: 1 }} />
+                        {auth && !loading ? (
+                            profileData ? (
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <Typography sx={{ mr: 2, color: 'black' }}>
                                         {fethcedProfileData.full_name || ''}
@@ -133,46 +117,44 @@ function NavBar() {
                                         />
                                     </IconButton>
                                 </div>
-<<<<<<< HEAD
-                        ) : null}
-=======
-                            ) : null}
->>>>>>> 02f46f0 (first attempt at incoporating cookies, does not work atm)
-                            <Menu
-                                id="menu-appbar"
-                                anchorEl={anchorEl}
-                                anchorOrigin={{
-                                    vertical: 'bottom',
-                                    horizontal: 'right',
-                                }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                open={Boolean(anchorEl)}
-                                onClose={handleClose}
-                                sx={{ mt: 1.5 }}
-                            >
-                                <MenuItem onClick={handleProfile}>Profile</MenuItem>
-                                <MenuItem onClick={handleCalendar}>Calendar</MenuItem>
-                                <MenuItem onClick={handleAdmin}>Admin</MenuItem>
-                                <MenuItem onClick={() => handleLogout(navigate, setAuth)}>Log Out</MenuItem>
-                            </Menu>
-                        </div>
-                    ) : (
-                        <div>
-                            <Button sx={{ marginRight: 2 }} onClick={handleSignIn}>Sign In</Button>
-                            <Button variant="contained" color="primary" onClick={handleSignUp}>Sign Up</Button>
-                        </div>
-                    )}
-                </Toolbar>
-            </AppBar>
-        </Box>
-<<<<<<< HEAD
-                    
-=======
->>>>>>> 02f46f0 (first attempt at incoporating cookies, does not work atm)
+                            ) : (
+                                <div>
+                                    <Button sx={{ marginRight: 2 }} onClick={handleSignIn}>Sign In</Button>
+                                    <Button variant="contained" color="primary" onClick={handleSignUp}>Sign Up</Button>
+                                </div>
+                            )
+                        ) : (
+                            <div>
+                                <Button sx={{ marginRight: 2 }} onClick={handleSignIn}>Sign In</Button>
+                                <Button variant="contained" color="primary" onClick={handleSignUp}>Sign Up</Button>
+                            </div>
+                        )}
+                        <Menu
+                            id="menu-appbar"
+                            anchorEl={anchorEl}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={Boolean(anchorEl)}
+                            onClose={handleClose}
+                            sx={{ mt: 1.5 }}
+                        >
+                            <MenuItem onClick={handleProfile}>Profile</MenuItem>
+                            <MenuItem onClick={handleCalendar}>Calendar</MenuItem>
+                            <MenuItem onClick={handleAdmin}>Admin</MenuItem>
+                            <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
+                        </Menu>
+                    </Toolbar>
+                </AppBar>
+            </Box>
+            <Box sx={{ paddingTop: '125px', backgroundColor: '#f5f5f5' }} />
+        </>
     );
 }
 
