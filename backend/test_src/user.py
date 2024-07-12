@@ -9,3 +9,7 @@ def user_events(token):
     header = token_header(token)
     response = requests.get(f'{backend_url}/user/events', headers=header)
     return parse_response(response)
+def user_manage_events(token):
+    header = token_header(token)
+    response = requests.get(f'{backend_url}/user/manage/events', headers=header)
+    return parse_response(response)
