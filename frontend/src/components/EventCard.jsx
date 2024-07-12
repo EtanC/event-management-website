@@ -4,7 +4,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import defaultImage from '../Image/loading.png';
 import { formatDate } from '../helper/helpers'
 
-const EventCard = ({ event, handleCardClick, isMyEventsPage, onEditEvent, onDeleteEvent }) => {
+const EventCard = ({ event, handleCardClick, isMyEventsPage, onEditEvent, onDeleteEvent, onAddEventManger }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
     const formattedDate = formatDate(event.start_date)
@@ -25,6 +25,12 @@ const EventCard = ({ event, handleCardClick, isMyEventsPage, onEditEvent, onDele
         event.stopPropagation();
         handleClose();
         onEditEvent(event);
+    };
+
+    const handleAddManager = (event) => {
+        event.stopPropagation();
+        handleClose();
+        onAddEventManger();
     };
 
     const handleDelete = (event) => {
@@ -76,6 +82,7 @@ const EventCard = ({ event, handleCardClick, isMyEventsPage, onEditEvent, onDele
                     onClick={(event) => event.stopPropagation()}
                 >
                     <MenuItem onClick={handleEdit}>Edit Event</MenuItem>
+                    <MenuItem onClick={handleAddManager}>Add Event Manager</MenuItem>
                     <MenuItem onClick={handleDelete}>Delete Event</MenuItem>
                 </Menu>
                 <CardMedia

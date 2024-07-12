@@ -18,6 +18,7 @@ function MyEvents() {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [eventToDelete, setEventToDelete] = useState(null);
     const [openEditEvent, setOpenEditEvent] = useState(false);
+    const [openAddManager, setOpenAddManager] = useState(false);
     const [eventToEdit, setEventToEdit] = useState(null);
 
     const fetchEvents = async () => {
@@ -74,13 +75,24 @@ function MyEvents() {
         setOpenEditEvent(true);
     };
 
+    const handleManagerClick = (event) => {
+        setEventToEdit(event);
+        setOpenAddManager(true);
+    };
+
     const handleEditClose = (event) => {
         setOpenEditEvent(false)
         fetchEvents();
     }
 
     const renderEventCards = (events, isCreatedEvents) => {
-        if (loading) return <CircularProgress />;
+        if (loading) {
+            return (
+                <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+                    <CircularProgress />
+                </Box>
+            )
+        }
         if (error) return <Typography color="error">{error}</Typography>;
         if (!events || events.length === 0) return <Typography>No events found.</Typography>;
 
@@ -93,6 +105,7 @@ function MyEvents() {
                         handleCardClick={handleCardClick}
                         isMyEventsPage={isCreatedEvents}
                         onEditEvent={() => handleEditClick(event)}
+                        onAddEventManger={() => handleManagerClick(event)}
                         onDeleteEvent={() => handleDeleteClick(event)}
                     />
                 ))}
@@ -110,6 +123,7 @@ function MyEvents() {
                 content={'Are you sure you want to delete this event? This action cannot be undone.'}
             />
             <EventModal open={openEditEvent} handleClose={handleEditClose} headerText={'Edit Event'} event={eventToEdit} />
+            {/* <EventManagerModal open={openAddManager} handleClose={} event={eventToEdit}/> */}
             <Navbar />
             <Box sx={{ backgroundColor: '#f5f5f5', padding: '40px 0', minHeight: '90vh' }}>
                 <Container maxWidth="lg">
