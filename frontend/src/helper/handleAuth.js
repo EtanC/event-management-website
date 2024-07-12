@@ -18,7 +18,8 @@ const manageSessionAndNavigate = async (token, navigate) => {
         navigate('/login');
     }, sessionExpiryTime);
 
-    await sleep(2000);
+    // actually necessary - allows for navbar to fetch profile & load in time
+    await sleep(3000);
     navigate('/'); // navigate to home
 };
 

@@ -1,6 +1,5 @@
 import { useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import Navbar from '../components/Navbar';
 import HtmlTagRender from '../components/HtmlTagRender';
 import EventDetail from '../components/EventDetail';
 import defaultImage from '../Image/eventInfo-background.jpeg';
@@ -48,9 +47,7 @@ function EventDetailPage() {
 
     return (
         <>
-            <ThemeProvider theme={theme}></ThemeProvider>
-            <Navbar />
-            <Box sx={{ backgroundColor: '#f5f5f5', padding: '20px 0' }}>
+            <ThemeProvider theme={theme}>
                 <Container maxWidth="lg">
                     <Box
                         sx={{
@@ -138,7 +135,7 @@ function EventDetailPage() {
                         </Grid>
                     </Grid>
                 </Container>
-            </Box>
+            </ThemeProvider>
         </>
     );
 }

@@ -43,11 +43,11 @@ const RegisterPage = () => {
 
     return (
         <>
-            <Grid container sx={{ height: '100vh' }}>
+            <Grid container sx={{ height: '100vh', backgroundColor: '#FFFFFF' }}>
                 {/* Left Side */}
-                <Grid 
-                    item 
-                    xs={12} 
+                <Grid
+                    item
+                    xs={12}
                     md={4}
                     sx={{
                         backgroundColor: '#1E4830',

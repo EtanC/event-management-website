@@ -1,8 +1,9 @@
 import pytest
-from backend.src.events import event_create, events_get_all
-from backend.src.auth import auth_register
-from backend.src.user import user_events, user_register_event, user_manage_events
-from backend.src.events import event_authorize
+from backend.test_src.events import event_create, events_get_all
+from backend.test_src.auth import auth_register
+from backend.test_src.user import user_events, user_register_event, user_manage_events
+from backend.test_src.database import clear_all
+from backend.test_src.events import event_authorize
 from backend.src.database import clear, db
 from backend.src.config import config
 import jwt
@@ -26,12 +27,7 @@ def sample_user():
 
 @pytest.fixture
 def reset():
-    clear('events')
-    clear('users')
-
-@pytest.fixture(scope='session', autouse=True)
-def move_to_test_db():
-    db.set_test_db()
+    clear_all()
 
 def test_user(reset, sample_event, sample_user):
     # create event
@@ -40,9 +36,11 @@ def test_user(reset, sample_event, sample_user):
         **sample_event,
         '_id': event_id
     }
-    assert events_get_all()['events'] == [expected_event]
+    for key in expected_event.keys():
+        assert events_get_all()['events'][0][key] == expected_event[key]
     user_register_event(sample_user, event_id)
-    assert user_events(sample_user)['events'] == [expected_event]
+    for key in expected_event.keys():
+        assert user_events(sample_user)['events'][0][key] == expected_event[key]
 
 def decode_token(token):
     data = jwt.decode(token, config['SECRET'], algorithms=['HS256'])

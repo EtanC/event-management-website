@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Box, Container } from '@mui/material';
-import Navbar from '../components/Navbar';
 import CalendarSidebar from '../components/CalendarSideBar';
 import CalendarPopUp from '../components/calendarMainComponents/CalendarPopUp';
 import CalendarContainer from '../components/calendarMainComponents/CalendarContainer';
@@ -21,7 +20,7 @@ const UserCalendar = () => {
     useEffect(() => {
         fetchRegisteredEvents((fetchedEvents) => {
             setEvents(fetchedEvents);
-            setFilteredEvents(fetchedEvents); 
+            setFilteredEvents(fetchedEvents);
             setIsLoading(false);
         }, setError, setIsLoading);
     }, []);
@@ -34,22 +33,22 @@ const UserCalendar = () => {
             'C': 1,
             'Unspecified': 0,
         };
-    
+
         const filterByRanking = (events, ranking) => {
             if (!Array.isArray(events)) { // return empty when nothing is found
                 return [];
             }
 
             if (ranking.length === 0) return events; // return all if no Ranking selected
-            
+
             const RankingValues = ranking.map(Ranking => rankingMap[Ranking]);
             return events.filter(event => RankingValues.includes(event.ranking));
         };
-    
+
         const filtered = filterByRanking(events, selectedRanking);
         setFilteredEvents(filtered);
     }, [events, selectedRanking]);
-    
+
     const calendarEvents = sortEventRanking(filteredEvents);
 
     const handleEventClick = (event) => {
@@ -71,12 +70,11 @@ const UserCalendar = () => {
     return (
         <>
             <ThemeProvider theme={theme}></ThemeProvider>
-            <Navbar />
-            <Box sx={{ display: 'flex', backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
-                <CalendarSidebar 
-                    events={Array.isArray(events) ? events : []} 
-                    onSearchResultClick={handleSearchResultClick} 
-                    onRankingChange={handleRankingChange} 
+            <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+                <CalendarSidebar
+                    events={Array.isArray(events) ? events : []}
+                    onSearchResultClick={handleSearchResultClick}
+                    onRankingChange={handleRankingChange}
                 />
                 <Container>
                     <CalendarContainer
@@ -88,9 +86,9 @@ const UserCalendar = () => {
                 </Container>
             </Box>
 
-            <CalendarPopUp 
-                selectedEvent={selectedEvent} 
-                handleCloseModal={handleCloseModal} 
+            <CalendarPopUp
+                selectedEvent={selectedEvent}
+                handleCloseModal={handleCloseModal}
             />
         </>
     );

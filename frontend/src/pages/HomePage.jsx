@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import { Box, Container } from '@mui/material';
-import Navbar from '../components/Navbar';
 import EventLoading from '../components/MainEventCardSection';
 import defaultImage from '../Image/default-image.jpg';
 import NewEventButton from '../components/NewEventButton'
@@ -17,32 +16,29 @@ function HomePage() {
     return (
         <>
             <ThemeProvider theme={theme}></ThemeProvider>
-            <Navbar />
-            <Box sx={{ backgroundColor: '#f5f5f5', padding: '20px 0' }}>
-                <Container maxWidth="lg">
-                    <NewEventButton />
-                    <Box
-                        sx={{
-                            position: 'relative',
-                            cursor: 'pointer',
-                            marginBottom: '20px',
+            <Container maxWidth="lg">
+                <Box
+                    sx={{
+                        position: 'relative',
+                        cursor: 'pointer',
+                        marginBottom: '20px',
+                    }}
+                    onClick={handleImageClick}
+                >
+                    <img
+                        src={defaultImage}
+                        alt="Default Event"
+                        style={{
+                            width: '100%',
+                            borderRadius: '8px',
+                            height: '10%'
                         }}
-                        onClick={handleImageClick}
-                    >
-                        <img
-                            src={defaultImage}
-                            alt="Default Event"
-                            style={{
-                                width: '100%',
-                                borderRadius: '8px',
-                            }}
-                        />
-                    </Box>
+                    />
+                </Box>
 
-                    <EventLoading />
+                <EventLoading />
 
-                </Container>
-            </Box>
+            </Container>
         </>
     );
 }
