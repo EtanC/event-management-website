@@ -10,8 +10,14 @@ from backend.src.auth import decode_token
 def user_exists(user_id):
     return db.users.find_one({ '_id': ObjectId(user_id) }) is not None
 
+def event_exists(event_id):
+    valid_id = ObjectId.is_valid(event_id)
+    return valid_id and db.events.find_one({ '_id': ObjectId(event_id)}) is not None
+
 def user_register_event(token, event_id):
     user_id = decode_token(token)
+    if not event_exists(event_id):
+        raise InputError('Invalid Event ID')
     result = db.users.update_one(
         { '_id': ObjectId(user_id) },
         {

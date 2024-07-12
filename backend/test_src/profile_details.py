@@ -1,9 +1,9 @@
 import requests
-from backend.test_src.util import parse_response, backend_url, token_header
+from backend.test_src.util import parse_response, backend_url, make_cookies
 
 def get_profile_details(token):
-    header = token_header(token)
-    response = requests.get(f'{backend_url}/profile/get', headers=header)
+    cookies = make_cookies(token)
+    response = requests.get(f'{backend_url}/profile/get', cookies=cookies)
     return parse_response(response)
 def update_profile_details(token, username, description, full_name, job_title, fun_fact, profile_pic):
     body = {
@@ -16,8 +16,8 @@ def update_profile_details(token, username, description, full_name, job_title, f
     files = {}
     if profile_pic is not None:
         files['profile_pic'] = profile_pic
-    header = token_header(token)
-    response = requests.post(f'{backend_url}/profile/update/details', data=body, headers=header, files=files)
+    cookies = make_cookies(token)
+    response = requests.post(f'{backend_url}/profile/update/details', data=body, cookies=cookies, files=files)
     return parse_response(response)
 def update_profile_password(token, old_password, new_password, re_password):
     body = {
@@ -25,6 +25,6 @@ def update_profile_password(token, old_password, new_password, re_password):
         'new_password': new_password,
         're_password': re_password,
     }
-    header = token_header(token)
-    response = requests.post(f'{backend_url}/profile/update/password', json=body, headers=header)
+    cookies = make_cookies(token)
+    response = requests.post(f'{backend_url}/profile/update/password', json=body, cookies=cookies)
     return parse_response(response)
