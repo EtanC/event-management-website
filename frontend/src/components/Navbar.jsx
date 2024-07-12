@@ -91,7 +91,7 @@ function NavBar() {
                                                 ? `data:image/jpeg;base64,${profileData.profile_pic}`
                                                 : defaultProfilePic}
                                             alt="Profile"
-                                            style={{ cursor: 'pointer', height: '40px', width: '40px', borderRadius: '50%' }}
+                                            style={{ cursor: 'pointer', height: '50px', width: '50px', borderRadius: '50%' }}
                                         />
                                     </IconButton>
                                 </div>
