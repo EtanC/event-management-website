@@ -1,35 +1,30 @@
-import { useEffect, useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import "./index.css";
+import { ProfileProvider } from "./ProfileProvider";
+import NavBar from "./components/Navbar";
 
 import HomePage from "./pages/HomePage";
 import EventDetailPage from "./pages/EventDetailPage";
 import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
-import LoginPage from "./pages/LoginPage"
-import AdminPage from "./pages/AdminPage"
-import AdminUsersPage from "./pages/AdminUsersPage"
-import AdminEventsPage from "./pages/AdminEventsPage"
+import LoginPage from "./pages/LoginPage";
+import AdminPage from "./pages/AdminPage";
+import AdminUsersPage from "./pages/AdminUsersPage";
+import AdminEventsPage from "./pages/AdminEventsPage";
 import UserCalendar from "./pages/UserCalendar";
+
 import SessionTimeOutPopup from './components/SessionTimeOutPopup';
 import useSessionValidation from "./helper/userSessionValidation";
 
-const App = () => {
-    const isSessionValid = useSessionValidation();
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
+const AppContent = () => {
+    const location = useLocation();
+    const showNavBar = !['/login', '/register'].includes(location.pathname);
 
-    useEffect(() => {
-        if (!isSessionValid) {
-            setIsPopupOpen(true);
-        }
-    }, [isSessionValid]);
-
-    const handleClosePopup = () => {
-        setIsPopupOpen(false);
-    };
-
-    return (
-        <Router basename="/">
+  return (
+      <>
+        {showNavBar && <NavBar />}
+        <div className="content">
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/event" element={<EventDetailPage />} />
@@ -40,10 +35,38 @@ const App = () => {
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/admin/users" element={<AdminUsersPage />} />
                 <Route path="/admin/events" element={<AdminEventsPage />} />
-                <Route path="/MyCalendar" element={<UserCalendar />} />
+                <Route path="/my-calendar" element={<UserCalendar />} />
             </Routes>
-            <SessionTimeOutPopup open={isPopupOpen} handleClose={handleClosePopup} />
-        </Router>
+            
+        </div>
+      </>
+    );
+};
+
+const App = () => {
+    const isSessionValid = useSessionValidation();
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    useEffect(() => {
+        if (!isSessionValid) {
+            setIsPopupOpen(true);
+        }
+    }, [isSessionValid]);
+
+    const handleClosePopup = () => {
+        setIsPopupOpen(false);
+    };
+
+    useEffect(() => {
+      document.title = "EventHubb";
+    }, []);
+
+    return (
+      <Router basename="/">
+        <ProfileProvider>
+          <AppContent />
+        <SessionTimeOutPopup open={isPopupOpen} handleClose={handleClosePopup} />
+        </ProfileProvider>
+      </Router>
     );
 };
 

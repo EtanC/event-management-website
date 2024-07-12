@@ -3,8 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { handleLogout } from '../helper/handleAuth';
 import logo from '../Image/CompanyLogo.png';
 import defaultProfilePic from '../Image/defaultProfile.png';
+
 import { fetchProfileData } from '../helper/handleProfileData';
 import Cookies from 'js-cookie';
+
+import { useProfile } from '../ProfileProvider';
 
 import {
     AppBar,
@@ -19,21 +22,15 @@ import {
 
 function NavBar() {
     const navigate = useNavigate();
+
     const [auth, setAuth] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
 
     const [profileData, setProfileData] = useState(null);
+    const { profileData, loading } = useProfile();
 
     useEffect(() => {
         const token = Cookies.get('token');
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-        console.log(token)
->>>>>>> ef6f0ce (first attempt at incoporating cookies, does not work atm)
-=======
-        console.log(token)
->>>>>>> ef6f0ce (first attempt at incoporating cookies, does not work atm)
         setAuth(!!token);
         if (token) {
             setAuth(true);
@@ -49,30 +46,42 @@ function NavBar() {
 
     const handleClose = () => {
         setAnchorEl(null);
+        window.scrollTo(0, 0);
     };
 
     const handleCalendar = () => {
-        navigate('/MyCalendar')
-    }
+        navigate('/my-calendar');
+        handleClose();
+    };
 
     const handleSignIn = () => {
         navigate('/login');
+        handleClose();
     };
 
     const handleSignUp = () => {
         navigate('/register');
+        handleClose();
     };
 
     const handleLogoClick = () => {
         navigate('/');
+        handleClose();
     };
 
     const handleProfile = () => {
         navigate('/profile');
+        handleClose();
     };
 
     const handleAdmin = () => {
         navigate('/admin');
+        handleClose();
+    };
+
+    const handleLogOut = () => {
+        handleLogout(navigate, setAuth);
+        handleClose();
     }
 
     return (
@@ -106,11 +115,11 @@ function NavBar() {
                                                 ? `data:image/jpeg;base64,${profileData.profile_pic}`
                                                 : defaultProfilePic}
                                             alt="Profile"
-                                            style={{ cursor: 'pointer', height: '40px', width: '40px', borderRadius: '50%' }}
+                                            style={{ cursor: 'pointer', height: '50px', width: '50px', borderRadius: '50%' }}
                                         />
                                     </IconButton>
                                 </div>
-                            ) : null}
+                        ) : null}
                             <Menu
                                 id="menu-appbar"
                                 anchorEl={anchorEl}
@@ -142,6 +151,7 @@ function NavBar() {
                 </Toolbar>
             </AppBar>
         </Box>
+                    
     );
 }
 

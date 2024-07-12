@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import Navbar from "../components/Navbar";
 import { Container, Box, Typography, Switch, Button, Card, CardContent, Grid, TextField, Tooltip, IconButton, Alert } from '@mui/material';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import EditIcon from '@mui/icons-material/Edit';
@@ -7,6 +6,8 @@ import defaultProfilePic from '../Image/defaultProfile.png';
 import { fetchProfileData, updateProfileDetails, updateProfilePassword } from '../helper/handleProfileData';
 import theme from '../styles/Theme';
 import { ThemeProvider } from '@mui/material/styles';
+import { Snackbar, SnackbarContent } from '@mui/material';
+
 
 function ProfilePage() {
     const [isEditing, setIsEditing] = useState(false);
@@ -22,6 +23,8 @@ function ProfilePage() {
         profile_pic: null,
     });
     const [new_profile_pic, setNewProfilePic] = useState(null)
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
 
     useEffect(() => {
         fetchProfileData(setProfile);
@@ -88,7 +91,7 @@ function ProfilePage() {
         try {
             const result = await updateProfileDetails(updatedProfile);
             if (result === 200) {
-                alert("Profile successfully updated.");
+                showSnackbar('Profile successfully updated.');
                 await fetchProfileData(setProfile);
             }
             setNewProfile({
@@ -109,7 +112,7 @@ function ProfilePage() {
         try {
             const result = await updateProfilePassword(password, setErrorMessage);
             if (result === 200) {
-                alert("Reset Password Successfully");
+                showSnackbar('Password reset successfully.');
                 setIsEditingPW(false);
             }
         } catch (err) {
@@ -117,11 +120,20 @@ function ProfilePage() {
         }
     }
 
+    const handleSnackbarClose = () => {
+        setSnackbarOpen(false);
+    };
+
+    const showSnackbar = (message) => {
+        setSnackbarMessage(message);
+        setSnackbarOpen(true);
+    };
+
+
     return (
         <>
             <ThemeProvider theme={theme}></ThemeProvider>
-            <Navbar />
-            <Box sx={{ backgroundColor: '#f5f5f5', padding: '50px 0', minHeight: '90vh' }}>
+            <Box sx={{ minHeight: '90vh' }}>
                 <Container maxWidth="md" sx={{ mt: 2 }} >
                     <Grid container spacing={4} sx={{ mb: 5 }}>
                         <Grid item xs={6}>
@@ -340,6 +352,12 @@ function ProfilePage() {
                     </Box>
                 </Container >
             </Box>
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={6000}
+                onClose={handleSnackbarClose}
+                message={snackbarMessage}
+            />
         </>
     );
 }
