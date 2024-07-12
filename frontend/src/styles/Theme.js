@@ -2,9 +2,10 @@ import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
     fontFamily: 'Impact, scans-serif',
+    backgrounColor: '#1E4830',
     palette: {
         primary: {
-        main: '#1E4830'
+            main: '#1E4830'
         },
     },
     typography: {
