@@ -1,8 +1,8 @@
 import pytest
-from backend.src.profile_details import get_profile_details, update_profile_details, update_profile_password
-from backend.src.auth import auth_register, auth_login
+from backend.test_src.profile_details import get_profile_details, update_profile_details, update_profile_password
+from backend.test_src.auth import auth_register_raw, auth_login_raw
 from backend.src.error import InputError, AccessError
-from backend.src.database import clear, db
+from backend.test_src.database import clear_all
 import jwt
 from io import BytesIO
 import base64
@@ -17,11 +17,7 @@ def user1():
 
 @pytest.fixture(autouse=True)
 def reset():
-    clear('users')
-
-@pytest.fixture(scope='session', autouse=True)
-def move_to_test_db():
-    db.set_test_db()
+    clear_all()
 
 def generate_random_jwt():
     payload = {
@@ -33,8 +29,8 @@ def generate_random_jwt():
     return token
 
 def test_get_profile(reset, user1):
-    response = auth_register(user1['username'], user1['email'], user1['password'])
-    token = response.headers.get('Set-Cookie').split('=')[1].split(';')[0]
+    response = auth_register_raw(user1['username'], user1['email'], user1['password'])
+    token = response.cookies.get('token')
     details = get_profile_details(token)
     assert details == { 'username': 'John',
                         'email': 'johnsmith1234@outlook.com',
@@ -51,8 +47,8 @@ def test_get_profile_error(reset, user1):
         get_profile_details(random_token)
 
 def test_update_profile(reset, user1):
-    response = auth_register(user1['username'], user1['email'], user1['password'])
-    token = response.headers.get('Set-Cookie').split('=')[1].split(';')[0]
+    response = auth_register_raw(user1['username'], user1['email'], user1['password'])
+    token = response.cookies.get('token')
 
     new_usr = 'Steven'
     new_email = 'steven@gmail.com'
@@ -118,6 +114,10 @@ def test_update_profile(reset, user1):
         with open('backend/src/profile_imgs/test_img.jpeg', 'rb') as img:
             img_data = img.read()
 
+    profile_details = get_profile_details(token)
+    encoded_image = profile_details.get('profile_pic')
+    decoded_image = base64.b64decode(encoded_image)
+
     # image will be shown on the folder for visual testing
     with open('backend/src/profile_imgs/retrieved_img.jpeg', 'wb') as img:
         img.write(decoded_image)
@@ -128,8 +128,8 @@ def test_update_profile(reset, user1):
     assert decoded_image == img_data
 
 def test_update_profile_error(reset, user1):
-    response = auth_register(user1['username'], user1['email'], user1['password'])
-    token = response.headers.get('Set-Cookie').split('=')[1].split(';')[0]
+    response = auth_register_raw(user1['username'], user1['email'], user1['password'])
+    token = response.cookies.get('token')
     
     random_token = generate_random_jwt()
 
@@ -138,18 +138,18 @@ def test_update_profile_error(reset, user1):
         update_profile_details(random_token, 'newusr', 'newemail', None, None, None, None)
 
 def test_update_password(reset, user1):
-    response = auth_register(user1['username'], user1['email'], user1['password'])
-    token = response.headers.get('Set-Cookie').split('=')[1].split(';')[0]
+    response = auth_register_raw(user1['username'], user1['email'], user1['password'])
+    token = response.cookies.get('token')
     new_password = 'ilovejohn312*'
 
     update_profile_password(token, user1['password'], new_password, new_password)
-    response = auth_login(user1['email'], new_password)
-    new_token = response.headers.get('Set-Cookie').split('=')[1].split(';')[0]
+    response = auth_login_raw(user1['email'], new_password)
+    new_token = response.cookies.get('token')
     assert isinstance(new_token, str)
 
 def test_update_password_error(reset, user1):
-    response = auth_register(user1['username'], user1['email'], user1['password'])
-    token = response.headers.get('Set-Cookie').split('=')[1].split(';')[0]
+    response = auth_register_raw(user1['username'], user1['email'], user1['password'])
+    token = response.cookies.get('token')
 
     new_password = 'ilovejohn312*'
     # test old password doesn't match on update password

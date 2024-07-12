@@ -4,6 +4,7 @@ from backend.swagger_doc.auth import auth_login_spec, auth_register_spec, auth_l
 from backend.swagger_doc.events import events_crawl_spec, events_clear_spec, events_get_all_spec, event_create_spec, event_update_spec, event_delete_spec, event_authorize_spec, events_ai_description_spec, events_get_page_spec
 from backend.swagger_doc.profile import profile_get_spec, profile_update_details_spec, profile_update_password_spec
 from backend.swagger_doc.user import user_events_spec, user_register_event_spec, user_manage_events_spec
+from backend.swagger_doc.database import clear_spec
 from backend.swagger_doc.definitions import definitions
 from backend.src.error import AccessError, InputError
 import json
@@ -14,6 +15,8 @@ from backend.src.profile_details import get_profile_details, update_profile_deta
 from backend.src.user import user_register_event, user_events, user_manage_events
 from flask_cors import CORS
 from backend.src.config import config
+from backend.src.database import db
+import sys
 
 app = Flask(__name__)
 CORS(app, expose_headers='Authorization', supports_credentials=True)
@@ -22,7 +25,7 @@ swagger = Swagger(app, template=definitions)
 @app.errorhandler(HTTPException)
 def access_error_handler(e):
     response = e.get_response()
-    response.data = jsonify({
+    response.data = json.dumps({
         "code": e.code,
         "name": e.name,
         "description": e.description,
@@ -172,7 +175,7 @@ def profile_update_password_route():
 
     body = request.get_json()
     
-    return jsonify(update_profile_password(token, body['old_password'], body['new_password'], body['re_password']))
+    return update_profile_password(token, body['old_password'], body['new_password'], body['re_password'])
 
 
 @app.get('/user/events')
@@ -188,12 +191,12 @@ def user_events_route():
 @app.get('/user/manage/events')
 @swag_from(user_manage_events_spec)
 def user_manage_events_route():
-    token = request.headers.get('Authorization')
+    token = request.cookies.get('token')
 
     if token.startswith('Bearer '):
         token = token[len('Bearer '):]
 
-    return json.dumps(user_manage_events(token))
+    return user_manage_events(token)
 
 @app.post('/user/register/<event_id>')
 @swag_from(user_register_event_spec)
@@ -202,7 +205,18 @@ def user_register_event_route(event_id):
     if not token:
         raise AccessError('Authorization token is missing')
 
-    return jsonify(user_register_event(token, event_id))
+    return json.dumps(user_register_event(token, event_id))
+
+@app.delete('/clear')
+@swag_from(clear_spec)
+def clear_all():
+    db.clear_all()
+    return json.dumps({})
 
 if __name__ == '__main__':
+    if len(sys.argv) > 1 and sys.argv[1] == 'test':
+        db.set_test_db()
+        print("==========================================")
+        print("running server.py on test mode")
+        print("==========================================")
     app.run(port=config['BACKEND_PORT'], debug=True)

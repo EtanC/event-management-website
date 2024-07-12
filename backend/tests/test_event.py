@@ -1,7 +1,7 @@
 import pytest
-from backend.src.auth import auth_register
-from backend.src.events import event_create, event_update, event_delete, events_get_all
-from backend.src.database import clear, db
+from backend.test_src.auth import auth_register_raw
+from backend.test_src.events import event_create, event_update, event_delete, events_get_all
+from backend.test_src.database import clear_all
 from backend.src.error import AccessError, InputError
 
 @pytest.fixture
@@ -18,18 +18,13 @@ def sample_event():
 
 @pytest.fixture
 def sample_user():
-    response = auth_register('John', 'johnsmith1234@outlook.com', '12345678')
+    response = auth_register_raw('John', 'johnsmith1234@outlook.com', '12345678')
     token = response.cookies.get('token')
     return token
 
 @pytest.fixture
 def reset():
-    clear('users')
-    clear('events')
-
-@pytest.fixture(scope='session', autouse=True)
-def move_to_test_db():
-    db.set_test_db()
+    clear_all()
 
 def test_event(reset, sample_event, sample_user):
     assert events_get_all()['events'] == []
