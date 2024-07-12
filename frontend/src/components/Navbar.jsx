@@ -1,9 +1,10 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { handleLogout } from '../helper/handleAuth';
 import logo from '../Image/CompanyLogo.png';
 import defaultProfilePic from '../Image/defaultProfile.png';
 import { fetchProfileData } from '../helper/handleProfileData';
+import Cookies from 'js-cookie';
 
 import {
     AppBar,
@@ -18,14 +19,28 @@ import {
 
 function NavBar() {
     const navigate = useNavigate();
-    // currently, if a token is detected in localstorage then system is considered "logged in"
-    const [auth, setAuth] = React.useState(!!localStorage.getItem('token'));
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [auth, setAuth] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
 
-    const [profileData, setProfileData] = React.useState(null);
+    const [profileData, setProfileData] = useState(null);
 
-    React.useEffect(() => {
-        fetchProfileData(setProfileData);
+    useEffect(() => {
+        const token = Cookies.get('token');
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        console.log(token)
+>>>>>>> ef6f0ce (first attempt at incoporating cookies, does not work atm)
+=======
+        console.log(token)
+>>>>>>> ef6f0ce (first attempt at incoporating cookies, does not work atm)
+        setAuth(!!token);
+        if (token) {
+            setAuth(true);
+            fetchProfileData(setProfileData);
+        } else {
+            setAuth(false);
+        }
     }, []);
 
     const handleMenu = (event) => {
@@ -73,7 +88,7 @@ function NavBar() {
                     <Box sx={{ flexGrow: 1 }} />
                     {auth ? (
                         <div>
-                            {auth && profileData ? (
+                            {profileData ? (
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <Typography sx={{ mr: 2, color: 'black' }}>
                                         {profileData.full_name || ''}
@@ -95,12 +110,7 @@ function NavBar() {
                                         />
                                     </IconButton>
                                 </div>
-                            ) : (
-                                <div>
-                                    <Button sx={{ marginRight: 2 }} onClick={handleSignIn}>Sign In</Button>
-                                    <Button variant="contained" color="primary" onClick={handleSignUp}>Sign Up</Button>
-                                </div>
-                            )}
+                            ) : null}
                             <Menu
                                 id="menu-appbar"
                                 anchorEl={anchorEl}

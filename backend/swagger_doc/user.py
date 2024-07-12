@@ -80,3 +80,38 @@ user_events_spec = {
         }
     }
 }
+
+user_manage_events_spec = {
+    'tags': ['User'],
+    'security': [
+        {
+            "bearerAuth": []
+        }
+    ],
+    'parameters': [],
+    'responses': {
+        200: {
+            'description': 'Successfully retrieved events user is currently managing or events created by user (which they also manage)',
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'creator': {
+                        'type': 'array',
+                        'items': {
+                            '$ref': '#definitions/event',
+                        },
+                    },
+                    'manager': {
+                        'type': 'array',
+                        'items': {
+                            '$ref': '#definitions/event',
+                        },
+                    }
+                }
+            },
+        },
+        403: {
+            'description': 'Invalid token OR Expired token OR Invalid user'
+        }
+    }
+}

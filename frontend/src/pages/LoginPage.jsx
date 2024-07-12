@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 // eslint-disable-next-line no-unused-vars
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Typography, Box, Alert, Grid, Divider } from '@mui/material';
 import background from '../Image/LHSBackground.png';
