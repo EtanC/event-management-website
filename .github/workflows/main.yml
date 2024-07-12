@@ -18,7 +18,7 @@ jobs:
       - uses: py-actions/py-dependency-install@v4
         with:
           path: "./backend/requirements.txt"
-      - run: coverage run -m pytest
+      - run: python -m backend.src.server test & coverage run -m pytest
       - run: coverage html
       - uses: actions/upload-artifact@v4
         with:

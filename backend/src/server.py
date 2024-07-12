@@ -4,6 +4,7 @@ from backend.swagger_doc.auth import auth_login_spec, auth_register_spec, auth_l
 from backend.swagger_doc.events import events_crawl_spec, events_clear_spec, events_get_all_spec, event_create_spec, event_update_spec, event_delete_spec, event_authorize_spec, events_ai_description_spec, events_get_page_spec
 from backend.swagger_doc.profile import profile_get_spec, profile_update_details_spec, profile_update_password_spec
 from backend.swagger_doc.user import user_events_spec, user_register_event_spec, user_manage_events_spec
+from backend.swagger_doc.database import clear_spec
 from backend.swagger_doc.definitions import definitions
 from backend.src.error import AccessError, InputError
 import json
@@ -14,6 +15,8 @@ from backend.src.profile_details import get_profile_details, update_profile_deta
 from backend.src.user import user_register_event, user_events, user_manage_events
 from flask_cors import CORS
 from backend.src.config import config
+from backend.src.database import db
+import sys
 
 app = Flask(__name__)
 cors = CORS(app, expose_headers='Authorization')
@@ -206,6 +209,16 @@ def user_register_event_route(event_id):
         token = token[len('Bearer '):]
 
     return json.dumps(user_register_event(token, event_id))
+@app.delete('/clear')
+@swag_from(clear_spec)
+def clear_all():
+    db.clear_all()
+    return json.dumps({})
 
 if __name__ == '__main__':
+    if len(sys.argv) > 1 and sys.argv[1] == 'test':
+        db.set_test_db()
+        print("==========================================")
+        print("running server.py on test mode")
+        print("==========================================")
     app.run(port=config['BACKEND_PORT'], debug=True)
