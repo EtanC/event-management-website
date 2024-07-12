@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import {
     Box, Container, Card, Typography, Grid, CircularProgress,
 } from '@mui/material';
-import Navbar from '../components/Navbar';
 import { fetchUserCreatedEvents, fetchUserRegisteredEvents, handleDeleteEvent } from '../helper/handleEventData';
 import EventCard from '../components/EventCard';
 import AlertPopup from '../components/AlertPopup';
 import { useNavigate } from 'react-router-dom';
 import EventModal from '../components/EventModal';
+import EventManagerModal from '../components/EventManagerModal';
 
 function MyEvents() {
     const navigate = useNavigate();
@@ -80,9 +80,13 @@ function MyEvents() {
         setOpenAddManager(true);
     };
 
-    const handleEditClose = (event) => {
-        setOpenEditEvent(false)
+    const handleEditClose = () => {
+        setOpenEditEvent(false);
         fetchEvents();
+    }
+
+    const handleAddManagerClose = () => {
+        setOpenAddManager(false);
     }
 
     const renderEventCards = (events, isCreatedEvents) => {
@@ -123,9 +127,8 @@ function MyEvents() {
                 content={'Are you sure you want to delete this event? This action cannot be undone.'}
             />
             <EventModal open={openEditEvent} handleClose={handleEditClose} headerText={'Edit Event'} event={eventToEdit} />
-            {/* <EventManagerModal open={openAddManager} handleClose={} event={eventToEdit}/> */}
-            <Navbar />
-            <Box sx={{ backgroundColor: '#f5f5f5', padding: '40px 0', minHeight: '90vh' }}>
+            <EventManagerModal open={openAddManager} handleClose={handleAddManagerClose} event={eventToEdit} />
+            <Box sx={{ backgroundColor: '#f5f5f5', paddingTop: '40px', minHeight: '90vh' }}>
                 <Container maxWidth="lg">
                     <Typography variant="h4" sx={{ marginBottom: '40px' }}>My Events</Typography>
                     <Card sx={styles.flexCard}>

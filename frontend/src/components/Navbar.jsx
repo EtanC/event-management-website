@@ -134,6 +134,7 @@ function NavBar() {
                             sx={{ mt: 1.5 }}
                         >
                             <MenuItem onClick={handleProfile}>Profile</MenuItem>
+                            <MenuItem onClick={handleMyEvents}>My Events</MenuItem>
                             <MenuItem onClick={handleCalendar}>Calendar</MenuItem>
                             <MenuItem onClick={handleAdmin}>Admin</MenuItem>
                             <MenuItem onClick={handleLogOut}>Log Out</MenuItem>

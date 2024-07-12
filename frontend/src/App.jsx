@@ -33,6 +33,7 @@ const AppContent = () => {
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/admin/users" element={<AdminUsersPage />} />
           <Route path="/admin/events" element={<AdminEventsPage />} />
+          <Route path="/my-events" element={<MyEventsPage />} />
           <Route path="/my-calendar" element={<UserCalendar />} />
         </Routes>
       </div>

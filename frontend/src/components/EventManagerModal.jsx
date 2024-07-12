@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-    Button,
     Modal,
     Fade,
     TextField,
     Card,
-    Grid,
     Typography,
     Box,
-    Alert,
-    Snackbar,
+    Button,
+    IconButton,
+    InputAdornment,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import CloseIcon from '@mui/icons-material/Close';
+import SearchIcon from '@mui/icons-material/Search';
 
 const styles = {
     modal: {
@@ -19,60 +19,82 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
     },
-    date: {
-        borderRadius: '40px'
-    },
     card: {
         padding: '30px',
         width: '600px'
     },
-    textContainer: {
+    header: {
         display: 'flex',
-        gap: '10px',
-        marginBottom: 2,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '40px',
     },
-    buttonsContainer: {
-        display: 'flex',
-        justifyContent: 'flex-end',
-        gap: '10px'
+    search: {
+        marginBottom: '20px',
+    },
+    closeIcon: {
+        cursor: 'pointer',
     },
     button: {
         borderRadius: '25px',
-        textTransform: 'none'
+        textTransform: 'none',
+        width: '100%',
+        height: '50px'
     },
 };
 
-const EventManagerModal = ({ open, handleClose, headerText, event }) => {
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState('');
+const EventManagerModal = ({ open, handleClose }) => {
+    const [searchEmail, setSearchEmail] = useState('')
 
+    const handleSave = () => {
+        console.log('save')
+    }
 
-    const handleSnackbarClose = (event, reason) => {
-        if (reason === 'clickaway') return;
-        setSnackbarOpen(false);
-    };
+    const handleChange = (e) => {
+        setSearchEmail(e.target.value)
+    }
 
     return (
-        <>
-            <Modal
-                sx={styles.modal}
-                open={open}
-                onClose={handleClose}
-                closeAfterTransition
-            >
-                <Fade in={open}>
-                    <Card sx={styles.card}>
-                        <Typography>Hello!</Typography>
-                    </Card>
-                </Fade>
-            </Modal>
-            <Snackbar
-                open={snackbarOpen}
-                autoHideDuration={6000}
-                onClose={handleSnackbarClose}
-                message={snackbarMessage}
-            />
-        </>
+        <Modal
+            sx={styles.modal}
+            open={open}
+            onClose={handleClose}
+            closeAfterTransition
+        >
+            <Fade in={open}>
+                <Card sx={styles.card}>
+                    {/* Header */}
+                    <Box sx={styles.header}>
+                        <Typography variant="h5">Add Event Managers</Typography>
+                        <IconButton sx={styles.closeIcon} onClick={handleClose}>
+                            <CloseIcon />
+                        </IconButton>
+                    </Box>
+
+                    {/* Body */}
+                    <TextField
+                        fullWidth
+                        variant="outlined"
+                        label="Search Email"
+                        value={searchEmail}
+                        onChange={handleChange}
+                        InputProps={{
+                            sx: { borderRadius: '40px', mb: 2, width: '100%' },
+                            startAdornment: (
+                                <InputAdornment position='start'>
+                                    <SearchIcon />
+                                </InputAdornment>)
+                        }}
+                    />
+                    <Typography variant="b1">Added Event Managers</Typography>
+                    <Box sx={{ padding: '50px' }}>
+
+                    </Box>
+                    <Button variant="contained" color="primary" sx={styles.button} onClick={handleSave}>Add Email</Button>
+
+                </Card>
+            </Fade>
+        </Modal>
     );
 };
 

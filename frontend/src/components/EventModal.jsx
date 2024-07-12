@@ -166,9 +166,7 @@ const EventModal = ({ open, handleClose, headerText, event }) => {
             >
                 <Fade in={open}>
                     <Card sx={styles.card}>
-                        <Typography variant="h5" sx={{ mb: 4 }}>
-                            {headerText}
-                        </Typography>
+                        <Typography variant="h5" sx={{ mb: 4 }}>{headerText}</Typography>
                         <Grid container spacing={5}>
                             <Grid item xs={12}>
                                 <TextField
