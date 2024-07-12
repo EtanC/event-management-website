@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import "./index.css";
-import { ProfileProvider } from "./ProfileProvider";
+import { ProfileProvider } from "../src/components/ProfileProvider";
 import NavBar from "./components/Navbar";
 
 import HomePage from "./pages/HomePage";
