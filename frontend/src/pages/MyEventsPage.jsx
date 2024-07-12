@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
     Box, Container, Card, Typography, Grid, CircularProgress,
 } from '@mui/material';
-import { fetchUserCreatedEvents, fetchUserRegisteredEvents, handleDeleteEvent } from '../helper/handleEventData';
+import { fetchUserEvents, fetchUserRegisteredEvents, handleDeleteEvent } from '../helper/handleEventData';
 import EventCard from '../components/EventCard';
 import AlertPopup from '../components/AlertPopup';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +11,7 @@ import EventManagerModal from '../components/EventManagerModal';
 
 function MyEvents() {
     const navigate = useNavigate();
-    const [createdEvents, setCreatedEvents] = useState([]);
+    const [events, setEvents] = useState([]);
     const [registeredEvents, setRegisteredEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -24,8 +24,8 @@ function MyEvents() {
     const fetchEvents = async () => {
         try {
             setLoading(true);
-            const createdEventData = await fetchUserCreatedEvents();
-            setCreatedEvents(createdEventData || []);
+            const eventData = await fetchUserEvents();
+            setEvents(eventData || []);
             const registeredEventData = await fetchUserRegisteredEvents();
             setRegisteredEvents(registeredEventData || []);
             setLoading(false);
@@ -33,7 +33,7 @@ function MyEvents() {
             console.error('Failed to fetch events:', error);
             setError('Failed to load events. Please try again later.');
             setLoading(false);
-            setCreatedEvents([]);
+            setEvents([]);
             setRegisteredEvents([]);
         }
     };
@@ -87,9 +87,10 @@ function MyEvents() {
 
     const handleAddManagerClose = () => {
         setOpenAddManager(false);
+        fetchEvents();
     }
 
-    const renderEventCards = (events, isCreatedEvents) => {
+    const renderEventCards = (events, isCreatedEvents, isManagedEvents) => {
         if (loading) {
             return (
                 <Box display="flex" justifyContent="center" alignItems="center" height="100%">
@@ -107,9 +108,10 @@ function MyEvents() {
                         key={event._id || index}
                         event={event}
                         handleCardClick={handleCardClick}
-                        isMyEventsPage={isCreatedEvents}
+                        isCreatedEvent={isCreatedEvents}
+                        isManagedEvent={isManagedEvents}
                         onEditEvent={() => handleEditClick(event)}
-                        onAddEventManger={() => handleManagerClick(event)}
+                        onAddEventManager={() => handleManagerClick(event)}
                         onDeleteEvent={() => handleDeleteClick(event)}
                     />
                 ))}
@@ -132,12 +134,16 @@ function MyEvents() {
                 <Container maxWidth="lg">
                     <Typography variant="h4" sx={{ marginBottom: '40px' }}>My Events</Typography>
                     <Card sx={styles.flexCard}>
-                        <Typography variant="h6" component="h2" sx={styles.headerFont}>My Hosted Events</Typography>
-                        {renderEventCards(createdEvents, true)}
+                        <Typography variant="h6" component="h2" sx={styles.headerFont}>My Created Events</Typography>
+                        {renderEventCards(events.createdEvents, true, false)}
+                    </Card>
+                    <Card sx={styles.flexCard}>
+                        <Typography variant="h6" component="h2" sx={styles.headerFont}>My Managed Events</Typography>
+                        {renderEventCards(events.managedEvents, false, true)}
                     </Card>
                     <Card sx={styles.flexCard}>
                         <Typography variant="h6" component="h2" sx={styles.headerFont}>My Registered Events</Typography>
-                        {renderEventCards(registeredEvents, false)}
+                        {renderEventCards(registeredEvents, false, false)}
                     </Card>
                 </Container>
             </Box>

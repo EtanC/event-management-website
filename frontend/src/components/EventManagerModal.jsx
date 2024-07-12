@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Modal,
     Fade,
@@ -9,9 +9,11 @@ import {
     Button,
     IconButton,
     InputAdornment,
+    Alert,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
+import { handleAddEventManager } from '../helper/handleEventData'
 
 const styles = {
     modal: {
@@ -43,11 +45,31 @@ const styles = {
     },
 };
 
-const EventManagerModal = ({ open, handleClose }) => {
+const EventManagerModal = ({ open, handleClose, event }) => {
     const [searchEmail, setSearchEmail] = useState('')
+    const [addedManagers, setAddedManagers] = useState([])
+    const [errorMessage, setErrorMessage] = useState('')
 
-    const handleSave = () => {
-        console.log('save')
+    useEffect(() => {
+        if (event) {
+            setAddedManagers(event.authorized_users)
+        }
+        setSearchEmail('')
+        setErrorMessage('')
+    }, [event])
+
+    const handleAdd = async () => {
+        setErrorMessage('')
+        if (searchEmail) {
+            try {
+                await handleAddEventManager(event._id, searchEmail);
+                setAddedManagers(prevManagers => [...prevManagers, searchEmail]);
+                setSearchEmail('');
+            } catch (error) {
+                console.error('Error adding event manager:', error);
+                setErrorMessage('Invalid User Email.')
+            }
+        }
     }
 
     const handleChange = (e) => {
@@ -87,10 +109,21 @@ const EventManagerModal = ({ open, handleClose }) => {
                         }}
                     />
                     <Typography variant="b1">Added Event Managers</Typography>
-                    <Box sx={{ padding: '50px' }}>
-
+                    <Box sx={{ padding: '20px', maxHeight: '200px', overflowY: 'auto', mb: 2 }}>
+                        {addedManagers && addedManagers.length > 0 ? (
+                            addedManagers.map((manager, index) => (
+                                <Typography key={index} variant="body2" sx={{ mb: 1 }}>
+                                    {manager}
+                                </Typography>
+                            ))
+                        ) : (
+                            <Typography variant="body2" color="text.secondary">
+                                No managers added yet.
+                            </Typography>
+                        )}
                     </Box>
-                    <Button variant="contained" color="primary" sx={styles.button} onClick={handleSave}>Add Email</Button>
+                    {errorMessage && <Alert severity='error' sx={{ marginBottom: '20px' }}>{errorMessage}</Alert>}
+                    <Button variant="contained" color="primary" sx={styles.button} onClick={handleAdd}>Add Email</Button>
 
                 </Card>
             </Fade>

@@ -102,16 +102,16 @@ event_create_spec = {
 }
 
 events_get_page_spec = {
-  'tags': ['Events'],
-  'parameters': [
-    {
-      'name': 'page_number',
-      'in': 'path',
-      'type': 'string',
-      'required': 'true'
-    }
-  ],
-  'responses': {
+    'tags': ['Events'],
+    'parameters': [
+        {
+            'name': 'page_number',
+            'in': 'path',
+            'type': 'string',
+            'required': 'true'
+        }
+    ],
+    'responses': {
         200: {
             'description': 'Successfully retrieved events',
         },

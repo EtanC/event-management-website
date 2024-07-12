@@ -12,7 +12,7 @@ export const formatDate = (dateString) => {
     return "Invalid date format";
 }
 
-const getUserId = () => {
+export const getUserId = () => {
     const token = localStorage.getItem('token');
     try {
         return jwtDecode(token).user_id;

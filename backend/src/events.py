@@ -173,12 +173,13 @@ def event_delete(token, event_id):
     return {}
 
 
-def event_authorize(token, event_id, to_be_added_id):
+def event_authorize(token, event_id, to_be_added_email):
     user_id = decode_token(token)
     if not user_is_creator(user_id, ObjectId(event_id)):
         raise AccessError(
             'User is not authorized to allow other people to manage event')
     # Add user to authorized list
+    to_be_added_id = get_id_from_email(to_be_added_email)
     db['events'].update_one(
         {'_id': ObjectId(event_id)},
         {'$addToSet': {
@@ -193,3 +194,11 @@ def event_authorize(token, event_id, to_be_added_id):
         }}
     )
     return {}
+
+
+def get_id_from_email(email):
+    user = db['users'].find_one({'email': email})
+    if user:
+        return str(user['_id'])
+    else:
+        raise InputError(f"No user found with email: {email}")

@@ -1,13 +1,30 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardMedia, Typography, Grid, IconButton, Menu, MenuItem } from '@mui/material';
+import {
+    Card,
+    CardContent,
+    CardMedia,
+    Typography,
+    Grid,
+    IconButton,
+    Menu,
+    MenuItem
+} from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import defaultImage from '../Image/loading.png';
-import { formatDate } from '../helper/helpers'
+import { formatDate } from '../helper/helpers';
 
-const EventCard = ({ event, handleCardClick, isMyEventsPage, onEditEvent, onDeleteEvent, onAddEventManger }) => {
+const EventCard = ({
+    event,
+    handleCardClick,
+    isCreatedEvent,
+    isManagedEvent,
+    onEditEvent,
+    onDeleteEvent,
+    onAddEventManager
+}) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
-    const formattedDate = formatDate(event.start_date)
+    const formattedDate = formatDate(event.start_date);
 
     const handleMenuClick = (event) => {
         event.stopPropagation();
@@ -30,7 +47,7 @@ const EventCard = ({ event, handleCardClick, isMyEventsPage, onEditEvent, onDele
     const handleAddManager = (event) => {
         event.stopPropagation();
         handleClose();
-        onAddEventManger();
+        onAddEventManager(event);
     };
 
     const handleDelete = (event) => {
@@ -38,6 +55,14 @@ const EventCard = ({ event, handleCardClick, isMyEventsPage, onEditEvent, onDele
         handleClose();
         onDeleteEvent(event);
     };
+
+    const menuItems = [
+        <MenuItem key="edit" onClick={handleEdit}>Edit Event</MenuItem>,
+        ...(isCreatedEvent ? [
+            <MenuItem key="addManager" onClick={handleAddManager}>Add Event Manager</MenuItem>,
+            <MenuItem key="delete" onClick={handleDelete}>Delete Event</MenuItem>
+        ] : [])
+    ];
 
     return (
         <Grid item xs={12} sm={6} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -51,7 +76,7 @@ const EventCard = ({ event, handleCardClick, isMyEventsPage, onEditEvent, onDele
                 }}
                 onClick={() => handleCardClick(event)}
             >
-                {isMyEventsPage && (
+                {(isCreatedEvent || isManagedEvent) && (
                     <IconButton
                         aria-label="more"
                         id="long-button"
@@ -81,9 +106,7 @@ const EventCard = ({ event, handleCardClick, isMyEventsPage, onEditEvent, onDele
                     onClose={handleClose}
                     onClick={(event) => event.stopPropagation()}
                 >
-                    <MenuItem onClick={handleEdit}>Edit Event</MenuItem>
-                    <MenuItem onClick={handleAddManager}>Add Event Manager</MenuItem>
-                    <MenuItem onClick={handleDelete}>Delete Event</MenuItem>
+                    {menuItems}
                 </Menu>
                 <CardMedia
                     component="div"

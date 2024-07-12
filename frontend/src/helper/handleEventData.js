@@ -38,18 +38,35 @@ export const handleCreateEvent = async (eventData) => {
     }
 };
 
-export const fetchUserCreatedEvents = async () => {
+export const fetchUserEvents = async () => {
     try {
         const response = await axios.get('http://127.0.0.1:5000/events/get/all');
         const eventData = response.data;
         const token = localStorage.getItem('token');
+
         if (token) {
-            const user_id = jwtDecode(token).user_id;
-            return (eventData.events.filter(event => event.creator === user_id));
+            const decodedToken = jwtDecode(token);
+            const user_id = decodedToken.user_id;
+            const createdEvents = eventData.events.filter(event => event.creator === user_id);
+            const managedEvents = eventData.events.filter(event =>
+                event.creator !== user_id &&
+                event.authorized_users &&
+                event.authorized_users.includes(user_id)
+            );
+
+            return {
+                createdEvents,
+                managedEvents
+            };
         }
+
+        return {
+            createdEvents: [],
+            managedEvents: []
+        };
     } catch (error) {
-        console.error('Error fetching user created events: ', error.response ? error.response.data : error.message);
-        throw (error);
+        console.error('Error fetching user events: ', error.response ? error.response.data : error.message);
+        throw error;
     }
 }
 
@@ -61,9 +78,7 @@ export const fetchUserRegisteredEvents = async () => {
                 'Authorization': `Bearer ${token}`
             }
         });
-        if (response) {
-            return response.data.events
-        }
+        if (response) return response.data.events
     } catch (error) {
         console.error('Error fetching user registered events: ', error.response ? error.response.data : error.message);
         throw (error);
@@ -104,3 +119,21 @@ export const handleDeleteEvent = async (event_id) => {
         throw (error);
     }
 }
+
+export const handleAddEventManager = async (eventId, email) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.post(`http://127.0.0.1:5000/event/authorize`,
+            { event_id: eventId, user_email: email },
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error adding an event manager: ', error.response ? error.response.data : error.message);
+        throw error;
+    }
+};

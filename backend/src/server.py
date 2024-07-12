@@ -61,6 +61,7 @@ def auth_logout_route():
 def events_crawl_route():
     return json.dumps(events_crawl())
 
+
 @app.get('/events/get/all')
 @swag_from(events_get_all_spec)
 def events_get_all_route():
@@ -115,6 +116,7 @@ def event_update_route(event_id):
     }
     return json.dumps(event_update(token, event_id, event))
 
+
 @app.delete('/event/delete/<event_id>')
 @swag_from(event_delete_spec)
 def event_delete_route(event_id):
@@ -131,12 +133,14 @@ def event_authorize_route():
     if token.startswith('Bearer '):
         token = token[len('Bearer '):]
     body = request.get_json()
-    return json.dumps(event_authorize(token, body['event_id'], body['user_id']))
+    return json.dumps(event_authorize(token, body['event_id'], body['user_email']))
+
 
 @app.get('/events/get_page/<page_number>')
 @swag_from(events_get_page_spec)
 def events_get_page_route(page_number):
-  return json.dumps(events_get_page(page_number))
+    return json.dumps(events_get_page(page_number))
+
 
 @app.get('/profile/get')
 @swag_from(profile_get_spec)
@@ -204,6 +208,7 @@ def user_manage_events_route():
 
     return json.dumps(user_manage_events(token))
 
+
 @app.post('/user/register/<event_id>')
 @swag_from(user_register_event_spec)
 def user_register_event_route(event_id):
@@ -213,6 +218,8 @@ def user_register_event_route(event_id):
         token = token[len('Bearer '):]
 
     return json.dumps(user_register_event(token, event_id))
+
+
 @app.delete('/clear')
 @swag_from(clear_spec)
 def clear_all():
