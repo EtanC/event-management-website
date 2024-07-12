@@ -28,15 +28,14 @@ swagger = Swagger(app, template=definitions)
 @app.errorhandler(HTTPException)
 def access_error_handler(e):
     response = e.get_response()
-    response.data = json.dumps({
+    response.data = {
         "code": e.code,
         "name": e.name,
         "description": e.description,
-    })
+    }
     response.content_type = "application/json"
     return response
-
-
+    
 @app.post('/auth/login')
 @swag_from(auth_login_spec)
 def auth_login_route():
@@ -65,18 +64,15 @@ def auth_logout_route():
 def events_crawl_route():
     return events_crawl()
 
-
 @app.get('/events/get/all')
 @swag_from(events_get_all_spec)
 def events_get_all_route():
     return events_get_all()
 
-
 @app.delete('/events/clear')
 @swag_from(events_clear_spec)
 def events_clear_route():
     return events_clear()
-
 
 @app.post('/events/ai-description')
 @swag_from(events_ai_description_spec)
@@ -118,7 +114,6 @@ def event_update_route(event_id):
         'start_date': body['start_date']
     }
     return event_update(token, event_id, event)
-
 
 @app.delete('/event/delete/<event_id>')
 @swag_from(event_delete_spec)
@@ -249,23 +244,7 @@ def user_register_event_route(event_id):
     if not token:
         raise AccessError('Authorization token is missing')
 
-    return json.dumps(user_register_event(token, event_id))
-
-
-@app.post('/user/unregister/<event_id>')
-@swag_from(user_unregister_event_spec)
-def user_unregister_event_route(event_id):
-    token = request.cookies.get('token')
-    if not token:
-        raise AccessError('Authorization token is missing')
-    return json.dumps(user_unregister_event(token, event_id))
-
-
-@app.delete('/clear')
-@swag_from(clear_spec)
-def clear_all():
-    db.clear_all()
-    return json.dumps({})
+    return user_register_event(token, event_id)
 
 
 if __name__ == '__main__':
