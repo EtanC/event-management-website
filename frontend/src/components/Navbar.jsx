@@ -23,7 +23,7 @@ function NavBar() {
     const navigate = useNavigate();
     const [auth, setAuth] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
-    const { fethcedProfileData, loading } = useProfile();
+    const ProfileContext = useProfile();
 
     const [profileData, setProfileData] = useState(null);
 
@@ -98,11 +98,11 @@ function NavBar() {
                             onClick={handleLogoClick}
                         />
                         <Box sx={{ flexGrow: 1 }} />
-                        {auth && !loading ? (
+                        {auth && !ProfileContext.loading ? (
                             profileData ? (
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <Typography sx={{ mr: 2, color: 'black' }}>
-                                        {fethcedProfileData.full_name || ''}
+                                        {ProfileContext.profileData.full_name || ''}
                                     </Typography>
                                     <IconButton
                                         aria-label="account of current user"
@@ -113,8 +113,8 @@ function NavBar() {
                                         sx={{ padding: 0 }}
                                     >
                                         <img
-                                            src={fethcedProfileData.profile_pic
-                                                ? `data:image/jpeg;base64,${fethcedProfileData.profile_pic}`
+                                            src={ProfileContext.profileData.profile_pic
+                                                ? `data:image/jpeg;base64,${ProfileContext.profileData.profile_pic}`
                                                 : defaultProfilePic}
                                             alt="Profile"
                                             style={{ cursor: 'pointer', height: '50px', width: '50px', borderRadius: '50%' }}

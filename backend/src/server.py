@@ -198,8 +198,8 @@ def user_events_route():
 def user_manage_events_route():
     token = request.cookies.get('token')
 
-    if token.startswith('Bearer '):
-        token = token[len('Bearer '):]
+    if not token:
+        raise AccessError('Authorization token is missing')
 
     return user_manage_events(token)
 

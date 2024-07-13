@@ -159,7 +159,10 @@ def event_update(token, event_id, new_event):
 
 
 def user_is_creator(user_id, event_id):
-    return user_id == db['events'].find_one({'_id': ObjectId(event_id)})['creator']
+    print(user_id)
+    creator = db['events'].find_one({'_id': ObjectId(event_id)})['creator']
+    print(creator)
+    return user_id == creator
 
 
 def event_delete(token, event_id):
@@ -175,7 +178,7 @@ def event_delete(token, event_id):
 
 def event_authorize(token, event_id, to_be_added_email):
     user_id = decode_token(token)
-    if not user_is_creator(user_id, ObjectId(event_id)):
+    if not user_is_creator(user_id, event_id):
         raise AccessError(
             'User is not authorized to allow other people to manage event')
     # Add user to authorized list

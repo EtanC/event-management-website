@@ -26,10 +26,7 @@ export const handleCreateEvent = async (eventData) => {
         const response = await axios.post('http://127.0.0.1:5000/event/create',
             { event: eventData },
             {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
+                withCredentials: true,
             });
         return response.status;
     } catch (error) {
@@ -40,31 +37,24 @@ export const handleCreateEvent = async (eventData) => {
 
 export const fetchUserEvents = async () => {
     try {
-        const response = await axios.get('http://127.0.0.1:5000/events/get/all');
-        const eventData = response.data;
-        const token = localStorage.getItem('token');
-
-        if (token) {
-            const decodedToken = jwtDecode(token);
-            const user_id = decodedToken.user_id;
-            const createdEvents = eventData.events.filter(event => event.creator === user_id);
-            const managedEvents = eventData.events.filter(event =>
-                event.creator !== user_id &&
-                event.authorized_users &&
-                event.authorized_users.includes(user_id)
-            );
-
+        const response = await axios.get('http://127.0.0.1:5000/user/manage/events',
+            {
+                withCredentials: true
+            }
+        )
+        if (response.status == 200) {
             return {
-                createdEvents,
-                managedEvents
-            };
+                createdEvents: response.data['creator'],
+                managedEvents: response.data['manager'],
+            }
         }
-
-        return {
-            createdEvents: [],
-            managedEvents: []
-        };
     } catch (error) {
+        if (error.status == 403) {
+            return {
+                createdEvents: [],
+                managedEvents: []
+            }
+        }
         console.error('Error fetching user events: ', error.response ? error.response.data : error.message);
         throw error;
     }
@@ -74,9 +64,7 @@ export const fetchUserRegisteredEvents = async () => {
     try {
         const token = localStorage.getItem('token');
         const response = await axios.get('http://127.0.0.1:5000/user/events', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
+            withCredentials: true
         });
         if (response) return response.data.events
     } catch (error) {
@@ -91,10 +79,7 @@ export const handleEditEvent = async (event_id, eventData) => {
         const response = await axios.put(`http://127.0.0.1:5000/event/update/${event_id}`,
             { event: eventData },
             {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
+                withCredentials: true
             });
         return response.status;
     } catch (error) {
@@ -108,10 +93,7 @@ export const handleDeleteEvent = async (event_id) => {
     try {
         const token = localStorage.getItem('token');
         const response = await axios.delete(`http://127.0.0.1:5000/event/delete/${event_id}`, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
+            withCredentials: true,
         });
         return response.data;
     } catch (error) {
@@ -124,11 +106,9 @@ export const handleAddEventManager = async (eventId, email) => {
     try {
         const token = localStorage.getItem('token');
         const response = await axios.post(`http://127.0.0.1:5000/event/authorize`,
-            { event_id: eventId, user_email: email },
+            { event_id: eventId, email },
             {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                }
+                withCredentials: true,
             }
         );
         return response.data;

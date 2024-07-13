@@ -46,15 +46,8 @@ export const updateProfilePassword = async (password, setErrorMessage) => {
             new_password: new_pw,
             re_password: confirm_new_pw,
         }, {
-<<<<<<< HEAD
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-=======
             withCredentials: true
         });
->>>>>>> 654f75182176ea3cc7c7d5660d3fdbcc80e10df1
         return response.status
     } catch (error) {
         console.error('Failed to change password:', error.response ? error.response.data.description : error.message)

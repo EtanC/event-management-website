@@ -14,11 +14,8 @@ export const ProfileProvider = ({ children }) => {
     useEffect(() => {
         const fetchProfileData = async () => {
             try {
-                const token = localStorage.getItem('token');
                 const response = await axios.get('http://127.0.0.1:5000/profile/get', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    withCredentials: true
                 });
                 setProfileData(response.data);
             } catch (err) {
