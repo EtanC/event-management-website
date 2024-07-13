@@ -211,8 +211,8 @@ event_authorize_spec = {
                 'event_id': {
                     '$ref': '#/definitions/event_id',
                 },
-                'user_id': {
-                    '$ref': '#/definitions/user_id',
+                'email': {
+                    '$ref': '#/definitions/email',
                 }
             }
         }

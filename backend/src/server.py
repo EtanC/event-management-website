@@ -131,7 +131,7 @@ def event_authorize_route():
     if not token:
         raise AccessError('Authorization token is missing')
     body = request.get_json()
-    return event_authorize(token, body['event_id'], body['user_id'])
+    return event_authorize(token, body['event_id'], body['email'])
 
 @app.get('/events/get_page/<page_number>')
 @swag_from(events_get_page_spec)
