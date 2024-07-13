@@ -1,7 +1,7 @@
 import pytest
 from backend.test_src.events import event_create, events_get_all
 from backend.test_src.auth import auth_register_raw
-from backend.test_src.user import user_events, user_register_event, user_manage_events
+from backend.test_src.user import user_events, user_register_event, user_manage_events, user_unregister_event
 from backend.test_src.database import clear_all
 from backend.test_src.events import event_authorize, event_delete
 from backend.src.error import InputError, AccessError
@@ -41,6 +41,8 @@ def test_user(reset, sample_event, sample_user):
     user_register_event(sample_user, event_id)
     for key in expected_event.keys():
         assert user_events(sample_user)['events'][0][key] == expected_event[key]
+    user_unregister_event(sample_user, event_id)
+    assert user_events(sample_user)['events'] == []
 
 def test_user_register_event_twice(sample_event, sample_user):
     event_id = event_create(sample_user, sample_event)['event_id']

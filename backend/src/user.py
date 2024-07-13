@@ -30,6 +30,20 @@ def user_register_event(token, event_id):
         raise InputError('Already registered to event')
     return {}
 
+def user_unregister_event(token, event_id):
+    user_id = decode_token(token)
+    result = db.users.update_one(
+        { '_id': ObjectId(user_id) },
+        {
+            '$pull': {
+                'registered_events': event_id,
+            }
+        }
+    )
+    if result.modified_count == 0:
+        raise InputError('Not registered to event')
+    return {}
+
 # Convert a list of event_ids to event objects by finding the corresponding
 # event in the database
 def event_ids_to_events(event_ids):
