@@ -75,37 +75,39 @@ def check_notifications():
     # lmk if thats too many reminders
 
     # idea for setting could be like only receive notifications for certain rankings
-
-    for user in db.user.find():
+    print('hi')
+    for user in db.users.find():
+        print(user)
         for event_id in user['registered_events']:
             event = db.events.find_one({'_id': ObjectId(event_id)})
-            start_date_object = datetime.strptime(event['start_date'])
+            start_date_object = datetime.strptime(event['start_date'], "%d %B %Y")
             time_now = datetime.now()
             time_delta = start_date_object - time_now
 
-            if time_delta.days > 0:
+            if time_delta.days >= 0:
+                # be careful cuz time_delta.days rounds down
                 if time_delta.days <= 1:
                     # send 1 day notif
-                    subject = "Upcoming event in 1 day"
+                    subject = "Upcoming event in less than 1 day"
 
                     body = f"""
-The event {event['name']} starts in 1 day! It's on {event['start_date']} at {event['location']}. To see more go to {event['details_link']}.
+The event {event['name']} starts in less than 1 day! It's on {event['start_date']} at {event['location']}. To see more go to {event['details_link']}.
 """
                     send_email(subject, body, user['email'])
                 elif time_delta.days <= 3:
                     # send 3 days notif
-                    subject = "Upcoming event in 3 days"
+                    subject = "Upcoming event in less than 3 days"
 
                     body = f"""
-The event {event['name']} starts in 3 days! It's on {event['start_date']} at {event['location']}. To see more go to {event['details_link']}.
+The event {event['name']} starts in less than 3 days! It's on {event['start_date']} at {event['location']}. To see more go to {event['details_link']}.
 """
                     send_email(subject, body, user['email'])
                 elif time_delta.days <= 7: 
                     # send 1 week notif
-                    subject = "Upcoming event in one week"
+                    subject = "Upcoming event in less than one week"
 
                     body = f"""
-The event {event['name']} starts in one week! It's on {event['start_date']} at {event['location']}. To see more go to {event['details_link']}.
+The event {event['name']} starts in less than one week! It's on {event['start_date']} at {event['location']}. To see more go to {event['details_link']}.
 """
                     send_email(subject, body, user['email'])
 
