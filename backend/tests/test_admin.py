@@ -1,6 +1,6 @@
 import pytest
-from backend.src.auth import auth_register 
-from backend.src.admin import is_admin, invite_admin, remove_admin
+from backend.test_src.auth import auth_register_raw
+from backend.test_src.admin import is_admin, invite_admin, remove_admin
 from backend.src.error import InputError, AccessError
 from backend.src.database import clear, db
 import jwt
@@ -48,7 +48,8 @@ def make_admin(username):
 
 
 def test_default(reset, user1):
-    token = auth_register(user1['username'], user1['email'], user1['password'])['token']
+    response = auth_register_raw(user1['username'], user1['email'], user1['password'])
+    token = response.cookies.get('token')
 
     assert is_admin(token) == False
 
@@ -57,8 +58,10 @@ def test_default(reset, user1):
     assert is_admin(token) == True
 
 def test_invite_admin(reset, user1, user2):
-    token = auth_register(user1['username'], user1['email'], user1['password'])['token']
-    token2 = auth_register(user2['username'], user2['email'], user2['password'])['token']
+    response = auth_register_raw(user1['username'], user1['email'], user1['password'])
+    token = response.cookies.get('token')
+    response2 = auth_register_raw(user2['username'], user2['email'], user2['password'])
+    token2 = response2.cookies.get('token')
 
     make_admin(user1['username'])
 
@@ -69,8 +72,10 @@ def test_invite_admin(reset, user1, user2):
     assert is_admin(token2) == True
 
 def test_remove_admin(reset, user1, user2):
-    token = auth_register(user1['username'], user1['email'], user1['password'])['token']
-    token2 = auth_register(user2['username'], user2['email'], user2['password'])['token']
+    response = auth_register_raw(user1['username'], user1['email'], user1['password'])
+    token = response.cookies.get('token')
+    response2 = auth_register_raw(user2['username'], user2['email'], user2['password'])
+    token2 = response2.cookies.get('token')
 
     make_admin(user1['username'])
     make_admin(user2['username'])
@@ -88,8 +93,10 @@ def test_is_admin_error(reset):
         is_admin(random_token)
 
 def test_invite_admin_error(reset, user1, user2):
-    token = auth_register(user1['username'], user1['email'], user1['password'])['token']
-    token2 = auth_register(user2['username'], user2['email'], user2['password'])['token']
+    response = auth_register_raw(user1['username'], user1['email'], user1['password'])
+    token = response.cookies.get('token')
+    response2 = auth_register_raw(user2['username'], user2['email'], user2['password'])
+    token = response.cookies.get('token')
 
     random_token = generate_random_jwt()
 
@@ -108,8 +115,10 @@ def test_invite_admin_error(reset, user1, user2):
         invite_admin(token, 'wawawathisusernamedoestexist')
 
 def test_remove_admin_error(reset, user1, user2):
-    token = auth_register(user1['username'], user1['email'], user1['password'])['token']
-    token2 = auth_register(user2['username'], user2['email'], user2['password'])['token']
+    response = auth_register_raw(user1['username'], user1['email'], user1['password'])
+    token = response.cookies.get('token')
+    response2 = auth_register_raw(user2['username'], user2['email'], user2['password'])
+    token = response.cookies.get('token')
 
     random_token = generate_random_jwt()
 
