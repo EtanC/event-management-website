@@ -1,5 +1,6 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const ProfileContext = createContext();
 
@@ -14,11 +15,8 @@ export const ProfileProvider = ({ children }) => {
     useEffect(() => {
         const fetchProfileData = async () => {
             try {
-                const token = localStorage.getItem('token');
                 const response = await axios.get('http://127.0.0.1:5000/profile/get', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    withCredentials: true
                 });
                 setProfileData(response.data);
             } catch (err) {
@@ -28,8 +26,12 @@ export const ProfileProvider = ({ children }) => {
             }
         };
 
-        if (localStorage.getItem('token')) fetchProfileData();
-        else setLoading(false);
+        const token = Cookies.get('token');
+        if (token) {
+            fetchProfileData();
+        } else {
+            setLoading(false);
+        }
     }, []);
 
     return (
