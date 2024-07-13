@@ -69,6 +69,14 @@ def send_email(subject, body, receiver):
             raise InputError('User email is not valid')
         # if SSL error, go to python folder on ur computer and double click Install Certificates.command
 
+def check_notifications():
+    # check all events that every user is registered in, and send a reminder at 7 days before, 3 days before, 1 day before
+    # lmk if thats too many reminders
+
+
+
+    pass
+
 
 if __name__ == '__main__':
     send_email('test subject', 'test body', 'kchen397@gmail.com')
