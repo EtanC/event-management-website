@@ -19,6 +19,21 @@ profile_get_spec = {
                     'email': {
                         '$ref': '#/definitions/email'
                     },
+                    'description': {
+                        '$ref': '#/definitions/description'
+                    },
+                    'full_name': {
+                        '$ref': '#/definitions/full_name'
+                    },
+                    'job_title': {
+                        '$ref': '#/definitions/job_title'
+                    },
+                    'fun_fact': {
+                        '$ref': '#/definitions/fun_fact'
+                    },
+                    'profile_pic': {
+                        '$ref': '#/definitions/profile_pic'
+                    }
                 }
             },
         },
@@ -29,6 +44,12 @@ profile_get_spec = {
 }
 
 profile_update_details_spec = {
+    'tags': ['Profile'],
+    'security': [
+        {
+            "bearerAuth": []
+        }
+    ],
     'parameters': [
         {
             'name': 'Body',
@@ -69,25 +90,12 @@ profile_update_details_spec = {
             }
         }
     ],
-    'definitions': definitions_profile,
     'responses': {
         200: {
             'description': 'Successful Details Change',
             'schema': {
                 'type': 'object',
                 'properties': {
-                    'description': {
-                        '$ref': '#/definitions/data/description'
-                    },
-                    'job_title': {
-                        '$ref': '#/definitions/data/job_title'
-                    },
-                    'fun_fact': {
-                        '$ref': '#/definitions/data/fun_fact'
-                    },
-                    'full_name': {
-                        '$ref': '#/definitions/data/full_name'
-                    },
                 }
             },
         },
@@ -101,27 +109,23 @@ profile_update_details_spec = {
 }
 
 profile_update_password_spec = {
+    'tags': ['Profile'],
+    'security': [
+        {
+            "bearerAuth": []
+        }
+    ],
     'parameters': [
         {
             '$ref': '#/definitions/parameters/update_password'
         },
     ],
-    'definitions': definitions_profile,
     'responses': {
         200: {
             'description': 'Successful Password Change',
             'schema': {
                 'type': 'object',
                 'properties': {
-                    'old_password': {
-                        '$ref': '#/definitions/data/password',
-                    },
-                    'new_password': {
-                        '$ref': '#/definitions/data/password',
-                    },
-                    're_password': {
-                        '$ref': '#/definitions/data/password',
-                    },
                 }
             },
         },

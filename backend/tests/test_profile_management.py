@@ -131,11 +131,20 @@ def test_update_profile_error(reset, user1):
     response = auth_register_raw(user1['username'], user1['email'], user1['password'])
     token = response.cookies.get('token')
     
+    matchingUsername = 'randomUsername'
+    
+    response = auth_register_raw(matchingUsername, 'randomEmail@outlook.com', 'randomPassword')
+    token2 = response.cookies.get('token')
+    
     random_token = generate_random_jwt()
 
     # test invalid token
     with pytest.raises(AccessError):
         update_profile_details(random_token, 'newusr', 'newemail', None, None, None, None)
+
+    # test username already taken
+    with pytest.raises(InputError):
+        update_profile_details(token2, matchingUsername, None, None, None, None, None)
 
 def test_update_password(reset, user1):
     response = auth_register_raw(user1['username'], user1['email'], user1['password'])

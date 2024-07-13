@@ -71,6 +71,9 @@ definitions = {
         'profile_pic': {
             'type': 'object'
         },
+        'is_admin': {
+            'type': 'boolean'
+        }
     },
     "securityDefinitions": {
         "bearerAuth": {
