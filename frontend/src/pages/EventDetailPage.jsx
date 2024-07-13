@@ -33,7 +33,7 @@ import '../styles/EventDetailPage.css';
 
 function EventDetailPage() {
     const location = useLocation();
-    const { event } = location.state;
+    const [event, setEvent] = useState(location.state.event);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -76,7 +76,7 @@ function EventDetailPage() {
                                 {event.name}
                             </Typography>
                         </Box>
-                        <EventDetail event={event} />
+                        <EventDetail event={event} setEvent={setEvent}/>
                     </Box>
                     <Grid container spacing={3}>
                         <Grid item xs={12} md={8}>

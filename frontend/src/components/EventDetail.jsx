@@ -5,7 +5,7 @@ import handleRegisterEvent from '../helper/handleRegisterEvent';
 import { formatDate, checkUserIsEventOwner, getUserId } from '../helper/helpers'
 import EventModal from '../components/EventModal';
 
-const EventDetail = ({ event, onEditClick }) => {
+const EventDetail = ({ event, onEditClick, setEvent}) => {
     const [userCanEdit, setUserCanEdit] = useState(false);
     const formattedDate = formatDate(event.start_date);
     const [openEditEvent, setOpenEditEvent] = useState(false);
@@ -31,7 +31,7 @@ const EventDetail = ({ event, onEditClick }) => {
 
     return (
         <>
-            <EventModal open={openEditEvent} handleClose={handleEditClose} headerText={'Edit Event'} event={event} />
+            <EventModal open={openEditEvent} handleClose={handleEditClose} headerText={'Edit Event'} event={event} setEvent={setEvent}/>
             <Box className="date-time-box" sx={{ position: 'absolute', top: '30%', left: '70%', transform: 'translate(-20%, -0%)', zIndex: 2 }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', width: '100%' }}>
                     {userCanEdit && (

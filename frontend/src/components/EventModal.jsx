@@ -53,7 +53,7 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-const EventModal = ({ open, handleClose, headerText, event }) => {
+const EventModal = ({ open, handleClose, headerText, event, setEvent }) => {
     const [eventData, setEventData] = useState({
         name: '',
         location: '',
@@ -97,7 +97,10 @@ const EventModal = ({ open, handleClose, headerText, event }) => {
         }
         try {
             let result;
-            if (event && event._id) result = await handleEditEvent(event._id, eventData);
+            if (event && event._id) {
+                result = await handleEditEvent(event._id, eventData);
+                setEvent(eventData)
+            }
             else result = await handleCreateEvent(eventData);
             if (result === 200) {
                 setSnackbarMessage(`Event successfully ${event && event._id ? 'updated' : 'created'}!`);
