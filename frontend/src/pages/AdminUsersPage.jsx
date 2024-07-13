@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Typography, Box, Container, Link as MuiLink } from '@mui/material';
 import { Link } from 'react-router-dom';
-import Navbar from '../components/Navbar';
 import SearchBar from '../components/SearchBar';
 import AdminTable from '../components/AdminTable';
 
@@ -49,8 +48,7 @@ const AdminUsersPage = () => {
 
     return (
         <>
-            <Navbar />
-            <Box sx={{ backgroundColor: '#f5f5f5', padding: '40px 0', height: '90vh' }}>
+            <Box sx={{ height: '90vh' }}>
                 <Container maxWidth="lg">
                     <Box sx={styles.flexBox}>
                         <Typography variant="h4">

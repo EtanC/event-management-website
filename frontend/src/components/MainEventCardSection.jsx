@@ -32,6 +32,7 @@ function MainEventCard() {
 
     const handleCardClick = (event) => {
         navigate(`/event/${event._id}`, { state: { event } });
+        window.scrollTo(0, 0);
     };
 
     const handleNextPage = () => {
@@ -43,7 +44,7 @@ function MainEventCard() {
     }
 
     return (
-        <Box sx={{ backgroundColor: '#f5f5f5', padding: '20px 0' }}>
+        <Box sx={{ padding: '20px 0' }}>
             <SearchBar
                 labelOne='Looking For'
                 labelTwo='Location'
@@ -81,9 +82,9 @@ function MainEventCard() {
                     </Grid>
                 </Box>
             )}
-            <div style={{display: 'flex', width: '100%',justifyContent: 'center'}}>
+            <div style={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
                 {page != 1 && <IconButton onClick={handlePreviousPage}>
-                    <KeyboardArrowLeftIcon/>
+                    <KeyboardArrowLeftIcon />
                 </IconButton>}
                 {page > 2 && <Button onClick={() => setPage(page - 2)}>
                     {page - 2}
@@ -101,11 +102,11 @@ function MainEventCard() {
                     {page + 2}
                 </Button>}
                 {(page + 1 <= pageCount) && <IconButton onClick={handleNextPage}>
-                    <KeyboardArrowRightIcon/>
+                    <KeyboardArrowRightIcon />
                 </IconButton>}
             </div>
         </Box>
-        
+
     );
 }
 

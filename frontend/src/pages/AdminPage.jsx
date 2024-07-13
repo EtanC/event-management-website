@@ -1,14 +1,12 @@
 import { Typography, Box, Container, Button, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
 
 const AdminPage = () => {
     const navigate = useNavigate();
 
     return (
         <>
-            <Navbar />
-            <Box sx={{ backgroundColor: '#f5f5f5', padding: '40px 0', minHeight: '100vh' }}>
+            <Box sx={{ minHeight: '100vh' }}>
                 <Container maxWidth="lg">
                     <Typography variant="h4" sx={{ marginBottom: '40px' }}>Admin</Typography>
                     <Typography variant="b2" sx={{ marginBottom: '40px' }}>You're the goat</Typography>
