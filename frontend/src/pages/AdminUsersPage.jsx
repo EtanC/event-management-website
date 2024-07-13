@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Typography, Box, Container, Link as MuiLink } from '@mui/material';
 import { Link } from 'react-router-dom';
 import SearchBar from '../components/SearchBar';

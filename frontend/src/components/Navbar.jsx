@@ -1,9 +1,12 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { handleLogout } from '../helper/handleAuth';
 import logo from '../Image/CompanyLogo.png';
 import defaultProfilePic from '../Image/defaultProfile.png';
+
 import { useProfile } from '../ProfileProvider';
+import { fetchProfileData } from '../helper/handleProfileData';
+import Cookies from 'js-cookie';
 
 import {
     AppBar,
@@ -18,9 +21,22 @@ import {
 
 function NavBar() {
     const navigate = useNavigate();
-    const { profileData, loading } = useProfile();
-    const [auth, setAuth] = React.useState(!!localStorage.getItem('token'));
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [auth, setAuth] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const { fethcedProfileData, loading } = useProfile();
+
+    const [profileData, setProfileData] = useState(null);
+
+    useEffect(() => {
+        const token = Cookies.get('token');
+        setAuth(!!token);
+        if (token) {
+            setAuth(true);
+            fetchProfileData(setProfileData);
+        } else {
+            setAuth(false);
+        }
+    }, []);
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -86,7 +102,7 @@ function NavBar() {
                             profileData ? (
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <Typography sx={{ mr: 2, color: 'black' }}>
-                                        {profileData.full_name || ''}
+                                        {fethcedProfileData.full_name || ''}
                                     </Typography>
                                     <IconButton
                                         aria-label="account of current user"
@@ -97,8 +113,8 @@ function NavBar() {
                                         sx={{ padding: 0 }}
                                     >
                                         <img
-                                            src={profileData.profile_pic
-                                                ? `data:image/jpeg;base64,${profileData.profile_pic}`
+                                            src={fethcedProfileData.profile_pic
+                                                ? `data:image/jpeg;base64,${fethcedProfileData.profile_pic}`
                                                 : defaultProfilePic}
                                             alt="Profile"
                                             style={{ cursor: 'pointer', height: '50px', width: '50px', borderRadius: '50%' }}

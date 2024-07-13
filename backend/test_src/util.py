@@ -13,7 +13,7 @@ def parse_response(response):
         raise InputError(response.json()['description'])
     raise Exception(response.json()['description'])
 
-def token_header(token):
+def make_cookies(token):
     return {
-        'Authorization': f'Bearer {token}'
+        'token': f'{token}'
     }

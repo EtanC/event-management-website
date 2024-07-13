@@ -1,5 +1,5 @@
 import requests
-from backend.test_src.util import parse_response, backend_url, token_header
+from backend.test_src.util import parse_response, backend_url, make_cookies
 
 def event_create(token, event):
     body = {
@@ -10,8 +10,8 @@ def event_create(token, event):
         'location': event['location'],
         'start_date': event['start_date']
     }
-    header = token_header(token)
-    response = requests.post(f'{backend_url}/event/create', json=body, headers=header)
+    cookies = make_cookies(token)
+    response = requests.post(f'{backend_url}/event/create', json=body, cookies=cookies)
     return parse_response(response)
 def event_update(token, event_id, new_event):
     body = {
@@ -22,20 +22,20 @@ def event_update(token, event_id, new_event):
         'location': new_event['location'],
         'start_date': new_event['start_date']
     }
-    header = token_header(token)
-    response = requests.put(f'{backend_url}/event/update/{event_id}', json=body, headers=header)
+    cookies = make_cookies(token)
+    response = requests.put(f'{backend_url}/event/update/{event_id}', json=body, cookies=cookies)
     return parse_response(response)
 def event_delete(token, event_id):
-    header = token_header(token)
-    response = requests.delete(f'{backend_url}/event/delete/{event_id}', headers=header)
+    cookies = make_cookies(token)
+    response = requests.delete(f'{backend_url}/event/delete/{event_id}', cookies=cookies)
     return parse_response(response)
 def event_authorize(token, event_id, to_be_added_id):
     body = {
         'user_id': to_be_added_id,
         'event_id': event_id
     }
-    header = token_header(token)
-    response = requests.post(f'{backend_url}/event/authorize', json=body, headers=header)
+    cookies = make_cookies(token)
+    response = requests.post(f'{backend_url}/event/authorize', json=body, cookies=cookies)
     return parse_response(response)
 def events_crawl():
     response = requests.post(f'{backend_url}/events/crawl')

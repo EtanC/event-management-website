@@ -12,8 +12,14 @@ def user_exists(user_id):
     return db.users.find_one({'_id': ObjectId(user_id)}) is not None
 
 
+def event_exists(event_id):
+    valid_id = ObjectId.is_valid(event_id)
+    return valid_id and db.events.find_one({ '_id': ObjectId(event_id)}) is not None
+
 def user_register_event(token, event_id):
     user_id = decode_token(token)
+    if not event_exists(event_id):
+        raise InputError('Invalid Event ID')
     result = db.users.update_one(
         {'_id': ObjectId(user_id)},
         {
@@ -24,6 +30,20 @@ def user_register_event(token, event_id):
     )
     if result.modified_count == 0:
         raise InputError('Already registered to event')
+    return {}
+
+def user_unregister_event(token, event_id):
+    user_id = decode_token(token)
+    result = db.users.update_one(
+        { '_id': ObjectId(user_id) },
+        {
+            '$pull': {
+                'registered_events': event_id,
+            }
+        }
+    )
+    if result.modified_count == 0:
+        raise InputError('Not registered to event')
     return {}
 
 # Convert a list of event_ids to event objects by finding the corresponding
