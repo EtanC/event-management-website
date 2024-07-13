@@ -22,7 +22,6 @@ export const fetchEventsData = async (setEvents, setLocations, setError, setIsLo
 
 export const handleCreateEvent = async (eventData) => {
     try {
-        const token = localStorage.getItem('token');
         const response = await axios.post('http://127.0.0.1:5000/event/create',
             { event: eventData },
             {
@@ -62,7 +61,6 @@ export const fetchUserEvents = async () => {
 
 export const fetchUserRegisteredEvents = async () => {
     try {
-        const token = localStorage.getItem('token');
         const response = await axios.get('http://127.0.0.1:5000/user/events', {
             withCredentials: true
         });
@@ -75,7 +73,6 @@ export const fetchUserRegisteredEvents = async () => {
 
 export const handleEditEvent = async (event_id, eventData) => {
     try {
-        const token = localStorage.getItem('token');
         const response = await axios.put(`http://127.0.0.1:5000/event/update/${event_id}`,
             { event: eventData },
             {
@@ -91,7 +88,6 @@ export const handleEditEvent = async (event_id, eventData) => {
 
 export const handleDeleteEvent = async (event_id) => {
     try {
-        const token = localStorage.getItem('token');
         const response = await axios.delete(`http://127.0.0.1:5000/event/delete/${event_id}`, {
             withCredentials: true,
         });
@@ -104,7 +100,6 @@ export const handleDeleteEvent = async (event_id) => {
 
 export const handleAddEventManager = async (eventId, email) => {
     try {
-        const token = localStorage.getItem('token');
         const response = await axios.post(`http://127.0.0.1:5000/event/authorize`,
             { event_id: eventId, email },
             {
