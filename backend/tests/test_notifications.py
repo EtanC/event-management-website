@@ -1,7 +1,9 @@
 import pytest
-from backend.src.events import event_create, events_get_all
-from backend.src.auth import auth_register
-from backend.src.user import user_events, user_register_event, check_notifications
+from backend.test_src.auth import auth_register_raw
+from backend.test_src.events import event_create
+from backend.test_src.user import user_register_event
+from backend.src.events import event_create
+from backend.src.user import check_notifications
 from backend.src.database import clear, db
 from datetime import datetime, timedelta
 
@@ -60,7 +62,8 @@ def sample_event_7():
 @pytest.fixture
 def sample_user():
     # use your real email to check if the notification is sent
-    token = auth_register('kevchen', 'kchen397@gmail.com', 'testing')['token']
+    response = auth_register_raw('kevchen', 'kchen397@gmail.com', 'testing')
+    token = response.cookies.get('token')
     return token
 
 @pytest.fixture
