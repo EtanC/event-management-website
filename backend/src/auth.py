@@ -5,6 +5,7 @@ import hashlib
 from backend.src.config import config
 import jwt
 from bson.objectid import ObjectId
+from flask import make_response
 
 def decode_token(token):
     try:
@@ -27,8 +28,7 @@ def hash(string):
 
 def add_login_session(user_id):
     # Calculate end time
-    session_end_time = datetime.datetime.today(
-    ) + datetime.timedelta(minutes=config['MINUTES_TILL_TIMEOUT'])
+    session_end_time = datetime.datetime.now() + datetime.timedelta(minutes=config['MINUTES_TILL_TIMEOUT'])
     # Use separate table to keep track of sessions
     response = db.active_sessions.insert_one(
         {
@@ -38,25 +38,38 @@ def add_login_session(user_id):
     )
     return (response.inserted_id, session_end_time)
 
-
 def auth_login(email, password):
     match = db.users.find_one({'email': email, 'password': hash(password)})
     if match is None:
         raise InputError('Incorrect email or password')
+    
     session_id, session_end_time = add_login_session(match['_id'])
     token = encode_jwt({
         'user_id': str(match["_id"]),
         'session_id': str(session_id),
         'session_end_time': str(session_end_time)
     })
-    return {
-        'token': token
-    }
 
+    # Create a response object
+    response = make_response({'message': 'Login successful', 'session_end_time': session_end_time})
+    
+    # Set a cookie on the response object
+    response.set_cookie(
+        key='token',
+        value=token,
+        httponly=False,  
+        secure=False, 
+        samesite='Lax', 
+        expires=session_end_time,  
+        path='/'
+    )
+    return response
 
 def auth_register(username, email, password):
     if db.users.find_one({'email': email}) is not None:
         raise InputError('Email is already being used')
+    elif db.users.find_one({'username': username}) is not None:
+        raise InputError('Username is already taken')
     user = db.users.insert_one({
         'username': username,
         'email': email,
@@ -69,7 +82,8 @@ def auth_register(username, email, password):
         'password': hash(password),
         'registered_events': [],
         'managed_events': [],
-        'owned_events': []
+        'owned_events': [],
+        'isAdmin': False
     })
     session_id, session_end_time = add_login_session(user.inserted_id)
     token = encode_jwt({
@@ -77,12 +91,20 @@ def auth_register(username, email, password):
         'session_id': str(session_id),
         'session_end_time': str(session_end_time)
     })
-    return {
-        'token': token
-    }
+
+    response = make_response({'message': 'Registration successful', 'session_end_time': session_end_time})
+    response.set_cookie('token', token, httponly=True, secure=False, samesite='Lax', expires=session_end_time)
+    return response
 
 
-def auth_logout(token):
+
+def auth_logout():
+    token = request.cookies.get('token')
+    if not token:
+        raise AccessError('Authorization token is missing or invalid')
     data = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
     db.active_sessions.delete_one({'_id': ObjectId(data['session_id'])})
-    return {}
+
+    response = make_response({'message': 'Logout successful'})
+    response.delete_cookie('token')
+    return response

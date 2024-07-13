@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Box, Container } from '@mui/material';
 import Navbar from '../components/Navbar';
-import EventLoading from '../components/MainEventCardSection';
+import HomePageEventCardSection from '../components/HomePageEventCardSection';
 import defaultImage from '../Image/default-image.jpg';
 import theme from '../styles/Theme';
 import { ThemeProvider } from '@mui/material/styles';
@@ -37,7 +37,7 @@ function HomePage() {
                         />
                     </Box>
 
-                    <EventLoading />
+                    <HomePageEventCardSection />
 
                 </Container>
             </Box>
