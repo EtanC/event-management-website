@@ -7,7 +7,9 @@ from dotenv import load_dotenv
 import datetime
 from backend.src.error import InputError, AccessError
 from backend.src.auth import decode_token
+from backend.src.config import config
 from bson import ObjectId
+import random
 
 def events_crawl():
     subprocess.run(["python3 -m scrapy crawl easychair"], shell=True)
@@ -92,10 +94,10 @@ def event_create(token, event):
         raise InputError('Event already exists')
     if not event_is_valid(event):
         raise InputError('Invalid event')
-    user = db['users'].find({ '_id': user_id })
     event['ranking'] = 0
     event['authorized_users'] = []
     event['creator'] = user_id
+    event['image'] = random.randint(config['RANDOM_IMAGES_START_INDEX'], config['RANDOM_IMAGES_END_INDEX'])
     result = db.events.insert_one(event)
     db['users'].update_one(
         { '_id': ObjectId(user_id) },
