@@ -58,7 +58,7 @@ def auth_login(email, password):
         key='token',
         value=token,
         httponly=False,  
-        secure=False, 
+        secure=True, 
         samesite='Lax', 
         expires=session_end_time,  
         path='/'
