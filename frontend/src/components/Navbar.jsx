@@ -3,10 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { handleLogout } from '../helper/handleAuth';
 import logo from '../Image/CompanyLogo.png';
 import defaultProfilePic from '../Image/defaultProfile.png';
-
 import { useProfile } from './ProfileProvider';
 import Cookies from 'js-cookie';
-
 import {
     AppBar,
     Box,
@@ -24,7 +22,7 @@ function NavBar() {
     const { profileData, loading } = useProfile();
     const token = Cookies.get('token');
     const auth = !!token;
-    
+
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -59,6 +57,10 @@ function NavBar() {
         handleClose();
     };
 
+    const handleMyEvents = () => {
+        navigate('/my-events');
+    }
+
     const handleAdmin = () => {
         navigate('/admin');
         handleClose();
@@ -67,7 +69,7 @@ function NavBar() {
     const handleLogOut = () => {
         handleLogout(navigate);
         handleClose();
-    }    
+    }
 
     return (
         <>
@@ -133,6 +135,7 @@ function NavBar() {
                             sx={{ mt: 1.5 }}
                         >
                             <MenuItem onClick={handleProfile}>Profile</MenuItem>
+                            <MenuItem onClick={handleMyEvents}>My Events</MenuItem>
                             <MenuItem onClick={handleCalendar}>Calendar</MenuItem>
                             <MenuItem onClick={handleAdmin}>Admin</MenuItem>
                             <MenuItem onClick={handleLogOut}>Log Out</MenuItem>

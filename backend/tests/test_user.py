@@ -126,7 +126,7 @@ def test_user_manage_events(reset, sample_event, sample_user):
     # user creates event 2
     event2_id = event_create(sample_user, event2)['event_id']
     # user manages event 1
-    event_authorize(user2, event1_id, decode_token(sample_user))
+    event_authorize(user2, event1_id, 'johnsmith123@outlook.com')
     expected_event1['_id'] = event1_id
     expected_event2['_id'] = event2_id
     # Check that events returned are what we expect
