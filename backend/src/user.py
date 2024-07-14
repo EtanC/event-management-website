@@ -117,9 +117,7 @@ def check_notifications():
     # lmk if thats too many reminders
 
     # idea for setting could be like only receive notifications for certain rankings
-    print('hi')
     for user in db.users.find():
-        print(user)
         for event_id in user['registered_events']:
             event = db.events.find_one({'_id': ObjectId(event_id)})
             start_date_object = datetime.strptime(event['start_date'], "%d %B %Y")
