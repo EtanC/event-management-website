@@ -131,7 +131,6 @@ def test_event_created_by_different_user(reset, sample_event):
         **sample_event,
         '_id': event_id
     }
-<<<<<<< HEAD
     expected_event1 = { **event1 }
     expected_event2 = { **event2 }
     response = auth_register_raw('user2', 'user2@user2.com', 'user2')
@@ -147,7 +146,7 @@ def test_event_created_by_different_user(reset, sample_event):
     events = user_manage_events(sample_user)
     assert_event_equal(events['creator'][0], expected_event2)
     assert_event_equal(events['manager'][0], expected_event1)
-    
+
 def test_user_register_and_delete_event(reset, sample_event, sample_user):
     # create event
     event_id = event_create(sample_user, sample_event)['event_id']
@@ -173,4 +172,3 @@ def test_register_invalid_event(reset, sample_user):
     invalid_event_id = "invalid_event_id"
     with pytest.raises(InputError):
         user_register_event(sample_user, invalid_event_id)
->>>>>>> ee5f296 (fiexed)
