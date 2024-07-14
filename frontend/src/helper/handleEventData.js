@@ -22,7 +22,14 @@ export const fetchEventsData = async (setEvents, setLocations, setError, setIsLo
 export const handleCreateEvent = async (eventData) => {
     try {
         const response = await axios.post('http://127.0.0.1:5000/event/create',
-            { event: eventData },
+            {
+                'deadline': eventData.deadline,
+                'details': eventData.details,
+                'details_link': eventData.details_link,
+                'name': eventData.name,
+                'location': eventData.location,
+                'start_date': eventData.start_date
+            },
             {
                 withCredentials: true,
             });
@@ -73,7 +80,14 @@ export const fetchUserRegisteredEvents = async () => {
 export const handleEditEvent = async (event_id, eventData) => {
     try {
         const response = await axios.put(`http://127.0.0.1:5000/event/update/${event_id}`,
-            { event: eventData },
+            {
+                'deadline': eventData.deadline,
+                'details': eventData.details,
+                'details_link': eventData.details_link,
+                'name': eventData.name,
+                'location': eventData.location,
+                'start_date': eventData.start_date
+            },
             {
                 withCredentials: true
             });
