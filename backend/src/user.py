@@ -124,9 +124,9 @@ def check_notifications():
             time_now = datetime.now()
             time_delta = start_date_object - time_now
 
-            if time_delta.days >= 0:
+            if time_delta.days >= 0 and user['receive_notifications']:
                 # be careful cuz time_delta.days rounds down
-                if time_delta.days <= 1:
+                if time_delta.days <= 1 and event_id not in user['notifications_sent']['one_day']:
                     # send 1 day notif
                     subject = "Upcoming event in less than 1 day"
 
@@ -134,7 +134,10 @@ def check_notifications():
 The event {event['name']} starts in less than 1 day! It's on {event['start_date']} at {event['location']}. To see more go to {event['details_link']}.
 """
                     send_email(subject, body, user['email'])
-                elif time_delta.days <= 3:
+
+                    user['notifications_sent']['one_day'].append(event_id)
+
+                elif time_delta.days <= 3 and event_id not in user['notifications_sent']['three_days']:
                     # send 3 days notif
                     subject = "Upcoming event in less than 3 days"
 
@@ -142,7 +145,9 @@ The event {event['name']} starts in less than 1 day! It's on {event['start_date'
 The event {event['name']} starts in less than 3 days! It's on {event['start_date']} at {event['location']}. To see more go to {event['details_link']}.
 """
                     send_email(subject, body, user['email'])
-                elif time_delta.days <= 7: 
+
+                    user['notifications_sent']['three_days'].append(event_id)
+                elif time_delta.days <= 7 and event_id not in user['notifications_sent']['seven_days']:
                     # send 1 week notif
                     subject = "Upcoming event in less than one week"
 
@@ -150,6 +155,8 @@ The event {event['name']} starts in less than 3 days! It's on {event['start_date
 The event {event['name']} starts in less than one week! It's on {event['start_date']} at {event['location']}. To see more go to {event['details_link']}.
 """
                     send_email(subject, body, user['email'])
+
+                    user['notifications_sent']['seven_days'].append(event_id)
 
 if __name__ == '__main__':
     send_email('test subject', 'test body', 'kchen397@gmail.com')

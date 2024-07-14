@@ -83,7 +83,13 @@ def auth_register(username, email, password):
         'registered_events': [],
         'managed_events': [],
         'owned_events': [],
-        'isAdmin': False
+        'isAdmin': False,
+        'receive_notifications': True,
+        'notifications_sent': {
+            'one_day': [],
+            'three_days': [],
+            'seven_days': []
+        }
     })
     session_id, session_end_time = add_login_session(user.inserted_id)
     token = encode_jwt({
