@@ -8,7 +8,7 @@ export const fetchProfileData = async (setProfile) => {
         const profileData = response.data;
         setProfile(profileData);
     } catch (err) {
-        console.log(`Failed to fetch profile ${err.message}`);
+        console.error(`Failed to fetch profile ${err.message}`);
     }
 }
 
@@ -34,7 +34,7 @@ export const updateProfileDetails = async (updatedProfileData) => {
         });
         return response.status;
     } catch (error) {
-        console.log('Failed to update profile:', error.response ? error.response.data.description : error.message);
+        console.error('Failed to update profile:', error.response ? error.response.data.description : error.message);
     }
 }
 
@@ -50,7 +50,7 @@ export const updateProfilePassword = async (password, setErrorMessage) => {
         });
         return response.status
     } catch (error) {
-        console.log('Failed to change password:', error.response ? error.response.data.description : error.message)
+        console.error('Failed to change password:', error.response ? error.response.data.description : error.message)
         setErrorMessage(error.response ? error.response.data.description : error.message);
     }
 }
