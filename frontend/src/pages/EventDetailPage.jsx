@@ -41,7 +41,7 @@ function EventDetailPage() {
         const timer = setTimeout(() => {
             setIsLoading(false);
         }, 1000);
-
+        console.log(event)
         return () => clearTimeout(timer);
     }, []);
 
@@ -76,7 +76,7 @@ function EventDetailPage() {
                                 {event.name}
                             </Typography>
                         </Box>
-                        <EventDetail event={event} setEvent={setEvent}/>
+                        <EventDetail event={event} setEvent={setEvent} />
                     </Box>
                     <Grid container spacing={3}>
                         <Grid item xs={12} md={8}>

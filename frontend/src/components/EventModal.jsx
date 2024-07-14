@@ -66,6 +66,7 @@ const EventModal = ({ open, handleClose, headerText, event, setEvent }) => {
     });
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('')
 
     useEffect(() => {
         if (event) {
@@ -82,8 +83,6 @@ const EventModal = ({ open, handleClose, headerText, event, setEvent }) => {
         }
     }, [event]);
 
-    const [errorMessage, setErrorMessage] = useState('')
-
     const handleSave = async () => {
         setErrorMessage(null)
         console.log(eventData)
@@ -93,13 +92,12 @@ const EventModal = ({ open, handleClose, headerText, event, setEvent }) => {
         }
         if (new Date(eventData.start_date) < new Date()) {
             setErrorMessage('Start date cannot be in the past');
-            return
+            return;
         }
         try {
             let result;
             if (event && event._id) {
                 result = await handleEditEvent(event._id, eventData);
-                setEvent(eventData)
             }
             else result = await handleCreateEvent(eventData);
             if (result === 200) {

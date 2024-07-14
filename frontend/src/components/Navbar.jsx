@@ -3,10 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { handleLogout } from '../helper/handleAuth';
 import logo from '../Image/CompanyLogo.png';
 import defaultProfilePic from '../Image/defaultProfile.png';
-
 import { useProfile } from './ProfileProvider';
 import Cookies from 'js-cookie';
-
 import {
     AppBar,
     Box,
@@ -85,7 +83,7 @@ function NavBar() {
                             onClick={handleLogoClick}
                         />
                         <Box sx={{ flexGrow: 1 }} />
-                        {auth && !ProfileContext.loading ? (
+                        {auth && !loading ? (
                             profileData ? (
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <Typography sx={{ mr: 2, color: 'black' }}>

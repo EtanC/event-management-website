@@ -3,7 +3,6 @@ import { Box, Container } from '@mui/material';
 import Navbar from '../components/Navbar';
 import HomePageEventCardSection from '../components/HomePageEventCardSection';
 import defaultImage from '../Image/default-image.jpg';
-import NewEventButton from '../components/NewEventButton'
 import theme from '../styles/Theme';
 import { ThemeProvider } from '@mui/material/styles';
 

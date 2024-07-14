@@ -24,6 +24,7 @@ app = Flask(__name__)
 CORS(app, expose_headers='Authorization', supports_credentials=True)
 swagger = Swagger(app, template=definitions)
 
+
 @app.errorhandler(HTTPException)
 def access_error_handler(e):
     response = e.get_response()
@@ -34,7 +35,8 @@ def access_error_handler(e):
     })
     response.content_type = "application/json"
     return response
-    
+
+
 @app.post('/auth/login')
 @swag_from(auth_login_spec)
 def auth_login_route():
@@ -79,7 +81,8 @@ def events_clear_route():
 @app.post('/events/ai-description')
 @swag_from(events_ai_description_spec)
 def events_ai_description_route():
-  return events_ai_description()
+    return events_ai_description()
+
 
 @app.post('/event/create')
 @swag_from(event_create_spec)
@@ -87,7 +90,7 @@ def event_create_route():
     token = request.cookies.get('token')
     if not token:
         raise AccessError('Authorization token is missing')
-    body = request.get_json()
+    body = request.get_json()['event']
     event = {
         'deadline': body['deadline'],
         'details': body['details'],
@@ -105,7 +108,7 @@ def event_update_route(event_id):
     token = request.cookies.get('token')
     if not token:
         raise AccessError('Authorization token is missing')
-    body = request.get_json()
+    body = request.get_json()['event']
     event = {
         'deadline': body['deadline'],
         'details': body['details'],
@@ -134,6 +137,7 @@ def event_authorize_route():
         raise AccessError('Authorization token is missing')
     body = request.get_json()
     return event_authorize(token, body['event_id'], body['email'])
+
 
 @app.get('/events/get_page/<page_number>')
 @swag_from(events_get_page_spec)
@@ -181,8 +185,9 @@ def profile_update_password_route():
         raise AccessError('Authorization token is missing')
 
     body = request.get_json()
-    
+
     return update_profile_password(token, body['old_password'], body['new_password'], body['re_password'])
+
 
 @app.get('/user/is_admin')
 @swag_from(is_admin_spec)
@@ -192,6 +197,7 @@ def is_admin_route():
         raise AccessError('Authorization token is missing')
 
     return json.dumps(is_admin(token))
+
 
 @app.post('/admin/invite_admin')
 @swag_from(admin_invite_spec)
@@ -203,6 +209,7 @@ def invite_admin_route():
 
     return json.dumps(invite_admin(token, body['username']))
 
+
 @app.post('/admin/remove_admin')
 @swag_from(admin_remove_spec)
 def remove_admin_route():
@@ -212,6 +219,7 @@ def remove_admin_route():
     body = request.get_json()
 
     return json.dumps(remove_admin(token, body['username']))
+
 
 @app.get('/user/events')
 @swag_from(user_events_spec)
@@ -243,6 +251,7 @@ def user_register_event_route(event_id):
 
     return json.dumps(user_register_event(token, event_id))
 
+
 @app.post('/user/unregister/<event_id>')
 @swag_from(user_unregister_event_spec)
 def user_unregister_event_route(event_id):
@@ -250,6 +259,7 @@ def user_unregister_event_route(event_id):
     if not token:
         raise AccessError('Authorization token is missing')
     return json.dumps(user_unregister_event(token, event_id))
+
 
 @app.delete('/clear')
 @swag_from(clear_spec)

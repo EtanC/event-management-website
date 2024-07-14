@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
