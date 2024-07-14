@@ -1,5 +1,6 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const ProfileContext = createContext();
 
@@ -25,8 +26,12 @@ export const ProfileProvider = ({ children }) => {
             }
         };
 
-        if (localStorage.getItem('token')) fetchProfileData();
-        else setLoading(false);
+        const token = Cookies.get('token');
+        if (token) {
+            fetchProfileData();
+        } else {
+            setLoading(false);
+        }
     }, []);
 
     return (

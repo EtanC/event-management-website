@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { handleLogout } from '../helper/handleAuth';
 import logo from '../Image/CompanyLogo.png';
 import defaultProfilePic from '../Image/defaultProfile.png';
 
-import { useProfile } from '../ProfileProvider';
-import { fetchProfileData } from '../helper/handleProfileData';
+import { useProfile } from './ProfileProvider';
 import Cookies from 'js-cookie';
 
 import {
@@ -21,22 +20,10 @@ import {
 
 function NavBar() {
     const navigate = useNavigate();
-    const [auth, setAuth] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
-    const ProfileContext = useProfile();
-
-    const [profileData, setProfileData] = useState(null);
-
-    useEffect(() => {
-        const token = Cookies.get('token');
-        setAuth(!!token);
-        if (token) {
-            setAuth(true);
-            fetchProfileData(setProfileData);
-        } else {
-            setAuth(false);
-        }
-    }, []);
+    const { profileData, loading } = useProfile();
+    const token = Cookies.get('token');
+    const auth = !!token;
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -82,7 +69,7 @@ function NavBar() {
     };
 
     const handleLogOut = () => {
-        handleLogout(navigate, setAuth);
+        handleLogout(navigate);
         handleClose();
     }
 
@@ -102,7 +89,7 @@ function NavBar() {
                             profileData ? (
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <Typography sx={{ mr: 2, color: 'black' }}>
-                                        {ProfileContext.profileData.full_name || ''}
+                                        {profileData.full_name || ''}
                                     </Typography>
                                     <IconButton
                                         aria-label="account of current user"
@@ -113,8 +100,8 @@ function NavBar() {
                                         sx={{ padding: 0 }}
                                     >
                                         <img
-                                            src={ProfileContext.profileData.profile_pic
-                                                ? `data:image/jpeg;base64,${ProfileContext.profileData.profile_pic}`
+                                            src={profileData.profile_pic
+                                                ? `data:image/jpeg;base64,${profileData.profile_pic}`
                                                 : defaultProfilePic}
                                             alt="Profile"
                                             style={{ cursor: 'pointer', height: '50px', width: '50px', borderRadius: '50%' }}

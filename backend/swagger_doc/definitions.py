@@ -83,6 +83,9 @@ definitions = {
         'preferences': {
             'type': 'dict'
         },
+        'is_admin': {
+            'type': 'boolean'
+        }
     },
     "securityDefinitions": {
         "bearerAuth": {

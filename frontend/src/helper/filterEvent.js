@@ -1,11 +1,10 @@
 const filterEvents = (events, eventType, location, date) => {
-    // Ensure events is an array
+    let filteredEvents = events;
+    // Ensure events is an array, if not return nothing
     if (!Array.isArray(events)) {
-        console.error('Expected events to be an array, but got:', events);
         return [];
     }
 
-    let filteredEvents = events;
 
     if (eventType) {
         filteredEvents = filteredEvents.filter(event =>

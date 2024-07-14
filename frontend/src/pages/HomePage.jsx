@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Box, Container } from '@mui/material';
-import EventLoading from '../components/MainEventCardSection';
+import Navbar from '../components/Navbar';
+import HomePageEventCardSection from '../components/HomePageEventCardSection';
 import defaultImage from '../Image/default-image.jpg';
 import NewEventButton from '../components/NewEventButton'
 import theme from '../styles/Theme';
@@ -16,30 +17,31 @@ function HomePage() {
     return (
         <>
             <ThemeProvider theme={theme}></ThemeProvider>
-            <Container maxWidth="lg">
-                <Box
-                    sx={{
-                        position: 'relative',
-                        cursor: 'pointer',
-                        marginBottom: '20px',
-                    }}
-                    onClick={handleImageClick}
-                >
-                    <img
-                        src={defaultImage}
-                        alt="Default Event"
-                        style={{
-                            width: '100%',
-                            borderRadius: '8px',
-                            height: '10%'
+            <Navbar />
+            <Box sx={{ backgroundColor: '#f5f5f5', padding: '20px 0' }}>
+                <Container maxWidth="lg">
+                    <Box
+                        sx={{
+                            position: 'relative',
+                            cursor: 'pointer',
+                            marginBottom: '20px',
                         }}
-                    />
-                </Box>
-                <NewEventButton/>
+                        onClick={handleImageClick}
+                    >
+                        <img
+                            src={defaultImage}
+                            alt="Default Event"
+                            style={{
+                                width: '100%',
+                                borderRadius: '8px',
+                            }}
+                        />
+                    </Box>
 
-                <EventLoading />
+                    <HomePageEventCardSection />
 
-            </Container>
+                </Container>
+            </Box>
         </>
     );
 }
