@@ -147,7 +147,6 @@ def test_update_profile_error(reset, user1):
         update_profile_details(token2, matchingUsername, None, None, None, None, None)
 
 def test_update_password(reset, user1):
-<<<<<<< HEAD
     response = auth_register_raw(user1['username'], user1['email'], user1['password'])
     token = response.cookies.get('token')
     new_password = 'ilovejohn312*'
@@ -165,32 +164,12 @@ def test_update_password_error(reset, user1):
     # test old password doesn't match on update password
     with pytest.raises(InputError):
         update_profile_password(token, 'ahuwdbawdahd123!', None, None)
-=======
-    with app.test_request_context():
-        response = auth_register(user1['username'], user1['email'], user1['password'])
-        token = response.cookies.get('token')
-        request.cookies = {'token': token}
-
-        new_password = 'ilovejohn312*'
-
-        update_profile_password(token, user1['password'], new_password, new_password)
-        response = auth_login(user1['email'], new_password)
-        new_token = response.cookies.get('token')
-        assert isinstance(new_token, str)
-
-def test_update_password_error(reset, user1):
-    with app.test_request_context():
-        response = auth_register(user1['username'], user1['email'], user1['password'])
-        token = response.cookies.get('token')
-        request.cookies = {'token': token}
->>>>>>> ee5f296 (fiexed)
 
         new_password = 'ilovejohn312*'
         # test old password doesn't match on update password
         with pytest.raises(InputError):
             update_profile_password(token, 'ahuwdbawdahd123!', None, None)
 
-<<<<<<< HEAD
     # test new passsword and re-entered password don't match on update password
     with pytest.raises(InputError):
         update_profile_password(token, user1['password'], new_password, 'auiwdawbd123$')
@@ -207,25 +186,3 @@ def test_update_password_error(reset, user1):
     no_number = 'abcdef!@#$%'
     with pytest.raises(InputError):
         update_profile_password(token, user1['password'], no_number, no_number)
-=======
-        # test old password not given when trying to update password
-        with pytest.raises(InputError):
-            update_profile_password(token, None,  new_password, new_password)
-
-        # test new passsword and re-entered password don't match on update password
-        with pytest.raises(InputError):
-            update_profile_password(token, user1['password'], new_password, 'auiwdawbd123$')
-
-        # test invalid password formats
-        short_password = 'a1!'
-        with pytest.raises(InputError):
-            update_profile_password(token, user1['password'], short_password, short_password)
-
-        no_special_character = 'abcdef123'
-        with pytest.raises(InputError):
-            update_profile_password(token, user1['password'], no_special_character, no_special_character)
-
-        no_number = 'abcdef!@#$%'
-        with pytest.raises(InputError):
-            update_profile_password(token, user1['password'], no_number, no_number)
->>>>>>> ee5f296 (fiexed)
