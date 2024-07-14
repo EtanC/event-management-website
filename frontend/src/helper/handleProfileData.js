@@ -1,4 +1,4 @@
-import axios from 'axios'; 
+import axios from 'axios';
 
 export const fetchProfileData = async (setProfile) => {
     try {
@@ -13,11 +13,10 @@ export const fetchProfileData = async (setProfile) => {
 }
 
 export const updateProfileDetails = async (updatedProfileData) => {
-    const { username, description, job_title, fun_fact, full_name, email, profile_pic } = updatedProfileData;
+    const { description, job_title, fun_fact, full_name, email, profile_pic } = updatedProfileData;
     try {
         const formData = new FormData();
         formData.append('email', email);
-        formData.append('username', username);
         formData.append('description', description);
         formData.append('full_name', full_name);
         formData.append('job_title', job_title);

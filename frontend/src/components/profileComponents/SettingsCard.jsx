@@ -1,9 +1,10 @@
 import { Card, CardContent, Typography, Switch, Box } from '@mui/material';
+import '../../styles/Profile.css';
 
 const SettingsCard = () => (
-    <Card sx={styles.flexCard}>
+    <Card className='flexCard'>
         <CardContent>
-            <Typography sx={styles.headerFont}>Settings</Typography>
+            <Typography className='headerFont'>Settings</Typography>
             <Box sx={{ mt: 2 }}>
                 <Typography variant="body2">Email Preferences</Typography>
                 <Typography variant="body2">Dark Mode</Typography>
@@ -12,17 +13,5 @@ const SettingsCard = () => (
         </CardContent>
     </Card>
 );
-
-const styles = {
-    flexCard: {
-        marginBottom: '30px',
-        borderRadius: '10px',
-    },
-    headerFont: {
-        fontWeight: 'bold',
-        fontSize: '18px',
-        marginBottom: '20px',
-    }
-};
 
 export default SettingsCard;

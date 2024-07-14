@@ -24,11 +24,6 @@ function ProfilePage() {
     const [new_profile_pic, setNewProfilePic] = useState(null);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
-
-    useEffect(() => {
-        fetchProfileData(setProfile);
-    }, []);
-
     const [newProfile, setNewProfile] = useState({
         description: '',
         full_name: '',
@@ -41,6 +36,10 @@ function ProfilePage() {
         new_pw: '',
         confirm_new_pw: '',
     });
+
+    useEffect(() => {
+        fetchProfileData(setProfile);
+    }, []);
 
     const handleEditClick = () => {
         setIsEditing(!isEditing);

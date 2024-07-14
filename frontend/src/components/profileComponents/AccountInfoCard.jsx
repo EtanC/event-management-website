@@ -1,9 +1,10 @@
 import { Card, CardContent, Typography, TextField, Box } from '@mui/material';
+import '../../styles/Profile.css';
 
 const AccountInfoCard = ({ profile, isEditing, newProfile, handleChange }) => (
-    <Card sx={styles.flexCard}>
+    <Card className='flexCard'>
         <CardContent>
-            <Typography sx={styles.headerFont}>Account Information</Typography>
+            <Typography className='headerFont'>Account Information</Typography>
             <Box sx={{ mt: 2 }}>
                 {isEditing ? (
                     <>
@@ -44,17 +45,5 @@ const AccountInfoCard = ({ profile, isEditing, newProfile, handleChange }) => (
         </CardContent>
     </Card>
 );
-
-const styles = {
-    flexCard: {
-        marginBottom: '30px',
-        borderRadius: '10px',
-    },
-    headerFont: {
-        fontWeight: 'bold',
-        fontSize: '18px',
-        marginBottom: '20px',
-    }
-};
 
 export default AccountInfoCard;

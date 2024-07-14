@@ -1,22 +1,21 @@
-import { Card, CardContent, Typography, TextField, Box, Button, Tooltip, IconButton, Alert } from '@mui/material';
+import { Card, CardContent, Typography, TextField, Box, Button, Tooltip, Alert } from '@mui/material';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
+import '../../styles/Profile.css';
 
 const PasswordCard = ({ isEditingPW, password, errorMessage, handlePWChange, handleEditPWClick, updatePassword }) => (
-    <Card sx={styles.flexCard}>
+    <Card className='flexCard'>
         <CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Typography sx={styles.headerFont}>Password</Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+                <Typography className='headerFont'>Password</Typography>
                 {isEditingPW && (
-                    <Box sx={{ mb: '20px' }}>
+                    <Box>
                         <Tooltip title="A minimum 8 characters password contains a combination of uppercase and lowercase letter and number are required.">
-                            <IconButton>
-                                <InfoOutlined />
-                            </IconButton>
+                            <InfoOutlined />
                         </Tooltip>
                     </Box>
                 )}
             </Box>
-            <Box sx={styles.flexbox}>
+            <Box className='flexbox'>
                 <Box>
                     {isEditingPW ? (
                         <>
@@ -54,14 +53,14 @@ const PasswordCard = ({ isEditingPW, password, errorMessage, handlePWChange, han
                             <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'row', gap: '20px' }}>
                                 <Button
                                     variant="outlined" color="primary"
-                                    sx={{ width: '150px', borderRadius: '20px', textTransform: 'none', fontWeight: 'bold' }}
+                                    className='button-common'
                                     onClick={handleEditPWClick}
                                 >
                                     Cancel
                                 </Button>
                                 <Button
                                     variant="contained" color="primary"
-                                    sx={{ width: '150px', borderRadius: '20px', textTransform: 'none', fontWeight: 'bold' }}
+                                    className='button-common'
                                     onClick={updatePassword}
                                 >
                                     Save Password
@@ -72,7 +71,7 @@ const PasswordCard = ({ isEditingPW, password, errorMessage, handlePWChange, han
                         <>
                             <Button
                                 variant="contained" color="primary"
-                                sx={{ width: '300px', borderRadius: '20px', textTransform: 'none', fontWeight: 'bold' }}
+                                className='button-common button-edit'
                                 onClick={handleEditPWClick}
                             >
                                 Change Password
@@ -84,23 +83,5 @@ const PasswordCard = ({ isEditingPW, password, errorMessage, handlePWChange, han
         </CardContent>
     </Card>
 );
-
-const styles = {
-    flexCard: {
-        marginBottom: '30px',
-        borderRadius: '10px',
-    },
-    headerFont: {
-        fontWeight: 'bold',
-        fontSize: '18px',
-        marginBottom: '20px',
-    },
-    flexbox: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column'
-    }
-};
 
 export default PasswordCard;
