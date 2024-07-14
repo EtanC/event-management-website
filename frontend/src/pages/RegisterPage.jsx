@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Typography, Box, Grid, Alert } from '@mui/material';
 import background from '../Image/LHSBackground.png';
@@ -43,11 +43,11 @@ const RegisterPage = () => {
 
     return (
         <>
-            <Grid container sx={{ height: '100vh' }}>
+            <Grid container sx={{ height: '100vh', backgroundColor: '#FFFFFF' }}>
                 {/* Left Side */}
-                <Grid 
-                    item 
-                    xs={12} 
+                <Grid
+                    item
+                    xs={12}
                     md={4}
                     sx={{
                         backgroundColor: '#1E4830',

@@ -8,7 +8,9 @@ import { Box, CircularProgress, Typography, Grid, IconButton, Button } from '@mu
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
-function MainEventCard() {
+const ITEMS_PER_PAGE = 6; // customise this
+
+function HomePageEventCardSection() {
     const navigate = useNavigate();
     const [eventType, setEventType] = useState('');
     const [location, setLocation] = useState('');
@@ -19,6 +21,7 @@ function MainEventCard() {
     const [error, setError] = useState(null);
     const [locations, setLocations] = useState([]);
     const [page, setPage] = useState(1)
+    const [totalFilteredEvents, setTotalFilteredEvents] = useState(0);
     const [pageCount, setPageCount] = useState(0)
 
     useEffect(() => {
@@ -27,19 +30,21 @@ function MainEventCard() {
 
     useEffect(() => {
         const result = filterEvents(events, eventType, location, date);
-        setFilteredEvents(result.length > 0 ? result : events);
-    }, [eventType, location, date, events]);
+        setTotalFilteredEvents(result.length);
+        setFilteredEvents(result.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE));
+        setPageCount(Math.ceil(result.length / ITEMS_PER_PAGE));
+    }, [eventType, location, date, events, page]);
 
     const handleCardClick = (event) => {
         navigate(`/event/${event._id}`, { state: { event } });
     };
 
     const handleNextPage = () => {
-        setPage(page + 1)
+        setPage(prev => Math.min(prev + 1, pageCount));
     }
 
     const handlePreviousPage = () => {
-        setPage(page - 1)
+        setPage(prev => Math.min(prev - 1, pageCount));
     }
 
     return (
@@ -66,8 +71,8 @@ function MainEventCard() {
                         {error}
                     </Typography>
                 </Box>
-            ) : filteredEvents.length === 0 ? (
-                <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+            ) : totalFilteredEvents === 0 ? (
+                <Box display="flex" justifyContent="center" alignItems="center" height="30vh">
                     <Typography variant="h6" color="textSecondary">
                         No search results
                     </Typography>
@@ -81,32 +86,30 @@ function MainEventCard() {
                     </Grid>
                 </Box>
             )}
-            <div style={{display: 'flex', width: '100%',justifyContent: 'center'}}>
-                {page != 1 && <IconButton onClick={handlePreviousPage}>
-                    <KeyboardArrowLeftIcon/>
-                </IconButton>}
-                {page > 2 && <Button onClick={() => setPage(page - 2)}>
-                    {page - 2}
-                </Button>}
-                {page > 1 && <Button onClick={() => setPage(page - 1)}>
-                    {page - 1}
-                </Button>}
-                <Button variant="contained">
-                    {page}
-                </Button>
-                {(page + 1 <= pageCount) && <Button onClick={() => setPage(page + 1)}>
-                    {page + 1}
-                </Button>}
-                {(page + 2 <= pageCount) && <Button onClick={() => setPage(page + 2)}>
-                    {page + 2}
-                </Button>}
-                {(page + 1 <= pageCount) && <IconButton onClick={handleNextPage}>
-                    <KeyboardArrowRightIcon/>
-                </IconButton>}
-            </div>
+            <Box display="flex" justifyContent="center" mt={2}>
+                {page > 1 && (
+                    <IconButton onClick={handlePreviousPage}>
+                        <KeyboardArrowLeftIcon />
+                    </IconButton>
+                )}
+                {[...Array(pageCount)].map((_, index) => (
+                    <Button
+                        key={index}
+                        variant={page === index + 1 ? "contained" : "outlined"}
+                        onClick={() => setPage(index + 1)}
+                    >
+                        {index + 1}
+                    </Button>
+                ))}
+                {page < pageCount && (
+                    <IconButton onClick={handleNextPage}>
+                        <KeyboardArrowRightIcon />
+                    </IconButton>
+                )}
+            </Box>
         </Box>
-        
+
     );
 }
 
-export default MainEventCard;
+export default HomePageEventCardSection;
