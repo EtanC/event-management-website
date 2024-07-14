@@ -90,7 +90,7 @@ def event_create_route():
     token = request.cookies.get('token')
     if not token:
         raise AccessError('Authorization token is missing')
-    body = request.get_json()['event']
+    body = request.get_json()
     event = {
         'deadline': body['deadline'],
         'details': body['details'],
@@ -108,7 +108,7 @@ def event_update_route(event_id):
     token = request.cookies.get('token')
     if not token:
         raise AccessError('Authorization token is missing')
-    body = request.get_json()['event']
+    body = request.get_json()
     event = {
         'deadline': body['deadline'],
         'details': body['details'],
