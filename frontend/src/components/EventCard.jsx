@@ -10,7 +10,7 @@ import {
     MenuItem
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import defaultImage from '../Image/loading.png';
+import defaultImage from '../Image/default-event.png';
 import { formatDate } from '../helper/helpers';
 
 const EventCard = ({
@@ -112,25 +112,23 @@ const EventCard = ({
                     component="div"
                     sx={{
                         position: 'relative',
-                        height: 140,
+                        height: 200,
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
                         borderTopLeftRadius: 8,
                         borderTopRightRadius: 8, 
-                        margin: '10px',
                     }}
                 >
                     <img
                         src={`/static/random_background/${event.image}.jpg`}
                         alt={event.name}
                         style={{
-                            maxHeight: '100%',
-                            maxWidth: '100%',
-                            objectFit: 'contain',
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
                             borderTopLeftRadius: 8,
                             borderTopRightRadius: 8, 
-                            padding: '10px',
                         }}
                     />
                 </CardMedia>

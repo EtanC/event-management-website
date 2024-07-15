@@ -13,21 +13,22 @@ const inputStyles = {
 };
 
 
-const SearchBar = ({ labelOne, labelTwo, eventType, setEventType, location, setLocation, locations, date, setDate }) => (
-    <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        backgroundColor: '#1E4830', 
-        padding: '20px', 
-        borderRadius: '15px', 
-        position: 'absolute', 
-        top: '450px', 
-        left: '50%', 
-        transform: 'translateX(-50%)', 
-        zIndex: 2, 
-        width: '90%', 
-        maxWidth: '800px',
-    }}>
+const SearchBar = ({ labelOne, labelTwo, eventType, setEventType, location, setLocation, locations, date, setDate, isSticky }) => (
+    <Box className={`search-bar ${isSticky ? 'sticky' : ''}`} 
+        sx={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            backgroundColor: '#1E4830', 
+            padding: '20px', 
+            borderRadius: '15px', 
+            position: 'absolute', 
+            top: '450px', 
+            left: '50%', 
+            transform: 'translateX(-50%)', 
+            zIndex: 2, 
+            width: '90%', 
+            maxWidth: '800px',
+        }}>
         <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', maxWidth: '800px', gap: '10px' }}>
             <TextField
                 label={labelOne}

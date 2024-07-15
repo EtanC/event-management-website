@@ -23,6 +23,7 @@ function HomePageEventCardSection() {
     const [page, setPage] = useState(1);
     const [totalFilteredEvents, setTotalFilteredEvents] = useState(0);
     const [pageCount, setPageCount] = useState(0);
+    const [isSticky, setIsSticky] = useState(false); // for filter bar to not disappear from sight
 
     useEffect(() => {
         fetchEventsData(setEvents, setLocations, setError, setIsLoading);
@@ -39,6 +40,25 @@ function HomePageEventCardSection() {
     useEffect(() => {
         setPage(1);
     }, [eventType, location, date]); 
+
+    // this is to track where the filter bar is, when hit the nav bar then it stays
+    useEffect(() => {
+        const handleScroll = () => {
+            const stickyPoint = 450;  // Define the Y-axis value at which the search bar should stick
+    
+            if (window.scrollY >= stickyPoint) {
+                setIsSticky(true);
+            } else {
+                setIsSticky(false);
+            }
+        };
+    
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+    
 
     const handleCardClick = (event) => {
         navigate(`/event/${event._id}`, { state: { event } });
@@ -81,6 +101,7 @@ function HomePageEventCardSection() {
     return (
         <Box sx={{ backgroundColor: '#f5f5f5', padding: '20px 0' }}>
             <SearchBar
+                className={`search-bar ${isSticky ? 'sticky' : ''}`}
                 labelOne='Looking For'
                 labelTwo='Location'
                 eventType={eventType}
@@ -90,6 +111,7 @@ function HomePageEventCardSection() {
                 locations={locations}
                 date={date}
                 setDate={setDate}
+                isSticky={isSticky}
             />
             {isLoading ? (
                 <Box display="flex" justifyContent="center" alignItems="top" height="100vh">
@@ -129,6 +151,21 @@ function HomePageEventCardSection() {
                     </IconButton>
                 )}
             </Box>
+            <style> {/*style for filter bar so it doesnt disappear from sight */}
+{`
+                .sticky {
+                    position: fixed;
+                    top: 80px; /* height of navbar */
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 90%;
+                    max-width: 800px;
+                    z-index: 2;
+                    background-color: #1E4830;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                }
+            `}
+            </style>
         </Box>
     );
 }
