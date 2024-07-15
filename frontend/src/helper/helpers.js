@@ -1,6 +1,9 @@
 import { jwtDecode } from 'jwt-decode'
 import Cookies from 'js-cookie';
 
+// Event Helpers
+
+// Help format 2 types of date formats to work synchronously
 export const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     let date;
@@ -13,6 +16,7 @@ export const formatDate = (dateString) => {
     return "Invalid date format";
 }
 
+// Help get the user_id of the logged in user
 export const getUserId = () => {
     const token = Cookies.get('token');
     try {
@@ -24,3 +28,15 @@ export const getUserId = () => {
         throw (error);
     }
 }
+
+// Profile Helpers
+export const handleSnackbar = (setSnackbarMessage, setSnackbarOpen) => (message) => {
+    setSnackbarMessage(message);
+    setSnackbarOpen(true);
+};
+
+export const handleImageUpload = (setNewProfilePic) => (event) => {
+    const file = event.target.files[0];
+    setNewProfilePic(file);
+};
+
