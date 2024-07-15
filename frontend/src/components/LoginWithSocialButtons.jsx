@@ -7,7 +7,7 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import GoogleAuth from './GoogleAuth';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
-const SocialLoginButtons = () => {
+const SocialLoginButtons = (error) => {
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
   console.log(clientId)
   return (
@@ -22,7 +22,7 @@ const SocialLoginButtons = () => {
               <FacebookIcon />
           </IconButton>
           <GoogleOAuthProvider clientId={clientId}>
-            <GoogleAuth></GoogleAuth>
+            <GoogleAuth error={error}></GoogleAuth>
           </GoogleOAuthProvider>
       </Box>
   );

@@ -45,8 +45,8 @@ def auth_google_login(auth_code):
   data = {
         'code': auth_code,
         'client_id': os.getenv("GOOGLE_CLIENT_ID"), 
-        'client_secret': os.getenv("GOOGLE_SECRET_KEY"),  
-        'redirect_uri': 'http://127.0.0.1:5173/login',
+        'client_secret': os.getenv("GOOGLE_CLIENT_SECRET"),  
+        'redirect_uri': 'postmessage',
         'grant_type': 'authorization_code'
     }
 
@@ -58,8 +58,11 @@ def auth_google_login(auth_code):
   user_info = requests.get('https://www.googleapis.com/oauth2/v3/userinfo', headers=headers).json()
   email = user_info['email']
   match = db.users.find_one({'email': email})
-  # case where they have an account but its not logged in by google
+
   if match:
+    # case where they have an account but its not logged in by google
+    if 'password' in match:
+      raise InputError("Account found but not via Google")
     session_id, session_end_time = add_login_session(match['_id'])
     token = encode_jwt({
         'user_id': str(match["_id"]),
@@ -76,9 +79,10 @@ def auth_google_login(auth_code):
         expires=session_end_time,  
         path='/'
     )
+    return response
   else:
     user = db.users.insert_one({
-        'username': user_info["screenName"],
+        'username': user_info["name"],
         'email': email,
         'profile_pic_id': None,
         'full_name': None,
@@ -100,7 +104,7 @@ def auth_google_login(auth_code):
 
     response = make_response({'message': 'Registration successful', 'session_end_time': session_end_time})
     response.set_cookie('token', token, httponly=True, secure=False, samesite='Lax', expires=session_end_time)
-  return response
+    return response 
   
 def auth_login(email, password):
     match = db.users.find_one({'email': email, 'password': hash(password)})
