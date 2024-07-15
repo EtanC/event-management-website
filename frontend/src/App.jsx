@@ -9,11 +9,10 @@ import EventDetailPage from "./pages/EventDetailPage";
 import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage"
-import MyEventsPage from "./components/calendarMainComponents/MyEventsViewComponent";
 import AdminPage from "./pages/AdminPage"
 import AdminUsersPage from "./pages/AdminUsersPage"
 import AdminEventsPage from "./pages/AdminEventsPage"
-import UserCalendar from "./pages/MyEventsPage";
+import MyEventsPage from "./pages/MyEventsPage";
 import SessionTimeOutPopup from './components/SessionTimeOutPopup';
 import useSessionValidation from "./helper/userSessionValidation";
 
@@ -26,16 +25,16 @@ const AppContent = () => {
         {showNavBar && <NavBar />}
         <div className="content">
             <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/event" element={<EventDetailPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/event/:id" element={<EventDetailPage />} />
-            <Route path="/admin" element={<AdminPage />} />
-            <Route path="/admin/users" element={<AdminUsersPage />} />
-            <Route path="/admin/events" element={<AdminEventsPage />} />
-            <Route path="/my-events" element={<UserCalendar />} />
+                <Route path="/" element={<HomePage />} />
+                <Route path="/event" element={<EventDetailPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/event/:id" element={<EventDetailPage />} />
+                <Route path="/admin" element={<AdminPage />} />
+                <Route path="/admin/users" element={<AdminUsersPage />} />
+                <Route path="/admin/events" element={<AdminEventsPage />} />
+                <Route path="/my-events" element={<MyEventsPage />} />
             </Routes>
         </div>
         </>
