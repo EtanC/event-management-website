@@ -20,13 +20,7 @@ const ViewRegisteredEventPopUp = ({ selectedEvent, handleClosePopUp, handleUnreg
         maxHeight: '80vh',
         overflowY: 'auto',
     };
-
-    const handleUnregisterClick = async (eventId) => {
-        await handleUnregister(eventId);
-        fetchEvents(); // Refetch events after unregistering
-        handleClosePopUp(); // Close the modal after unregistering
-    };
-
+    
     return (
         <Modal
             open={!!selectedEvent}
