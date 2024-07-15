@@ -9,11 +9,11 @@ import EventDetailPage from "./pages/EventDetailPage";
 import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage"
-import MyEventsPage from "./pages/MyEventsPage";
+import MyEventsPage from "./components/calendarMainComponents/MyEventsViewComponent";
 import AdminPage from "./pages/AdminPage"
 import AdminUsersPage from "./pages/AdminUsersPage"
 import AdminEventsPage from "./pages/AdminEventsPage"
-import UserCalendar from "./pages/UserCalendar";
+import UserCalendar from "./pages/MyEventsPage";
 import SessionTimeOutPopup from './components/SessionTimeOutPopup';
 import useSessionValidation from "./helper/userSessionValidation";
 
@@ -35,8 +35,7 @@ const AppContent = () => {
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/admin/users" element={<AdminUsersPage />} />
             <Route path="/admin/events" element={<AdminEventsPage />} />
-            <Route path="/my-events" element={<MyEventsPage />} />
-            <Route path="/my-calendar" element={<UserCalendar />} />
+            <Route path="/my-events" element={<UserCalendar />} />
             </Routes>
         </div>
         </>

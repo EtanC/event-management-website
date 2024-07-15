@@ -77,6 +77,18 @@ export const fetchUserRegisteredEvents = async () => {
     }
 }
 
+export const handleUnregister = async (event_id) => {
+    try {
+        const response = await axios.post(`http://127.0.0.1:5000/user/unregister/${event_id}`, {}, {
+            withCredentials: true,
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error unregistering from event: ', error.response ? error.response.data : error.message);
+        throw error;
+    }
+};
+
 export const handleEditEvent = async (event_id, eventData) => {
     try {
         const response = await axios.put(`http://127.0.0.1:5000/event/update/${event_id}`,
