@@ -185,6 +185,7 @@ function MyEventsViewComponent({ selectedRanking }) {
                     selectedEvent={selectedEvent}
                     handleClosePopUp={handleClosePopUp}
                     handleUnregister={handleUnregister}
+                    fetchEvents={fetchEvents}
                 />
             )}
             <Box sx={{ backgroundColor: '#f5f5f5', paddingTop: '40px', minHeight: '90vh' }}>

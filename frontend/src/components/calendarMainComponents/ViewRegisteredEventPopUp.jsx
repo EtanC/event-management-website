@@ -5,7 +5,7 @@ import HtmlTagRender from '../HtmlTagRender';
 import cross from '../../Image/close.png';
 import { handleUnregister } from '../../helper/handleEventData';
 
-const ViewRegisteredEventPopUp = ({ selectedEvent, handleClosePopUp, handleUnregister }) => {
+const ViewRegisteredEventPopUp = ({ selectedEvent, handleClosePopUp, handleUnregister, fetchEvents }) => {
     const modalStyle = {
         top: '50%',
         left: '50%',
@@ -19,6 +19,12 @@ const ViewRegisteredEventPopUp = ({ selectedEvent, handleClosePopUp, handleUnreg
         outline: 'none',
         maxHeight: '80vh',
         overflowY: 'auto',
+    };
+
+    const handleUnregisterClick = async (eventId) => {
+        await handleUnregister(eventId);
+        fetchEvents(); // Refetch events after unregistering
+        handleClosePopUp(); // Close the modal after unregistering
     };
 
     return (
@@ -60,8 +66,9 @@ const ViewRegisteredEventPopUp = ({ selectedEvent, handleClosePopUp, handleUnreg
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={() => {
-                            handleUnregister(selectedEvent._id);
+                        onClick={async () => {
+                            await handleUnregister(selectedEvent._id);
+                            fetchEvents();
                             handleClosePopUp(); // Close the modal after unregistering
                         }}
                         fullWidth
