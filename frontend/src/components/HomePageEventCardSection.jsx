@@ -52,6 +52,7 @@ function HomePageEventCardSection() {
         setPage(prev => Math.max(prev - 1, 1));
     };
 
+    // function to make sure theres only 5 buttons for pagination at a time
     const renderPaginationButtons = () => {
         const paginationButtons = [];
         const startPage = Math.max(1, page - 2);
@@ -63,7 +64,11 @@ function HomePageEventCardSection() {
                     key={i}
                     variant={page === i ? "contained" : "outlined"}
                     onClick={() => setPage(i)}
-                    sx={{ border: 'none' }} // remove border
+                    sx={{
+                        border: 'none',
+                        minWidth: '30px', 
+                        padding: '0 8px', 
+                    }}
                 >
                     {i}
                 </Button>
@@ -86,7 +91,6 @@ function HomePageEventCardSection() {
                 date={date}
                 setDate={setDate}
             />
-
             {isLoading ? (
                 <Box display="flex" justifyContent="center" alignItems="top" height="100vh">
                     <CircularProgress />
