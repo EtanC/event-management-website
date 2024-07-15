@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Box, Container } from '@mui/material';
-import Navbar from '../components/Navbar';
 import HomePageEventCardSection from '../components/HomePageEventCardSection';
+import NewEventButton from '../components/NewEventButton'
 import defaultImage from '../Image/default-image.jpg';
 import theme from '../styles/Theme';
 import { ThemeProvider } from '@mui/material/styles';
@@ -16,7 +16,7 @@ function HomePage() {
     return (
         <>
             <ThemeProvider theme={theme}></ThemeProvider>
-            <Navbar />
+            <NewEventButton />
             <Box sx={{ backgroundColor: '#f5f5f5', padding: '20px 0' }}>
                 <Container maxWidth="lg">
                     <Box
