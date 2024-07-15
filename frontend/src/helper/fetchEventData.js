@@ -1,11 +1,9 @@
 import axios from 'axios';
 
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const fetchEventsData = async (setEvents, setLocations, setError, setIsLoading, page, setPageCount) => {
     setIsLoading(true);
     try {
-        await sleep(2000);
         const response = await axios.get(`http://127.0.0.1:5000/events/get_page/${page}`);
         const eventData = response.data.events;
         setPageCount(response.data.page_count);
