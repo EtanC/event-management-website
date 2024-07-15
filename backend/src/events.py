@@ -20,23 +20,6 @@ def stringify_id(x):
     x['_id'] = str(x['_id'])
     return x
 
-
-def events_get_page(page_number):
-    page_number = int(page_number)
-    PAGE_SIZE = 12
-    total_events = db.events.count_documents({})
-    page_count = (total_events + PAGE_SIZE - 1) // PAGE_SIZE
-    pipeline = [
-        {"$match": {}},
-        {"$skip": (page_number-1) * PAGE_SIZE},
-        {"$limit": PAGE_SIZE}
-    ]
-    return {
-        'events': list(map(stringify_id, db.events.aggregate(pipeline))),
-        'page_count': page_count
-    }
-
-
 def events_get_all():
     return {
         'events': list(map(stringify_id, db.events.find({})))
