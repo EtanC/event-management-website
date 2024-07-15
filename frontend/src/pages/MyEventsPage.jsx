@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { Box, Container, Card, Typography, Grid, CircularProgress } from '@mui/material';
+import { fetchUserEvents, fetchUserRegisteredEvents } from '../helper/handleEventData';
 import {
-    Box, Container, Card, Typography, Grid, CircularProgress,
-} from '@mui/material';
-import { fetchUserEvents, fetchUserRegisteredEvents, handleDeleteEvent } from '../helper/handleEventData';
+    handleDeleteClick,
+    handleDeleteCancel,
+    handleDeleteConfirm,
+    handleEditClick,
+    handleEditClose,
+    handleAddManagerClick,
+    handleAddManagerClose
+} from '../helper/handleEditDeleteEvent';
 import EventCard from '../components/EventCard';
 import AlertPopup from '../components/AlertPopup';
 import { useNavigate } from 'react-router-dom';
@@ -46,57 +53,13 @@ function MyEvents() {
         navigate(`/event/${event._id}`, { state: { event } });
     };
 
-    const handleDeleteClick = (event) => {
-        setEventToDelete(event);
-        setDeleteDialogOpen(true);
-    };
-
-    const handleDeleteConfirm = async () => {
-        if (eventToDelete) {
-            try {
-                await handleDeleteEvent(eventToDelete._id);
-                setDeleteDialogOpen(false);
-                setEventToDelete(null);
-                fetchEvents();
-            } catch (error) {
-                console.error('Failed to delete event:', error);
-                alert('Failed to delete event. Please try again later.');
-            }
-        }
-    };
-
-    const handleDeleteCancel = () => {
-        setDeleteDialogOpen(false);
-        setEventToDelete(null);
-    };
-
-    const handleEditClick = (event) => {
-        setEventToEdit(event);
-        setOpenEditEvent(true);
-    };
-
-    const handleManagerClick = (event) => {
-        setEventToEdit(event);
-        setOpenAddManager(true);
-    };
-
-    const handleEditClose = () => {
-        setOpenEditEvent(false);
-        fetchEvents();
-    }
-
-    const handleAddManagerClose = () => {
-        setOpenAddManager(false);
-        fetchEvents();
-    }
-
     const renderEventCards = (events, isCreatedEvents, isManagedEvents) => {
         if (loading) {
             return (
                 <Box display="flex" justifyContent="center" alignItems="center" height="100%">
                     <CircularProgress />
                 </Box>
-            )
+            );
         }
         if (error) return <Typography color="error">{error}</Typography>;
         if (!events || events.length === 0) return <Typography>No events found.</Typography>;
@@ -110,9 +73,9 @@ function MyEvents() {
                         handleCardClick={handleCardClick}
                         isCreatedEvent={isCreatedEvents}
                         isManagedEvent={isManagedEvents}
-                        onEditEvent={() => handleEditClick(event)}
-                        onAddEventManager={() => handleManagerClick(event)}
-                        onDeleteEvent={() => handleDeleteClick(event)}
+                        onEditEvent={() => handleEditClick(event, setEventToEdit, setOpenEditEvent)}
+                        onAddEventManager={() => handleAddManagerClick(event, setEventToEdit, setOpenAddManager)}
+                        onDeleteEvent={() => handleDeleteClick(event, setEventToDelete, setDeleteDialogOpen)}
                     />
                 ))}
             </Grid>
@@ -123,13 +86,13 @@ function MyEvents() {
         <>
             <AlertPopup
                 open={deleteDialogOpen}
-                onClose={handleDeleteCancel}
-                onConfirm={handleDeleteConfirm}
+                onClose={() => handleDeleteCancel(setDeleteDialogOpen, setEventToDelete)}
+                onConfirm={() => handleDeleteConfirm(eventToDelete, setDeleteDialogOpen, setEventToDelete, fetchEvents)}
                 title={'Confirm Delete'}
                 content={'Are you sure you want to delete this event? This action cannot be undone.'}
             />
-            <EventModal open={openEditEvent} handleClose={handleEditClose} headerText={'Edit Event'} event={eventToEdit} />
-            <EventManagerModal open={openAddManager} handleClose={handleAddManagerClose} event={eventToEdit} />
+            <EventModal open={openEditEvent} handleClose={() => handleEditClose(setOpenEditEvent, fetchEvents)} headerText={'Edit Event'} event={eventToEdit} />
+            <EventManagerModal open={openAddManager} handleClose={() => handleAddManagerClose(setOpenAddManager, fetchEvents)} event={eventToEdit} />
             <Box sx={{ backgroundColor: '#f5f5f5', paddingTop: '40px', minHeight: '90vh' }}>
                 <Container maxWidth="lg">
                     <Typography variant="h4" sx={{ marginBottom: '40px' }}>My Events</Typography>
