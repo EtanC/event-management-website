@@ -89,7 +89,7 @@ const EventCard = ({
                         boxShadow: isSelected ? '0 0 20px rgba(0, 255, 0, 1)' : 'none',
                         borderRadius: 2,
                         backgroundColor: '#f5f5f5',
-                        zIndex: isSelected ? 10 : 0,
+                        zIndex: isSelected ? 10 : 'auto', // when transitioning, it appears to be on top of others
                         '&:hover': { cursor: 'pointer', boxShadow: 3 },
                         position: 'relative',
                         ...(isSelected && {
