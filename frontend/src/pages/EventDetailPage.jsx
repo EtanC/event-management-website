@@ -59,7 +59,7 @@ function EventDetailPage() {
                         }}
                     >
                         <img
-                            src={`/static/random_background/${event.image}.jpg`}
+                            src={event.image ? `/static/random_background/${event.image}.jpg` : defaultImage}
                             alt="Event Background"
                             style={{
                                 position: 'absolute',

@@ -24,6 +24,7 @@ function HomePageEventCardSection() {
     const [totalFilteredEvents, setTotalFilteredEvents] = useState(0);
     const [pageCount, setPageCount] = useState(0);
     const [isSticky, setIsSticky] = useState(false); // for filter bar to not disappear from sight
+    const [selectedEvent, setSelectedEvent] = useState(null);
 
     useEffect(() => {
         fetchEventsData(setEvents, setLocations, setError, setIsLoading);
@@ -59,9 +60,12 @@ function HomePageEventCardSection() {
         };
     }, []);
     
-
+    // cool animation for clicking open event card
     const handleCardClick = (event) => {
-        navigate(`/event/${event._id}`, { state: { event } });
+        setSelectedEvent(event);
+        setTimeout(() => {
+            navigate(`/event/${event._id}`, { state: { event } });
+        }, 500);
     };
 
     const handleNextPage = () => {
@@ -133,7 +137,12 @@ function HomePageEventCardSection() {
                 <Box sx={{ padding: 4 }}>
                     <Grid container spacing={2}>
                         {filteredEvents.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE).map((event, index) => (
-                            <EventCard key={index} event={event} handleCardClick={handleCardClick} />
+                            <EventCard 
+                                key={index} 
+                                event={event} 
+                                handleCardClick={handleCardClick} 
+                                isSelected={selectedEvent === event}
+                            />
                         ))}
                     </Grid>
                 </Box>
