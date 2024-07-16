@@ -74,8 +74,9 @@ const EventDetail = ({ event, onEditClick, setEvent }) => {
                             variant="outlined"
                             fullWidth
                             sx={{ textTransform: 'none', marginTop: '10px' }}
+                            href={event.conference_link}
                         >
-                            Program promoter
+                            Conference Website
                         </Button>
                     </CardContent>
                 </Card>
