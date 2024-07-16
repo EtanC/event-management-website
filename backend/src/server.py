@@ -24,6 +24,7 @@ app = Flask(__name__)
 CORS(app, expose_headers='Authorization', supports_credentials=True)
 swagger = Swagger(app, template=definitions)
 
+
 @app.errorhandler(HTTPException)
 def access_error_handler(e):
     response = e.get_response()
@@ -34,7 +35,8 @@ def access_error_handler(e):
     })
     response.content_type = "application/json"
     return response
-    
+
+
 @app.post('/auth/login')
 @swag_from(auth_login_spec)
 def auth_login_route():
@@ -63,20 +65,24 @@ def auth_logout_route():
 def events_crawl_route():
     return events_crawl()
 
+
 @app.get('/events/get/all')
 @swag_from(events_get_all_spec)
 def events_get_all_route():
     return events_get_all()
+
 
 @app.delete('/events/clear')
 @swag_from(events_clear_spec)
 def events_clear_route():
     return events_clear()
 
+
 @app.post('/events/ai-description')
 @swag_from(events_ai_description_spec)
 def events_ai_description_route():
-  return events_ai_description()
+    return events_ai_description()
+
 
 @app.post('/event/create')
 @swag_from(event_create_spec)
@@ -113,6 +119,7 @@ def event_update_route(event_id):
     }
     return event_update(token, event_id, event)
 
+
 @app.delete('/event/delete/<event_id>')
 @swag_from(event_delete_spec)
 def event_delete_route(event_id):
@@ -129,12 +136,14 @@ def event_authorize_route():
     if not token:
         raise AccessError('Authorization token is missing')
     body = request.get_json()
-    return event_authorize(token, body['event_id'], body['user_id'])
+    return event_authorize(token, body['event_id'], body['email'])
+
 
 @app.get('/events/get_page/<page_number>')
 @swag_from(events_get_page_spec)
 def events_get_page_route(page_number):
-  return json.dumps(events_get_page(page_number))
+    return json.dumps(events_get_page(page_number))
+
 
 @app.get('/profile/get')
 @swag_from(profile_get_spec)
@@ -163,7 +172,7 @@ def profile_update_details_route():
     if 'profile_pic' in request.files:
         file = request.files['profile_pic']
         if file and file.filename:
-            profile_pic = file.read()  # Read the file content
+            profile_pic = file.read()
 
     return update_profile_details(token, username, description, full_name, job_title, fun_fact, profile_pic)
 
@@ -176,8 +185,9 @@ def profile_update_password_route():
         raise AccessError('Authorization token is missing')
 
     body = request.get_json()
-    
+
     return update_profile_password(token, body['old_password'], body['new_password'], body['re_password'])
+
 
 @app.get('/user/is_admin')
 @swag_from(is_admin_spec)
@@ -187,6 +197,7 @@ def is_admin_route():
         raise AccessError('Authorization token is missing')
 
     return json.dumps(is_admin(token))
+
 
 @app.post('/admin/invite_admin')
 @swag_from(admin_invite_spec)
@@ -198,6 +209,7 @@ def invite_admin_route():
 
     return json.dumps(invite_admin(token, body['username']))
 
+
 @app.post('/admin/remove_admin')
 @swag_from(admin_remove_spec)
 def remove_admin_route():
@@ -207,6 +219,7 @@ def remove_admin_route():
     body = request.get_json()
 
     return json.dumps(remove_admin(token, body['username']))
+
 
 @app.get('/user/events')
 @swag_from(user_events_spec)
@@ -223,10 +236,11 @@ def user_events_route():
 def user_manage_events_route():
     token = request.cookies.get('token')
 
-    if token.startswith('Bearer '):
-        token = token[len('Bearer '):]
+    if not token:
+        raise AccessError('Authorization token is missing')
 
     return user_manage_events(token)
+
 
 @app.post('/user/register/<event_id>')
 @swag_from(user_register_event_spec)
@@ -237,6 +251,7 @@ def user_register_event_route(event_id):
 
     return json.dumps(user_register_event(token, event_id))
 
+
 @app.post('/user/unregister/<event_id>')
 @swag_from(user_unregister_event_spec)
 def user_unregister_event_route(event_id):
@@ -245,11 +260,13 @@ def user_unregister_event_route(event_id):
         raise AccessError('Authorization token is missing')
     return json.dumps(user_unregister_event(token, event_id))
 
+
 @app.delete('/clear')
 @swag_from(clear_spec)
 def clear_all():
     db.clear_all()
     return json.dumps({})
+
 
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == 'test':

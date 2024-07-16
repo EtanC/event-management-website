@@ -31,10 +31,9 @@ export const handleRegister = async (email, password, name, setErrorMessage, set
     }
 };
 
-export const handleLogout = async (navigate, setAuth) => {
+export const handleLogout = async (navigate) => {
     try {
         await axios.post('http://127.0.0.1:5000/auth/logout', {}, { withCredentials: true });
-        setAuth(false);
         navigate('/');
     } catch (error) {
         console.error('Error logging out:', error.response ? error.response.data.description : error.message);

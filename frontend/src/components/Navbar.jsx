@@ -1,33 +1,18 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { handleLogout } from '../helper/handleAuth';
 import logo from '../Image/CompanyLogo.png';
 import defaultProfilePic from '../Image/defaultProfile.png';
-
 import { useProfile } from './ProfileProvider';
-import Cookies from 'js-cookie';
+import { handleLogout } from '../helper/handleAuth';
 
-import {
-    AppBar,
-    Box,
-    Toolbar,
-    IconButton,
-    Typography,
-    Button,
-    MenuItem,
-    Menu,
-} from '@mui/material';
+import { AppBar, Box, Toolbar, IconButton, Typography, Button, MenuItem, Menu } from '@mui/material';
 
 function NavBar() {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
-    const { profileData, loading } = useProfile();
-    const token = Cookies.get('token');
-    const auth = !!token;
-    
-    const handleMenu = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
+    const { profileData, loading, isAuthenticated, setProfileData } = useProfile();
+
+    const handleMenu = (event) => setAnchorEl(event.currentTarget);
 
     const handleClose = () => {
         setAnchorEl(null);
@@ -64,10 +49,11 @@ function NavBar() {
         handleClose();
     };
 
-    const handleLogOut = () => {
+    const logOutButton = () => {
+        setProfileData(null); // Clear profile data
         handleLogout(navigate);
         handleClose();
-    }    
+    };
 
     return (
         <>
@@ -81,7 +67,7 @@ function NavBar() {
                             onClick={handleLogoClick}
                         />
                         <Box sx={{ flexGrow: 1 }} />
-                        {auth && !loading ? (
+                        {isAuthenticated && !loading ? (
                             profileData ? (
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <Typography sx={{ mr: 2, color: 'black' }}>
@@ -135,7 +121,7 @@ function NavBar() {
                             <MenuItem onClick={handleProfile}>Profile</MenuItem>
                             <MenuItem onClick={handleCalendar}>Calendar</MenuItem>
                             <MenuItem onClick={handleAdmin}>Admin</MenuItem>
-                            <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
+                            <MenuItem onClick={logOutButton}>Log Out</MenuItem>
                         </Menu>
                     </Toolbar>
                 </AppBar>

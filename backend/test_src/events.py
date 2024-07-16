@@ -29,9 +29,9 @@ def event_delete(token, event_id):
     cookies = make_cookies(token)
     response = requests.delete(f'{backend_url}/event/delete/{event_id}', cookies=cookies)
     return parse_response(response)
-def event_authorize(token, event_id, to_be_added_id):
+def event_authorize(token, event_id, email):
     body = {
-        'user_id': to_be_added_id,
+        'email': email,
         'event_id': event_id
     }
     cookies = make_cookies(token)
