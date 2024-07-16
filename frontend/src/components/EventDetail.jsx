@@ -16,12 +16,14 @@ const EventDetail = ({ event, setEvent}) => {
 
     useEffect(() => {
         const checkUserEditPermission = () => {
-            const userId = getUserId();
-            let isOwner
-            if (event.creator === userId) isOwner = true
-            else isOwner = false
-            const isManager = event.authorized_users && event.authorized_users.includes(userId);
-            setUserCanEdit(isOwner || isManager);
+            try {
+                const userId = getUserId();
+                let isOwner = event.creator === userId;
+                const isManager = event.authorized_users && event.authorized_users.includes(userId);
+                setUserCanEdit(isOwner || isManager);
+            } catch (error) {
+                console.error('Error checking user permissions:', error);
+            }
         };
 
         const checkIfRegistered = () => {

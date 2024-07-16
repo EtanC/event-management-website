@@ -72,7 +72,7 @@ function EventDetailPage() {
                                 display: 'flex',
                             }}
                         />
-                        <Box sx={{ position: 'absolute', top: '50%', left: '40%', transform: 'translate(-80%, -80%)', zIndex: 2 }}>
+                        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-80%, -80%)', zIndex: 2 }}>
                             <Typography variant="h4" component="h1" className="event-title" sx={{ fontWeight: 'bold', color: 'white', wordWrap: 'break-word' }}>
                                 {event.name}
                             </Typography>
