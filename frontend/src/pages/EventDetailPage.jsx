@@ -56,6 +56,7 @@ function EventDetailPage() {
                             borderRadius: '8px',
                             overflow: 'hidden',
                             paddingTop: '56.25%', // apparently this ensures responsiveness
+                            textAlign: 'center',
                         }}
                     >
                         <img
@@ -72,7 +73,7 @@ function EventDetailPage() {
                             }}
                         />
                         <Box sx={{ position: 'absolute', top: '50%', left: '40%', transform: 'translate(-80%, -80%)', zIndex: 2 }}>
-                            <Typography variant="h4" component="h1" className="event-title" sx={{ fontWeight: 'bold', color: 'white' }}>
+                            <Typography variant="h4" component="h1" className="event-title" sx={{ fontWeight: 'bold', color: 'white', wordWrap: 'break-word' }}>
                                 {event.name}
                             </Typography>
                         </Box>
