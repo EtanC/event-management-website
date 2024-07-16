@@ -115,3 +115,21 @@ user_manage_events_spec = {
         }
     }
 }
+
+user_toggle_notifications_spec = {
+    'tags': ['User'],
+    'security': [
+        {
+            "bearerAuth": []
+        }
+    ],
+    'parameters': [],
+    'responses': {
+        200: {
+            'description': 'Successfully toggled notifications',
+        },
+        403: {
+            'description': 'Invalid token OR Expired token OR Invalid user'
+        }
+    }
+}
