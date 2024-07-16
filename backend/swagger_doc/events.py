@@ -65,14 +65,20 @@ event_create_spec = {
                 'start_date': {
                     '$ref': '#/definitions/event_start_date'
                 },
-                'deadline': {
-                    '$ref': '#/definitions/event_deadline'
+                'end_date': {
+                    '$ref': '#/definitions/event_end_date'
                 },
-                'details': {
-                    '$ref': '#/definitions/event_details'
+                'tags': {
+                    '$ref': '#/definitions/event_tags'
                 },
-                'details_link': {
-                    '$ref': '#/definitions/event_details_link'
+                'description': {
+                    '$ref': '#/definitions/event_description'
+                },
+                'registration_link': {
+                    '$ref': '#/definitions/event_registration_link'
+                },
+                'image': {
+                    '$ref': '#/definitions/event_image'
                 },
             }
         }
@@ -96,16 +102,16 @@ event_create_spec = {
 }
 
 events_get_page_spec = {
-  'tags': ['Events'],
-  'parameters': [
-    {
-      'name': 'page_number',
-      'in': 'path',
-      'type': 'string',
-      'required': 'true'
-    }
-  ],
-  'responses': {
+    'tags': ['Events'],
+    'parameters': [
+        {
+            'name': 'page_number',
+            'in': 'path',
+            'type': 'string',
+            'required': 'true'
+        }
+    ],
+    'responses': {
         200: {
             'description': 'Successfully retrieved events',
         },
@@ -205,8 +211,8 @@ event_authorize_spec = {
                 'event_id': {
                     '$ref': '#/definitions/event_id',
                 },
-                'user_id': {
-                    '$ref': '#/definitions/user_id',
+                'email': {
+                    '$ref': '#/definitions/email',
                 }
             }
         }

@@ -135,4 +135,3 @@ def test_remove_admin_error(reset, user1, user2):
     # test provided username doesn't exist
     with pytest.raises(InputError):
         remove_admin(token, 'wawawathisusernamedoestexist')
-

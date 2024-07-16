@@ -58,7 +58,7 @@ def auth_login(email, password):
         key='token',
         value=token,
         httponly=False,  
-        secure=False, 
+        secure=True, 
         samesite='Lax', 
         expires=session_end_time,  
         path='/'
@@ -104,10 +104,7 @@ def auth_register(username, email, password):
 
 
 
-def auth_logout():
-    token = request.cookies.get('token')
-    if not token:
-        raise AccessError('Authorization token is missing or invalid')
+def auth_logout(token):
     data = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
     db.active_sessions.delete_one({'_id': ObjectId(data['session_id'])})
 

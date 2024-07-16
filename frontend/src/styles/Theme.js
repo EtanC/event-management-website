@@ -7,6 +7,9 @@ const theme = createTheme({
         primary: {
             main: '#1E4830'
         },
+        secondary: {
+            main: '#FFFFFF'
+        }
     },
     typography: {
         fontFamily: 'Inter, sans-serif',

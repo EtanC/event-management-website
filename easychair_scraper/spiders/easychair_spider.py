@@ -4,7 +4,7 @@ class EasychairSpider(scrapy.Spider):
     name = "easychair"
     allowed_domains = ["easychair.org"]
     start_urls = [
-        'https://easychair.org/cfp/topic.cgi?tid=18115',
+        'https://easychair.org/cfp/topic.cgi?tid=670',
     ]
 
     def parse(self, response):
@@ -24,4 +24,10 @@ class EasychairSpider(scrapy.Spider):
     def parse_conference_details(self, response):
         conference = response.meta['conference']
         conference['details'] = response.css('#cfp').get()
+        image_link = response.xpath('//td[contains(@class,"logocell")]').xpath('img/@src').get()
+        if image_link:
+            conference['image_link'] = f'https://easychair.org/{image_link}'
+        links = response.css("a::text").getall()
+        if len(links) >= 3:
+            conference['conference_link'] = links[2]
         yield conference

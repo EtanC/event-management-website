@@ -5,5 +5,7 @@
     "DATABASE_NAME": "real_database",
     "TESTDB_NAME": "test_database",
     "APP_PASSWORD": "junp aluu zwky ofus",
-    "APP_EMAIL": "project41pls@gmail.com"
+    "APP_EMAIL": "project41pls@gmail.com",
+    "RANDOM_IMAGES_START_INDEX": 0,
+    "RANDOM_IMAGES_END_INDEX": 2
 }
