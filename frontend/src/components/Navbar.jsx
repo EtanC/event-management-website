@@ -20,7 +20,7 @@ function NavBar() {
     };
 
     const handleCalendar = () => {
-        navigate('/my-calendar');
+        navigate('/my-events');
         handleClose();
     };
 
@@ -119,7 +119,7 @@ function NavBar() {
                             sx={{ mt: 1.5 }}
                         >
                             <MenuItem onClick={handleProfile}>Profile</MenuItem>
-                            <MenuItem onClick={handleCalendar}>Calendar</MenuItem>
+                            <MenuItem onClick={handleCalendar}>My Events</MenuItem>
                             <MenuItem onClick={handleAdmin}>Admin</MenuItem>
                             <MenuItem onClick={logOutButton}>Log Out</MenuItem>
                         </Menu>

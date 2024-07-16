@@ -1,9 +1,7 @@
 import axios from 'axios';
 
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const manageSessionAndNavigate = async (navigate) => {
-    await sleep(1000); // stimulate loading phase, get rid of it if you wish :(
     navigate('/'); // navigate to home
 };
 
