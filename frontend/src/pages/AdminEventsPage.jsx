@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import SearchBar from '../components/SearchBar';
 import AdminTable from '../components/AdminTable';
 import AlertPopup from '../components/AlertPopup';
+import EventModal from '../components/EventModal';
 import { fetchAllEventsData } from '../helper/handleEventData';
 import {
     handleDeleteClick,
@@ -74,6 +75,7 @@ const AdminEventsPage = () => {
                 title={'Confirm Delete'}
                 content={'Are you sure you want to delete this event? This action cannot be undone.'}
             />
+            <EventModal open={openEditEvent} handleClose={() => handleEditClose(setOpenEditEvent, adminFetchEvents)} headerText={'Edit Event'} event={eventToEdit} />
             <Container maxWidth="lg" sx={{ minHeight: '85vh' }}>
                 <Box sx={styles.flexBox}>
                     <Typography variant="h4">
