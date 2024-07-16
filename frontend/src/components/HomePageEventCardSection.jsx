@@ -35,6 +35,11 @@ function HomePageEventCardSection() {
         setFilteredEvents(result);
     }, [eventType, location, date, events]);
 
+    // this hook make sure user gets transported to page 1 when any search happens
+    useEffect(() => {
+        setPage(1);
+    }, [eventType, location, date]); 
+
     const handleCardClick = (event) => {
         navigate(`/event/${event._id}`, { state: { event } });
     };

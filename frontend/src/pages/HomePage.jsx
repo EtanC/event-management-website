@@ -17,13 +17,12 @@ function HomePage() {
         <>
             <ThemeProvider theme={theme}></ThemeProvider>
             <NewEventButton />
-            <Box sx={{ backgroundColor: '#f5f5f5', padding: '20px 0' }}>
+            <Box sx={{ backgroundColor: '#f5f5f5'}}>
                 <Container maxWidth="lg">
                     <Box
                         sx={{
                             position: 'relative',
                             cursor: 'pointer',
-                            marginBottom: '20px',
                         }}
                         onClick={handleImageClick}
                     >
@@ -32,7 +31,10 @@ function HomePage() {
                             alt="Default Event"
                             style={{
                                 width: '100%',
+                                height: '350px',
+                                objectFit: 'cover',
                                 borderRadius: '8px',
+                                marginBottom: '50px'
                             }}
                         />
                     </Box>

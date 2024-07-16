@@ -69,9 +69,11 @@ const EventCard = ({
             <Card
                 sx={{
                     width: 345,
-                    boxShadow: 3,
+                    height: 300,
+                    boxShadow: 'none',
                     borderRadius: 2,
-                    '&:hover': { cursor: 'pointer' },
+                    backgroundColor: '#f5f5f5',
+                    '&:hover': { cursor: 'pointer', boxShadow: 3 },
                     position: 'relative',
                 }}
                 onClick={() => handleCardClick(event)}
@@ -89,8 +91,6 @@ const EventCard = ({
                             top: 8,
                             right: 8,
                             zIndex: 1,
-                            backgroundColor: 'rgba(255, 255, 255, 0.7)',
-                            '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.9)' },
                         }}
                     >
                         <MoreVertIcon />
@@ -116,9 +116,9 @@ const EventCard = ({
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        backgroundColor: '#f0f0f0',
                         borderTopLeftRadius: 8,
-                        borderTopRightRadius: 8
+                        borderTopRightRadius: 8, 
+                        margin: '10px',
                     }}
                 >
                     <img
@@ -129,12 +129,30 @@ const EventCard = ({
                             maxWidth: '100%',
                             objectFit: 'contain',
                             borderTopLeftRadius: 8,
-                            borderTopRightRadius: 8
+                            borderTopRightRadius: 8, 
+                            padding: '10px',
                         }}
                     />
                 </CardMedia>
                 <CardContent>
-                    <Typography gutterBottom variant="h6" component="div">
+                <Typography 
+                    gutterBottom 
+                    variant="h6" 
+                    component="div"
+                    sx={{
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        '&:hover': {
+                            whiteSpace: 'normal',
+                            animation: 'marquee 5s linear infinite'
+                        },
+                        '@keyframes marquee': {
+                            '0%': { transform: 'translateY(0)' },
+                            '100%': { transform: 'translateY(-100%)' }
+                        }
+                    }}
+                >
                         {event.name}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
