@@ -33,17 +33,19 @@ def user_register_event(token, event_id):
     if result.modified_count == 0:
         raise InputError('Already registered to event')
     else:
-        # call notification email
-        subject = "You've just registered to an event!"
+        user = get_user(user_id)
+        if user['receive_notifications']:
+            # call notification email
+            subject = "You've just registered to an event!"
 
-        event = db.events.find_one({ "_id": ObjectId(event_id) })
+            event = db.events.find_one({ "_id": ObjectId(event_id) })
 
-        user = db.users.find_one({ '_id': ObjectId(user_id) })
+            user = db.users.find_one({ '_id': ObjectId(user_id) })
 
-        body = f"""
-You've just registered to an event: {event['name']} at {event['start_date']} in {event['location']}. To see more go to {event['details_link']}.
-"""
-        send_email(subject, body, user['email'])
+            body = f"""
+    You've just registered to an event: {event['name']} at {event['start_date']} in {event['location']}. To see more go to {event['details_link']}.
+    """
+            send_email(subject, body, user['email'])
     return {}
 
 def user_unregister_event(token, event_id):
@@ -158,10 +160,21 @@ The event {event['name']} starts in less than one week! It's on {event['start_da
 
                     user['notifications_sent']['seven_days'].append(event_id)
 
-if __name__ == '__main__':
-    send_email('test subject', 'test body', 'kchen397@gmail.com')
+def user_toggle_notifications(token):
+    user_id = decode_token(token)
+    user = get_user(user_id)
+    result = db.users.update_one(
+        { '_id': ObjectId(user_id) },
+        {
+            '$set': {
+                'receive_notifications': not user['receive_notifications'],
+            }
+        }
+    )
+    if result.modified_count == 0:
+        raise AccessError("User does not exist")
+    return {}
 
-    send_email('test subject', 'test body', 'aiygwduaigwydagwdia@gmail.com')
 def get_user(user_id):
     return db.users.find_one({ '_id': ObjectId(user_id) })
 

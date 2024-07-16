@@ -3,7 +3,7 @@ from backend.test_src.auth import auth_register_raw
 from backend.test_src.events import event_create
 from backend.test_src.user import user_register_event
 from backend.src.events import event_create
-from backend.src.user import check_notifications
+from backend.src.user import check_notifications, user_toggle_notifications
 from backend.src.database import clear, db
 from datetime import datetime, timedelta
 
@@ -89,6 +89,36 @@ def test_reminders_none(reset, sample_event, sample_user):
 
 def test_reminders(reset, sample_event_1, sample_event_3, sample_event_7, sample_user):
     # check for all reminders
+    event_id = event_create(sample_user, sample_event_1)['event_id']
+    user_register_event(sample_user, event_id)
+    event_id = event_create(sample_user, sample_event_3)['event_id']
+    user_register_event(sample_user, event_id)
+    event_id = event_create(sample_user, sample_event_7)['event_id']
+    user_register_event(sample_user, event_id)
+    
+    check_notifications()
+
+def test_notifications_off(reset, sample_event_1, sample_event_3, sample_event_7, sample_user):
+    # toggle off notifications
+    user_toggle_notifications(sample_user)
+
+    # register shouldn't send notifications
+    event_id = event_create(sample_user, sample_event_1)['event_id']
+    user_register_event(sample_user, event_id)
+    event_id = event_create(sample_user, sample_event_3)['event_id']
+    user_register_event(sample_user, event_id)
+    event_id = event_create(sample_user, sample_event_7)['event_id']
+    user_register_event(sample_user, event_id)
+    
+    check_notifications()
+
+def test_notifications_toggled_off_then_on(reset, sample_event_1, sample_event_3, sample_event_7, sample_user):
+    # create event
+    # toggle notifications off then on
+    user_toggle_notifications(sample_user)
+    user_toggle_notifications(sample_user)
+
+    # register should send notifications
     event_id = event_create(sample_user, sample_event_1)['event_id']
     user_register_event(sample_user, event_id)
     event_id = event_create(sample_user, sample_event_3)['event_id']
