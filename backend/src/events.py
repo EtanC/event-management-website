@@ -7,7 +7,9 @@ from dotenv import load_dotenv
 import datetime
 from backend.src.error import InputError, AccessError
 from backend.src.auth import decode_token
+from backend.src.config import config
 from bson import ObjectId
+import random
 
 
 def events_crawl():
@@ -19,23 +21,6 @@ def events_crawl():
 def stringify_id(x):
     x['_id'] = str(x['_id'])
     return x
-
-
-def events_get_page(page_number):
-    page_number = int(page_number)
-    PAGE_SIZE = 12
-    total_events = db.events.count_documents({})
-    page_count = (total_events + PAGE_SIZE - 1) // PAGE_SIZE
-    pipeline = [
-        {"$match": {}},
-        {"$skip": (page_number-1) * PAGE_SIZE},
-        {"$limit": PAGE_SIZE}
-    ]
-    return {
-        'events': list(map(stringify_id, db.events.aggregate(pipeline))),
-        'page_count': page_count
-    }
-
 
 def events_get_all():
     return {
@@ -106,10 +91,10 @@ def event_create(token, event):
         raise InputError('Event already exists')
     if not event_is_valid(event):
         raise InputError('Invalid event')
-    user = db['users'].find({'_id': user_id})
     event['ranking'] = 0
     event['authorized_users'] = []
     event['creator'] = user_id
+    event['image'] = random.randint(config['RANDOM_IMAGES_START_INDEX'], config['RANDOM_IMAGES_END_INDEX'])
     result = db.events.insert_one(event)
     db['users'].update_one(
         {'_id': ObjectId(user_id)},

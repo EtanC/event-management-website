@@ -1,19 +1,17 @@
 import axios from 'axios';
 
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
 export const fetchEventsData = async (setEvents, setLocations, setError, setIsLoading) => {
     setIsLoading(true);
     try {
-        await sleep(2000);
         const response = await axios.get('http://127.0.0.1:5000/events/get/all');
-        const eventData = response.data;
+        console.log(response.data); // Log the response data
+        const eventData = response.data.events || response.data; // Adjust according to the response structure
         setEvents(eventData);
         const uniqueLocations = [...new Set(eventData.map(event => event.location).filter(loc => loc))];
         setLocations(uniqueLocations);
         setError(null);
     } catch (err) {
-        setError('Failed to fetch events');
+        setError('Failed to fetch events: ' + err);
     } finally {
         setIsLoading(false);
     }
@@ -76,6 +74,18 @@ export const fetchUserRegisteredEvents = async () => {
         throw (error);
     }
 }
+
+export const handleUnregister = async (event_id) => {
+    try {
+        const response = await axios.post(`http://127.0.0.1:5000/user/unregister/${event_id}`, {}, {
+            withCredentials: true,
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error unregistering from event: ', error.response ? error.response.data : error.message);
+        throw error;
+    }
+};
 
 export const handleEditEvent = async (event_id, eventData) => {
     try {

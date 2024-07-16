@@ -59,7 +59,7 @@ function EventDetailPage() {
                         }}
                     >
                         <img
-                            src={defaultImage}
+                            src={`/static/random_background/${event.image}.jpg`}
                             alt="Event Background"
                             style={{
                                 position: 'absolute',
@@ -71,8 +71,8 @@ function EventDetailPage() {
                                 display: 'flex',
                             }}
                         />
-                        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-80%, -80%)', zIndex: 2 }}>
-                            <Typography variant="h4" component="h1" className="event-title" sx={{ fontWeight: 'bold' }}>
+                        <Box sx={{ position: 'absolute', top: '50%', left: '40%', transform: 'translate(-80%, -80%)', zIndex: 2 }}>
+                            <Typography variant="h4" component="h1" className="event-title" sx={{ fontWeight: 'bold', color: 'white' }}>
                                 {event.name}
                             </Typography>
                         </Box>

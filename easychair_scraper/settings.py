@@ -63,7 +63,8 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    "easychair_scraper.pipelines.EasychairScraperPipeline": 400,
+    "easychair_scraper.pipelines.EasychairScraperPipeline": 500,
+    "easychair_scraper.pipelines.RandomImagePipeline": 400,
     "easychair_scraper.pipelines.RemoveInvalidPipeline": 300,
 }
 

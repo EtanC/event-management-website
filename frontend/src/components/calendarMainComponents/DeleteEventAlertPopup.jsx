@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
 
-const AlertPopup = ({ open, onClose, onConfirm, title, content }) => {
+const DeleteEventAlertPopup = ({ open, onClose, onConfirm, title, content }) => {
     return (
         <Dialog
             open={open}
@@ -31,4 +31,4 @@ const styles = {
     },
 };
 
-export default AlertPopup;
+export default DeleteEventAlertPopup;

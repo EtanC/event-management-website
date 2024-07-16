@@ -122,7 +122,7 @@ const EventCard = ({
                     }}
                 >
                     <img
-                        src={defaultImage}
+                        src={`/static/random_background/${event.image}.jpg`}
                         alt={event.name}
                         style={{
                             maxHeight: '100%',

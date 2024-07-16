@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Card, CardContent, Typography, Button } from '@mui/material';
+import { Box, Card, CardContent, Typography, Button, Snackbar } from '@mui/material';
 import { CalendarToday, Edit } from '@mui/icons-material';
 import handleRegisterEvent from '../helper/handleRegisterEvent';
 import { formatDate, getUserId } from '../helper/helpers'
-import EventModal from '../components/EventModal';
+import ViewRegisteredEventPopUp from '../components/calendarMainComponents/ViewRegisteredEventPopUp';
+import fetchRegisteredEvents from '../helper/fetchRegisteredEvents';
+import Alert from '@mui/material/Alert';
 
-const EventDetail = ({ event, onEditClick, setEvent }) => {
+const EventDetail = ({ event, setEvent}) => {
     const [userCanEdit, setUserCanEdit] = useState(false);
     const formattedDate = formatDate(event.start_date);
     const [openEditEvent, setOpenEditEvent] = useState(false);
+    const [isRegistered, setIsRegistered] = useState(false);
+    const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
 
     useEffect(() => {
         const checkUserEditPermission = () => {
@@ -20,7 +24,21 @@ const EventDetail = ({ event, onEditClick, setEvent }) => {
             setUserCanEdit(isOwner || isManager);
         };
 
+        const checkIfRegistered = () => {
+            fetchRegisteredEvents(
+                (fetchedEvents) => {
+                    const isEventRegistered = fetchedEvents.some(registeredEvent => registeredEvent._id === event._id);
+                    setIsRegistered(isEventRegistered);
+                },
+                (error) => {
+                    setAlert({ open: true, message: error, severity: 'error' });
+                },
+                () => {} // No need to set loading state here
+            );
+        };
+
         checkUserEditPermission();
+        checkIfRegistered();
     }, [event]);
 
     const handleEditClick = () => {
@@ -31,9 +49,19 @@ const EventDetail = ({ event, onEditClick, setEvent }) => {
         setOpenEditEvent(false);
     };
 
+    const handleRegisterClick = async () => {
+        const result = await handleRegisterEvent(event._id);
+        setIsRegistered(result.success);
+        setAlert({ open: true, message: result.message, severity: result.success ? 'success' : 'error' });
+    };
+
+    const handleAlertClose = () => {
+        setAlert({ ...alert, open: false });
+    };
+
     return (
         <>
-            <EventModal open={openEditEvent} handleClose={handleEditClose} headerText={'Edit Event'} event={event} setEvent={setEvent} />
+            <ViewRegisteredEventPopUp open={openEditEvent} handleClose={handleEditClose} headerText={'Edit Event'} event={event} setEvent={setEvent} />
             <Box className="date-time-box" sx={{ position: 'absolute', top: '30%', left: '70%', transform: 'translate(-20%, -0%)', zIndex: 2 }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', width: '100%' }}>
                     {userCanEdit && (
@@ -66,21 +94,27 @@ const EventDetail = ({ event, onEditClick, setEvent }) => {
                             color="primary"
                             fullWidth
                             sx={{ textTransform: 'none', marginTop: '20px' }}
-                            onClick={() => handleRegisterEvent(event._id)}
+                            onClick={handleRegisterClick}
+                            disabled={isRegistered}  // Disable the button if already registered
                         >
-                            Register
+                            {isRegistered ? 'Already Registered' : 'Register'}
                         </Button>
                         <Button
                             variant="outlined"
                             fullWidth
                             sx={{ textTransform: 'none', marginTop: '10px' }}
-                            href={event.conference_link}
                         >
-                            Conference Website
+                            Program promoter
                         </Button>
                     </CardContent>
                 </Card>
             </Box>
+
+            <Snackbar open={alert.open} autoHideDuration={6000} onClose={handleAlertClose}>
+                <Alert onClose={handleAlertClose} severity={alert.severity}>
+                    {alert.message}
+                </Alert>
+            </Snackbar>
         </>
     );
 };
