@@ -58,7 +58,8 @@ function NavBar() {
     return (
         <>
             <Box sx={{ flexGrow: 1 }}>
-                <AppBar position="fixed" elevation={0} sx={{ padding: "25px 10px 25px", backgroundColor: 'white', borderBottom: '1px solid #e0e0e0' }}>
+                {/* class name for filterbar to recognise where nav bar is */}
+                <AppBar position="fixed" elevation={0}className="navbar" sx={{ padding: "10px 10px 25px", backgroundColor: 'white', borderBottom: '1px solid #e0e0e0', height: '80px' }}>
                     <Toolbar>
                         <img
                             src={logo}

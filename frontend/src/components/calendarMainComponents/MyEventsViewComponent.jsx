@@ -190,7 +190,6 @@ function MyEventsViewComponent({ selectedRanking }) {
             )}
             <Box sx={{ backgroundColor: '#f5f5f5', paddingTop: '40px', minHeight: '90vh' }}>
                 <Container maxWidth="lg">
-                    <Typography variant="h4" sx={{ marginBottom: '40px' }}>My Events</Typography>
                     <Card sx={styles.flexCard}>
                         <Typography variant="h6" component="h2" sx={styles.headerFont}>My Created Events</Typography>
                         {renderEventCards(events.createdEvents, true, false)}
