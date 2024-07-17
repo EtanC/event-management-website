@@ -69,7 +69,7 @@ const LoginPage = () => {
                         <Typography variant="body2" align="center" sx={{ color: '#1E4830' }}>
                             Login Using Social Networks
                         </Typography>
-                        <LoginWithSocial />
+                        <LoginWithSocial error={setErrorMessage}/>
                         <Divider>OR</Divider>
                         {isLoading ? (
                             <Typography align="center" sx={{ mt: 2 }}>Loading...</Typography>

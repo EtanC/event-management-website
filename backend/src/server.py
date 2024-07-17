@@ -10,7 +10,7 @@ from backend.swagger_doc.definitions import definitions
 from backend.src.error import AccessError, InputError
 import json
 from werkzeug.exceptions import HTTPException
-from backend.src.auth import auth_login, auth_register, auth_logout
+from backend.src.auth import auth_google_login, auth_login, auth_register, auth_logout
 from backend.src.events import events_crawl, events_clear, events_get_all, event_create, event_update, event_delete, event_authorize, events_ai_description
 from backend.src.profile_details import get_profile_details, update_profile_details, update_profile_password
 from backend.src.admin import is_admin, invite_admin, remove_admin
@@ -43,6 +43,11 @@ def auth_login_route():
     body = request.get_json()
     return auth_login(body['email'], body['password'])
 
+
+@app.post('/auth/google_login')
+def auth_google_login_route():
+  auth_code = request.get_json()['code']
+  return auth_google_login(auth_code)
 
 @app.post('/auth/register')
 @swag_from(auth_register_spec)

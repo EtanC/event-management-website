@@ -1,3 +1,6 @@
+import os
+
+import requests
 from backend.src.error import AccessError, InputError
 from backend.src.database import db
 import datetime
@@ -38,6 +41,71 @@ def add_login_session(user_id):
     )
     return (response.inserted_id, session_end_time)
 
+def auth_google_login(auth_code):
+  data = {
+        'code': auth_code,
+        'client_id': os.getenv("GOOGLE_CLIENT_ID"), 
+        'client_secret': os.getenv("GOOGLE_CLIENT_SECRET"),  
+        'redirect_uri': 'postmessage',
+        'grant_type': 'authorization_code'
+    }
+
+  response = requests.post('https://oauth2.googleapis.com/token', data=data).json()
+  
+  headers = {
+      'Authorization': f'Bearer {response["access_token"]}'
+  }
+  user_info = requests.get('https://www.googleapis.com/oauth2/v3/userinfo', headers=headers).json()
+  email = user_info['email']
+  match = db.users.find_one({'email': email})
+
+  if match:
+    # case where they have an account but its not logged in by google
+    if 'password' in match:
+      raise InputError("Account found but not via Google")
+    session_id, session_end_time = add_login_session(match['_id'])
+    token = encode_jwt({
+        'user_id': str(match["_id"]),
+        'session_id': str(session_id),
+        'session_end_time': str(session_end_time)
+    })
+    response = make_response({'message': 'Login successful', 'session_end_time': session_end_time})
+    response.set_cookie(
+        key='token',
+        value=token,
+        httponly=False,  
+        secure=True, 
+        samesite='Lax', 
+        expires=session_end_time,  
+        path='/'
+    )
+    return response
+  else:
+    user = db.users.insert_one({
+        'username': user_info["name"],
+        'email': email,
+        'profile_pic_id': None,
+        'full_name': None,
+        'job_title': None,
+        'fun_fact': None,
+        'description': None,
+        'profile_pic': None,
+        'registered_events': [],
+        'managed_events': [],
+        'owned_events': [],
+        'isAdmin': False
+    })
+    session_id, session_end_time = add_login_session(user.inserted_id)
+    token = encode_jwt({
+        'user_id': str(user.inserted_id),
+        'session_id': str(session_id),
+        'session_end_time': str(session_end_time)
+    })
+
+    response = make_response({'message': 'Registration successful', 'session_end_time': session_end_time})
+    response.set_cookie('token', token, httponly=True, secure=False, samesite='Lax', expires=session_end_time)
+    return response 
+  
 def auth_login(email, password):
     match = db.users.find_one({'email': email, 'password': hash(password)})
     if match is None:
