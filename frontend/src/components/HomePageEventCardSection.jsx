@@ -8,7 +8,7 @@ import { Box, CircularProgress, Typography, Grid, IconButton, Button } from '@mu
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
-const ITEMS_PER_PAGE = 6; // customise this
+const ITEMS_PER_PAGE = 12; // customise this
 
 function HomePageEventCardSection() {
     const navigate = useNavigate();

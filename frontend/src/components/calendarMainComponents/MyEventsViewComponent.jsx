@@ -10,6 +10,7 @@ import EventManagerModal from '../EventManagerModal';
 import ViewRegisteredEventPopUp from './ViewRegisteredEventPopUp';
 import EditCreatedEventPopUp from './EditCreatedEventPopUp';
 import { handleUnregister } from '../../helper/handleEventData';
+import { handleDeleteEvent } from '../../helper/handleEventData';
 
 function MyEventsViewComponent({ selectedRanking }) {
     const [events, setEvents] = useState([]);
@@ -42,7 +43,6 @@ function MyEventsViewComponent({ selectedRanking }) {
             return RankingValues.includes(eventRanking);
         });
     };
-    
 
     const fetchEvents = async () => {
         try {
@@ -79,24 +79,18 @@ function MyEventsViewComponent({ selectedRanking }) {
         setSelectedEvent(null);
     };
 
-    const handleDeleteEvent = () => {
-        setEventToDelete(selectedEvent);
-        setDeleteDialogOpen(true);
-        setSelectedEvent(null);
-    };
-
     const handleDeleteConfirm = async () => {
         if (eventToDelete) {
             try {
                 await handleDeleteEvent(eventToDelete._id);
                 setDeleteDialogOpen(false);
                 setEventToDelete(null);
-                fetchEvents();
             } catch (error) {
                 console.error('Failed to delete event:', error);
                 alert('Failed to delete event. Please try again later.');
             }
         }
+        fetchEvents();
     };
 
     const handleDeleteCancel = () => {
@@ -160,7 +154,6 @@ function MyEventsViewComponent({ selectedRanking }) {
             </Box>
         );
     };
-    
 
     return (
         <>
