@@ -6,8 +6,10 @@ import { formatDate, getUserId } from '../helper/helpers'
 import ViewRegisteredEventPopUp from '../components/calendarMainComponents/ViewRegisteredEventPopUp';
 import fetchRegisteredEvents from '../helper/fetchRegisteredEvents';
 import Alert from '@mui/material/Alert';
+import { useNavigate } from 'react-router-dom';
 
 const EventDetail = ({ event, setEvent}) => {
+    const navigate = useNavigate();
     const [userCanEdit, setUserCanEdit] = useState(false);
     const formattedDate = formatDate(event.start_date);
     const [openEditEvent, setOpenEditEvent] = useState(false);
@@ -63,6 +65,7 @@ const EventDetail = ({ event, setEvent}) => {
         setAlert({ ...alert, open: false });
     };
 
+    console.log(event.conference_link)
     return (
         <>
             <ViewRegisteredEventPopUp open={openEditEvent} handleClose={handleEditClose} headerText={'Edit Event'} event={event} setEvent={setEvent} />
@@ -107,8 +110,9 @@ const EventDetail = ({ event, setEvent}) => {
                             variant="outlined"
                             fullWidth
                             sx={{ textTransform: 'none', marginTop: '10px' }}
+                            href={event.conference_link}
                         >
-                            Program promoter
+                            Conference Website
                         </Button>
                     </CardContent>
                 </Card>
