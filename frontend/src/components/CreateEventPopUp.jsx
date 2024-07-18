@@ -53,7 +53,7 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-const EventModal = ({ open, handleClose, headerText, event, setEvent }) => {
+const CreateEventPopUp = ({ open, handleClose, headerText, event, refreshEvents }) => {
     const [eventData, setEventData] = useState({
         name: '',
         location: '',
@@ -103,6 +103,7 @@ const EventModal = ({ open, handleClose, headerText, event, setEvent }) => {
                 setSnackbarMessage(`Event successfully ${event && event._id ? 'updated' : 'created'}!`);
                 setSnackbarOpen(true);
                 handleClose();
+                refreshEvents();
                 setEventData({
                     name: '',
                     location: '',
@@ -117,6 +118,7 @@ const EventModal = ({ open, handleClose, headerText, event, setEvent }) => {
         } catch (error) {
             setErrorMessage(`Failed to ${event && event._id ? 'update' : 'save new'} event: ${error.message}`);
         }
+        refreshEvents;
     };
 
     const handleSnackbarClose = (event, reason) => {
@@ -279,4 +281,4 @@ const EventModal = ({ open, handleClose, headerText, event, setEvent }) => {
     );
 };
 
-export default EventModal;
+export default CreateEventPopUp;

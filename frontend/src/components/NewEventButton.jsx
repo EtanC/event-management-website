@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import FloatingButton from './FloatingButton';
-import EventModal from './EventModal';
+import CreateEventPopUp from './CreateEventPopUp';
 
 const NewEventButton = () => {
     const [open, setOpen] = useState(false);
@@ -16,7 +16,7 @@ const NewEventButton = () => {
     return (
         <div>
             <FloatingButton onClick={handleOpenNewEvent} />
-            <EventModal open={open} handleClose={handleCloseNewEvent} headerText={'Create New Event'} />
+            <CreateEventPopUp open={open} handleClose={handleCloseNewEvent} headerText={'Create New Event'} />
         </div>
     );
 };

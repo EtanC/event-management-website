@@ -33,7 +33,9 @@ const EventDetail = ({ event, setEvent}) => {
                     setIsRegistered(isEventRegistered);
                 },
                 (error) => {
-                    setAlert({ open: true, message: error, severity: 'error' });
+                    if (error) {
+                        setAlert({ open: true, message: error, severity: 'error' });
+                    }
                 },
                 () => {} // No need to set loading state here
             );
@@ -53,7 +55,7 @@ const EventDetail = ({ event, setEvent}) => {
 
     const handleRegisterClick = async () => {
         const result = await handleRegisterEvent(event._id);
-        setIsRegistered(result.success);
+        setIsRegistered(result.success); // in case the registration cannot happen
         setAlert({ open: true, message: result.message, severity: result.success ? 'success' : 'error' });
     };
 
@@ -112,7 +114,8 @@ const EventDetail = ({ event, setEvent}) => {
                 </Card>
             </Box>
 
-            <Snackbar open={alert.open} autoHideDuration={6000} onClose={handleAlertClose}>
+            {/* making sure that the alert doesnt display for no reason */}
+            <Snackbar open={alert.open && alert.message !== ''} autoHideDuration={3000} onClose={handleAlertClose}>
                 <Alert onClose={handleAlertClose} severity={alert.severity}>
                     {alert.message}
                 </Alert>

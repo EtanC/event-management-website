@@ -9,6 +9,7 @@ import '../styles/UserCalendar.css';
 import theme from '../styles/Theme';
 import { ThemeProvider } from '@mui/material/styles';
 import MyEventsViewComponent from '../components/calendarMainComponents/MyEventsViewComponent'; // Create this component
+import { fetchUserEvents } from '../helper/handleEventData';
 
 const MyEventsPage = () => {
     const [events, setEvents] = useState([]);
@@ -86,6 +87,7 @@ const MyEventsPage = () => {
                     events={Array.isArray(events) ? events : []}
                     onSearchResultClick={handleSearchResultClick}
                     onRankingChange={handleRankingChange}
+                    refreshEvents={refreshEvents}
                 />
                 <Container>
                     <ToggleButtonGroup
@@ -116,6 +118,7 @@ const MyEventsPage = () => {
                     ) : (
                         <MyEventsViewComponent
                             selectedRanking={selectedRanking}
+                            refreshEvents={refreshEvents}
                         />
                     )}
                 </Container>
