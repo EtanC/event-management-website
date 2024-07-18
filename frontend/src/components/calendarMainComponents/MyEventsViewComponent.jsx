@@ -70,7 +70,6 @@ function MyEventsViewComponent({ selectedRanking }) {
 
     const handleClosePopUp = () => {
         setSelectedEvent(null);
-        fetchEvents();
     };
 
     const handleEditEvent = () => {
@@ -82,9 +81,10 @@ function MyEventsViewComponent({ selectedRanking }) {
     const handleDeleteConfirm = async () => {
         if (eventToDelete) {
             try {
-                await handleDeleteEvent(eventToDelete._id);
+                await handleDeleteEvent(selectedEvent._id);
                 setDeleteDialogOpen(false);
                 setEventToDelete(null);
+                handleClosePopUp();
             } catch (error) {
                 console.error('Failed to delete event:', error);
                 alert('Failed to delete event. Please try again later.');
@@ -118,14 +118,10 @@ function MyEventsViewComponent({ selectedRanking }) {
         setOpenAddManager(true);
     };
     
-    const handleDeleteClick = (event) => {
-        setEventToDelete(event);
+    const handleDeleteClick = () => {
+        setEventToDelete(selectedEvent._id);
         setDeleteDialogOpen(true);
     }
-
-    const refreshEvents = () => {
-        fetchEvents();
-    };
 
     const renderEventCards = (events, isCreatedEvents, isManagedEvents) => {
         const filteredEvents = filterEvents(events);
@@ -151,7 +147,7 @@ function MyEventsViewComponent({ selectedRanking }) {
                             isManagedEvent={isManagedEvents}
                             onEditEvent={() => handleEditClick(event)}
                             onAddEventManager={() => handleManagerClick(event)}
-                            onDeleteEvent={() => handleDeleteClick(event)}
+                            onDeleteEvent={() => handleDeleteClick()}
                         />
                     ))}
                 </Grid>
@@ -175,13 +171,13 @@ function MyEventsViewComponent({ selectedRanking }) {
                     selectedEvent={selectedEvent}
                     handleClosePopUp={handleClosePopUp}
                     handleEditEvent={handleEditEvent}
-                    handleDeleteEvent={handleDeleteEvent}
+                    handleDeleteEvent={handleDeleteClick}
                 />
             ) : (
                 <ViewRegisteredEventPopUp
                     selectedEvent={selectedEvent}
                     handleClosePopUp={handleClosePopUp}
-                    refreshEvents={refreshEvents}
+                    refreshEvents={fetchEvents}
                 />
             )}
             <Box sx={{ backgroundColor: '#f5f5f5', paddingTop: '40px', minHeight: '90vh' }}>
