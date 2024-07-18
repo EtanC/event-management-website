@@ -5,7 +5,7 @@ import HtmlTagRender from '../HtmlTagRender';
 import cross from '../../Image/close.png';
 import { handleUnregister } from '../../helper/handleEventData';
 
-const ViewRegisteredEventPopUp = ({ selectedEvent, handleClosePopUp, handleUnregister, fetchEvents }) => {
+const ViewRegisteredEventPopUp = ({ selectedEvent, handleClosePopUp, refreshEvents }) => {
     const modalStyle = {
         top: '50%',
         left: '50%',
@@ -62,8 +62,8 @@ const ViewRegisteredEventPopUp = ({ selectedEvent, handleClosePopUp, handleUnreg
                         color="primary"
                         onClick={async () => {
                             await handleUnregister(selectedEvent._id);
-                            fetchEvents();
-                            handleClosePopUp(); // Close the modal after unregistering
+                            refreshEvents();
+                            handleClosePopUp();
                         }}
                         fullWidth
                         sx={{ marginBottom: '20px' }}

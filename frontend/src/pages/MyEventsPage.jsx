@@ -27,6 +27,14 @@ const MyEventsPage = () => {
         }, setError, setIsLoading);
     }, []);
 
+    const refreshEvents = () => {
+        fetchRegisteredEvents((fetchedEvents) => {
+            setEvents(fetchedEvents);
+            setFilteredEvents(fetchedEvents); 
+            setIsLoading(false);
+        }, setError, setIsLoading);
+    };
+
     useEffect(() => {
         const rankingMap = {
             'A+': 4,
@@ -63,6 +71,7 @@ const MyEventsPage = () => {
 
     const handleClosePopUp = () => {
         setSelectedEvent(null);
+        refreshEvents();
     };
 
     const handleRankingChange = (ranking) => {
@@ -115,6 +124,7 @@ const MyEventsPage = () => {
             <ViewRegisteredEventPopUp
                 selectedEvent={selectedEvent}
                 handleClosePopUp={handleClosePopUp}
+                refreshEvents={refreshEvents}
             />
         </>
     );

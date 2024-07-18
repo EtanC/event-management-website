@@ -21,7 +21,6 @@ export const getUserId = () => {
     const token = Cookies.get('token');
     try {
         const user_id = jwtDecode(token).user_id
-        console.log(user_id)
         return user_id
     } catch (error) {
         console.error("Invalid Token");

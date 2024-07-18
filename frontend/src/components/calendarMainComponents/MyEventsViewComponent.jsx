@@ -9,7 +9,6 @@ import EventModal from '../EventModal';
 import EventManagerModal from '../EventManagerModal';
 import ViewRegisteredEventPopUp from './ViewRegisteredEventPopUp';
 import EditCreatedEventPopUp from './EditCreatedEventPopUp';
-import { handleUnregister } from '../../helper/handleEventData';
 import { handleDeleteEvent } from '../../helper/handleEventData';
 
 function MyEventsViewComponent({ selectedRanking }) {
@@ -71,6 +70,7 @@ function MyEventsViewComponent({ selectedRanking }) {
 
     const handleClosePopUp = () => {
         setSelectedEvent(null);
+        fetchEvents();
     };
 
     const handleEditEvent = () => {
@@ -121,6 +121,10 @@ function MyEventsViewComponent({ selectedRanking }) {
     const handleDeleteClick = (event) => {
         setEventToDelete(event);
         setDeleteDialogOpen(true);
+    }
+
+    const refreshEvents = () => {
+        fetchEvents();
     };
 
     const renderEventCards = (events, isCreatedEvents, isManagedEvents) => {
@@ -177,8 +181,7 @@ function MyEventsViewComponent({ selectedRanking }) {
                 <ViewRegisteredEventPopUp
                     selectedEvent={selectedEvent}
                     handleClosePopUp={handleClosePopUp}
-                    handleUnregister={handleUnregister}
-                    fetchEvents={fetchEvents}
+                    refreshEvents={refreshEvents}
                 />
             )}
             <Box sx={{ backgroundColor: '#f5f5f5', paddingTop: '40px', minHeight: '90vh' }}>

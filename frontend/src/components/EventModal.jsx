@@ -85,7 +85,6 @@ const EventModal = ({ open, handleClose, headerText, event, setEvent }) => {
 
     const handleSave = async () => {
         setErrorMessage(null)
-        console.log(eventData)
         if (new Date(eventData.start_date) > new Date(eventData.deadline)) {
             setErrorMessage('Start date must be before the deadline');
             return;
