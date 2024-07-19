@@ -17,7 +17,7 @@ const CalendarSidebar = ({ events, onSearchResultClick, onRankingChange, refresh
 
     const handleCloseNewEvent = () => {
         setOpen(false);
-        refreshEvents();
+        refreshEvents;
     };
 
     const handleRankingChange = (event) => {

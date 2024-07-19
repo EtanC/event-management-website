@@ -65,7 +65,6 @@ const EventDetail = ({ event, setEvent}) => {
         setAlert({ ...alert, open: false });
     };
 
-    console.log(event.conference_link)
     return (
         <>
             <ViewRegisteredEventPopUp open={openEditEvent} handleClose={handleEditClose} headerText={'Edit Event'} event={event} setEvent={setEvent} />
