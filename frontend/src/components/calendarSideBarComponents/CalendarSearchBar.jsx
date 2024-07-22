@@ -3,7 +3,7 @@ import { Box, Typography, Accordion, AccordionSummary, AccordionDetails, InputBa
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 // eslint-disable-next-line react/prop-types
-const CalendarSearchBar = ({ events, onSearchResultClick, searchTerm, setSearchTerm }) => {
+const CalendarSearchBar = ({ events, onSearchResultClick, searchTerm, setSearchTerm}) => {
     const [searchResults, setSearchResults] = useState([]);
 
     useEffect(() => {

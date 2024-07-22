@@ -8,24 +8,23 @@ import GoogleAuth from './GoogleAuth';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const SocialLoginButtons = (error) => {
-  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
-  console.log(clientId)
-  return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 2 }}>
-          <IconButton>
-              <InstagramIcon />
-          </IconButton>
-          <IconButton>
-              <LinkedInIcon />
-          </IconButton>
-          <IconButton>
-              <FacebookIcon />
-          </IconButton>
-          <GoogleOAuthProvider clientId={clientId}>
-            <GoogleAuth error={error}></GoogleAuth>
-          </GoogleOAuthProvider>
-      </Box>
-  );
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
+    return (
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 2 }}>
+            <IconButton>
+                <InstagramIcon />
+            </IconButton>
+            <IconButton>
+                <LinkedInIcon />
+            </IconButton>
+            <IconButton>
+                <FacebookIcon />
+            </IconButton>
+            <GoogleOAuthProvider clientId={clientId}>
+                <GoogleAuth error={error}></GoogleAuth>
+            </GoogleOAuthProvider>
+        </Box>
+    );
 };
 
 export default SocialLoginButtons;

@@ -9,6 +9,7 @@ import '../styles/UserCalendar.css';
 import theme from '../styles/Theme';
 import { ThemeProvider } from '@mui/material/styles';
 import MyEventsViewComponent from '../components/calendarMainComponents/MyEventsViewComponent'; // Create this component
+import { fetchUserEvents } from '../helper/handleEventData';
 
 const MyEventsPage = () => {
     const [events, setEvents] = useState([]);
@@ -26,6 +27,14 @@ const MyEventsPage = () => {
             setIsLoading(false);
         }, setError, setIsLoading);
     }, []);
+
+    const refreshEvents = () => {
+        fetchRegisteredEvents((fetchedEvents) => {
+            setEvents(fetchedEvents);
+            setFilteredEvents(fetchedEvents); 
+            setIsLoading(false);
+        }, setError, setIsLoading);
+    };
 
     useEffect(() => {
         const rankingMap = {
@@ -63,6 +72,7 @@ const MyEventsPage = () => {
 
     const handleClosePopUp = () => {
         setSelectedEvent(null);
+        refreshEvents();
     };
 
     const handleRankingChange = (ranking) => {
@@ -77,6 +87,7 @@ const MyEventsPage = () => {
                     events={Array.isArray(events) ? events : []}
                     onSearchResultClick={handleSearchResultClick}
                     onRankingChange={handleRankingChange}
+                    refreshEvents={refreshEvents}
                 />
                 <Container>
                     <ToggleButtonGroup
@@ -107,6 +118,7 @@ const MyEventsPage = () => {
                     ) : (
                         <MyEventsViewComponent
                             selectedRanking={selectedRanking}
+                            refreshEvents={refreshEvents}
                         />
                     )}
                 </Container>
@@ -115,6 +127,7 @@ const MyEventsPage = () => {
             <ViewRegisteredEventPopUp
                 selectedEvent={selectedEvent}
                 handleClosePopUp={handleClosePopUp}
+                refreshEvents={refreshEvents}
             />
         </>
     );

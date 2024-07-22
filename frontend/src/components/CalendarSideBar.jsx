@@ -3,10 +3,10 @@ import { Box, Button } from '@mui/material';
 import SearchBar from './calendarSideBarComponents/CalendarSearchBar';
 import RankingCheckBox from './calendarSideBarComponents/RankingCheckBox';
 import EventTypeCheckBox from './calendarSideBarComponents/EventTypeCheckBox';
-import EventModal from './EventModal'
+import CreateEventPopUp from './CreateEventPopUp'
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
-const CalendarSidebar = ({ events, onSearchResultClick, onRankingChange }) => {
+const CalendarSidebar = ({ events, onSearchResultClick, onRankingChange, refreshEvents }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedRankings, setSelectedRankings] = useState([]);
     const [open, setOpen] = useState(false);
@@ -17,6 +17,7 @@ const CalendarSidebar = ({ events, onSearchResultClick, onRankingChange }) => {
 
     const handleCloseNewEvent = () => {
         setOpen(false);
+        refreshEvents;
     };
 
     const handleRankingChange = (event) => {
@@ -32,7 +33,7 @@ const CalendarSidebar = ({ events, onSearchResultClick, onRankingChange }) => {
 
     return (
         <>
-            <EventModal open={open} handleClose={handleCloseNewEvent} headerText={'Create New Event'} />
+            <CreateEventPopUp open={open} handleClose={handleCloseNewEvent} headerText={'Create New Event'} refreshEvents={refreshEvents}/>
             <Box
                 sx={{
                     width: { xs: '100%', sm: '250px', md: '300px' },

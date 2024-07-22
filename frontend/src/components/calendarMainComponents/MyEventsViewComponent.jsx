@@ -5,14 +5,13 @@ import {
 import { fetchUserEvents, fetchUserRegisteredEvents } from '../../helper/handleEventData';
 import EventCard from '../EventCard';
 import DeleteEventAlertPopup from './DeleteEventAlertPopup';
-import EventModal from '../EventModal';
+import CreateEventPopUp from '../CreateEventPopUp';
 import EventManagerModal from '../EventManagerModal';
 import ViewRegisteredEventPopUp from './ViewRegisteredEventPopUp';
 import EditCreatedEventPopUp from './EditCreatedEventPopUp';
-import { handleUnregister } from '../../helper/handleEventData';
 import { handleDeleteEvent } from '../../helper/handleEventData';
 
-function MyEventsViewComponent({ selectedRanking }) {
+function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
     const [events, setEvents] = useState([]);
     const [registeredEvents, setRegisteredEvents] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -62,7 +61,7 @@ function MyEventsViewComponent({ selectedRanking }) {
 
     useEffect(() => {
         fetchEvents();
-    }, []);
+    }, [refreshEvents]);
 
     const handleCardClick = (event, isCreatedEvent) => {
         setSelectedEvent(event);
@@ -82,11 +81,11 @@ function MyEventsViewComponent({ selectedRanking }) {
     const handleDeleteConfirm = async () => {
         if (eventToDelete) {
             try {
-                await handleDeleteEvent(eventToDelete._id);
+                await handleDeleteEvent(selectedEvent._id);
                 setDeleteDialogOpen(false);
                 setEventToDelete(null);
+                handleClosePopUp();
             } catch (error) {
-                console.error('Failed to delete event:', error);
                 alert('Failed to delete event. Please try again later.');
             }
         }
@@ -118,10 +117,10 @@ function MyEventsViewComponent({ selectedRanking }) {
         setOpenAddManager(true);
     };
     
-    const handleDeleteClick = (event) => {
-        setEventToDelete(event);
+    const handleDeleteClick = () => {
+        setEventToDelete(selectedEvent._id);
         setDeleteDialogOpen(true);
-    };
+    }
 
     const renderEventCards = (events, isCreatedEvents, isManagedEvents) => {
         const filteredEvents = filterEvents(events);
@@ -147,7 +146,7 @@ function MyEventsViewComponent({ selectedRanking }) {
                             isManagedEvent={isManagedEvents}
                             onEditEvent={() => handleEditClick(event)}
                             onAddEventManager={() => handleManagerClick(event)}
-                            onDeleteEvent={() => handleDeleteClick(event)}
+                            onDeleteEvent={() => handleDeleteClick()}
                         />
                     ))}
                 </Grid>
@@ -164,21 +163,20 @@ function MyEventsViewComponent({ selectedRanking }) {
                 title={'Confirm Delete'}
                 content={'Are you sure you want to delete this event? This action cannot be undone.'}
             />
-            <EventModal open={openEditEvent} handleClose={handleEditClose} headerText={'Edit Event'} event={eventToEdit} />
+            <CreateEventPopUp open={openEditEvent} handleClose={handleEditClose} headerText={'Edit Event'} event={eventToEdit} />
             <EventManagerModal open={openAddManager} handleClose={handleAddManagerClose} event={eventToEdit} />
             {isEditEvent ? (
                 <EditCreatedEventPopUp
                     selectedEvent={selectedEvent}
                     handleClosePopUp={handleClosePopUp}
                     handleEditEvent={handleEditEvent}
-                    handleDeleteEvent={handleDeleteEvent}
+                    handleDeleteEvent={handleDeleteClick}
                 />
             ) : (
                 <ViewRegisteredEventPopUp
                     selectedEvent={selectedEvent}
                     handleClosePopUp={handleClosePopUp}
-                    handleUnregister={handleUnregister}
-                    fetchEvents={fetchEvents}
+                    refreshEvents={fetchEvents}
                 />
             )}
             <Box sx={{ backgroundColor: '#f5f5f5', paddingTop: '40px', minHeight: '90vh' }}>

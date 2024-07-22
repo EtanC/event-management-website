@@ -10,7 +10,6 @@ function GoogleAuth(error) {
 
   async function getUserInfo(codeResponse) {
     try {
-      console.log(codeResponse)
       const response = await axios.post('http://127.0.0.1:5000/auth/google_login', {code: codeResponse.code}, { withCredentials: true });
       return {
         status: response.status,
