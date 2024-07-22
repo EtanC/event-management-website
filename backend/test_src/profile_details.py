@@ -1,5 +1,5 @@
 import requests
-from backend.test_src.util import parse_response, backend_url, make_cookies
+from test_src.util import parse_response, backend_url, make_cookies
 
 def get_profile_details(token):
     cookies = make_cookies(token)

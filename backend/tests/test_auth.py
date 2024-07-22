@@ -1,10 +1,10 @@
 
 import pytest
-from backend.test_src.auth import auth_login_raw, auth_logout, auth_register_raw, auth_login, auth_register
-from backend.src.error import InputError
-from backend.test_src.database import clear_all
+from test_src.auth import auth_login_raw, auth_logout, auth_register_raw, auth_login, auth_register
+from src.error import InputError
+from test_src.database import clear_all
 import jwt
-from backend.src.config import config
+from src.config import config
 import datetime
 
 @pytest.fixture

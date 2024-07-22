@@ -1,4 +1,4 @@
-from backend.swagger_doc.definitions_profile import definitions_profile
+from swagger_doc.definitions_profile import definitions_profile
 
 profile_get_spec = {
     'tags': ['Profile'],

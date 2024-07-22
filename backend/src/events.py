@@ -1,13 +1,13 @@
 import sys
-from backend.src.database import clear, db
+from src.database import clear, db
 import subprocess
 import requests
 import os
 from dotenv import load_dotenv
 import datetime
-from backend.src.error import InputError, AccessError
-from backend.src.auth import decode_token
-from backend.src.config import config
+from src.error import InputError, AccessError
+from src.auth import decode_token
+from src.config import config
 from bson import ObjectId
 import random
 

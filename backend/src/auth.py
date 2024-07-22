@@ -1,11 +1,11 @@
 import os
 
 import requests
-from backend.src.error import AccessError, InputError
-from backend.src.database import db
+from src.error import AccessError, InputError
+from src.database import db
 import datetime
 import hashlib
-from backend.src.config import config
+from src.config import config
 import jwt
 from bson.objectid import ObjectId
 from flask import make_response

@@ -1,11 +1,11 @@
 import pytest
-from backend.test_src.events import event_create, events_get_all
-from backend.test_src.auth import auth_register_raw
-from backend.test_src.user import user_events, user_register_event, user_manage_events, user_unregister_event
-from backend.test_src.database import clear_all
-from backend.test_src.events import event_authorize, event_delete
-from backend.src.error import InputError, AccessError
-from backend.src.config import config
+from test_src.events import event_create, events_get_all
+from test_src.auth import auth_register_raw
+from test_src.user import user_events, user_register_event, user_manage_events, user_unregister_event
+from test_src.database import clear_all
+from test_src.events import event_authorize, event_delete
+from src.error import InputError, AccessError
+from src.config import config
 import jwt
 
 @pytest.fixture

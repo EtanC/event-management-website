@@ -1,8 +1,8 @@
 import pytest
-from backend.test_src.auth import auth_register_raw
-from backend.test_src.events import event_create, event_update, event_delete, events_get_all
-from backend.test_src.database import clear_all
-from backend.src.error import AccessError, InputError
+from test_src.auth import auth_register_raw
+from test_src.events import event_create, event_update, event_delete, events_get_all
+from test_src.database import clear_all
+from src.error import AccessError, InputError
 
 @pytest.fixture
 def sample_event():
