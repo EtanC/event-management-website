@@ -197,10 +197,25 @@ def user_manage_events(token):
         'manager': managed_events
     }
 
+def relevant_info_user(user):
+    return {
+        '_id': user['_id'],
+        'username': user['username'],
+        'email': user['email'],
+    }
+
 def user_get_all(token):
     if not is_admin(token):
         raise AccessError('Only admins may access user list')
     return {
-        'users': db.users.find(),
+        'users': list(
+            map(
+                relevant_info_user,
+                map(
+                    stringify_id,
+                    db.users.find()
+                )
+            )
+        ),
     }
     
