@@ -95,6 +95,7 @@ def event_create(token, event):
     event['authorized_users'] = []
     event['creator'] = user_id
     event['image'] = random.randint(config['RANDOM_IMAGES_START_INDEX'], config['RANDOM_IMAGES_END_INDEX'])
+    event['crawled'] = False
     result = db.events.insert_one(event)
     db['users'].update_one(
         {'_id': ObjectId(user_id)},
@@ -125,6 +126,8 @@ def event_update(token, event_id, new_event):
     event = get_event(event_id)
     if event is None:
         raise InputError('No event in database with specified event_id')
+    if event['crawled']:
+        raise InputError('Cannot edit an event crawled from another source')
     if not event_is_valid(new_event):
         raise InputError('New event is not a valid event')
     db.events.update_one(
@@ -160,8 +163,13 @@ def event_delete(token, event_id):
     db.events.delete_one({'_id': ObjectId(event_id)})
     return {}
 
+def is_crawled_event(event_id):
+    event = db.events.find_one({ '_id': ObjectId(event_id)})
+    return 'crawled' in event.keys() and event['crawled']
 
 def event_authorize(token, event_id, to_be_added_email):
+    if is_crawled_event(event_id):
+        raise InputError('Cannot manage an event crawled from another source')
     user_id = decode_token(token)
     if not user_is_creator(user_id, event_id):
         raise AccessError(
