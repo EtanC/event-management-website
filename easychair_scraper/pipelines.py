@@ -25,17 +25,20 @@ class EasychairScraperPipeline(object):
         # TODO:
         # - Case sensitivity
         # - Instead of dropping item, update event details, maybe they changed
-        if db.events.find_one({"name": item.get("name")}) is not None:
+        if self.db.events.find_one({"name": item.get("name")}) is not None:
             logging.debug("Duplicate item found: {0}".format(item.get("name")), extra={'spider': spider})
             raise DropItem("Duplicate item found: {0}".format(item.get("name")))
         item['ranking'] = self.ranker.rank_event(item['name'])
         item['crawled'] = True
         item['creator'] = ''
         item['authorized_users'] = []
-        db.events.insert_one(dict(item))
+        self.db.events.insert_one(dict(item))
         logging.debug("Event added to MongoDB database!", extra={'spider': spider})
         
         return item
+    
+    def open_spider(self, spider):
+        self.db = spider.db
 
 class RemoveInvalidPipeline(object):
     def process_item(self, item, spider):

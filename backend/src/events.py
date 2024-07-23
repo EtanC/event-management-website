@@ -13,8 +13,9 @@ import random
 
 
 def events_crawl():
-    subprocess.run(["python3 -m scrapy crawl easychair"], shell=True)
-    subprocess.run(["python3 -m scrapy crawl wikicfp"], shell=True)
+    database_name = config['TESTDB_NAME'] if db.test else config['DATABASE_NAME']
+    subprocess.run([f"python3 -m scrapy crawl easychair -a database_name={database_name}"], shell=True)
+    subprocess.run([f"python3 -m scrapy crawl wikicfp -a database_name={database_name}"], shell=True)
     return {}
 
 
@@ -121,13 +122,13 @@ def user_is_authorized(user_id, event_id):
 
 def event_update(token, event_id, new_event):
     user_id = decode_token(token)
-    if not user_is_authorized(user_id, event_id):
-        raise AccessError('User not authorized to update event')
     event = get_event(event_id)
-    if event is None:
-        raise InputError('No event in database with specified event_id')
     if event['crawled']:
         raise InputError('Cannot edit an event crawled from another source')
+    if not user_is_authorized(user_id, event_id):
+        raise AccessError('User not authorized to update event')
+    if event is None:
+        raise InputError('No event in database with specified event_id')
     if not event_is_valid(new_event):
         raise InputError('New event is not a valid event')
     db.events.update_one(
@@ -165,7 +166,7 @@ def event_delete(token, event_id):
 
 def is_crawled_event(event_id):
     event = db.events.find_one({ '_id': ObjectId(event_id)})
-    return 'crawled' in event.keys() and event['crawled']
+    return event['crawled']
 
 def event_authorize(token, event_id, to_be_added_email):
     if is_crawled_event(event_id):
