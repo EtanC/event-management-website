@@ -22,7 +22,7 @@ const RegisterPage = () => {
     const [headline, setHeadline] = useState('');
     const [occupation, setOccupation] = useState('');
     const [fun_fact, setFunFact] = useState('');
-    const [preference, setPreference] = useState('');
+    const [preference, setPreference] = useState([]);
 
     const navigate = useNavigate();
 
@@ -31,7 +31,7 @@ const RegisterPage = () => {
         setIsLoading(true);
 
         // Call handleRegister here or perform other form validation
-        // Note: no preferences yet
+        // Note: no preferences yeta
         await handleRegister(username, email, password, full_name, occupation, fun_fact, headline, setErrorMessage, setIsLoading, navigate)
     }
 

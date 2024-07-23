@@ -1,6 +1,5 @@
-// ProfileCreationForm.jsx
 import React from 'react';
-import { TextField, Button, Box, MenuItem, Select, InputLabel, FormControl, Avatar, Alert } from '@mui/material';
+import { TextField, Button, Box, MenuItem, Select, InputLabel, FormControl, Chip, OutlinedInput, Alert } from '@mui/material';
 
 const ProfileCreationForm = ({ fullName, setFullName, occupation, setOccupation, funFact, setFunFact, headline, setHeadline, preference, setPreference, handleProfileSubmit, handleBack, errorMessage }) => (
     <Box
@@ -47,18 +46,26 @@ const ProfileCreationForm = ({ fullName, setFullName, occupation, setOccupation,
             InputProps={{ sx: { borderRadius: '20px' } }}
         />
         <FormControl fullWidth>
-            <InputLabel>Preference</InputLabel>
+            <InputLabel>Preferences</InputLabel>
             <Select
+                multiple
                 value={preference}
                 onChange={(e) => setPreference(e.target.value)}
-                required
+                input={<OutlinedInput label="Preferences" />}
+                renderValue={(selected) => (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {selected.map((value) => (
+                            <Chip key={value} label={value} />
+                        ))}
+                    </Box>
+                )}
                 fullWidth
                 sx={{ borderRadius: '20px' }}
             >
-                <MenuItem value="Music">Music</MenuItem>
-                <MenuItem value="Sports">Sports</MenuItem>
-                <MenuItem value="Technology">Technology</MenuItem>
-                <MenuItem value="Art">Art</MenuItem>
+                <MenuItem value="Computer Science">Computer Science</MenuItem>
+                <MenuItem value="Artificial Intelligence">Artificial Intelligence</MenuItem>
+                <MenuItem value="IT">IT</MenuItem>
+                <MenuItem value="UX/UI">UX/UI</MenuItem>
             </Select>
         </FormControl>
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
@@ -67,9 +74,8 @@ const ProfileCreationForm = ({ fullName, setFullName, occupation, setOccupation,
             <Button type="submit" variant="contained" color="primary" fullWidth sx={{ fontWeight: 'bold', borderRadius: '20px' }}>
                 Submit
             </Button>
-
         </Box>
-        <Button>Skip for Now</Button>
+        <Button variant="text" fullWidth sx={{ mt: 2 }} onClick={handleProfileSubmit}>Skip for Now</Button>
     </Box>
 );
 
