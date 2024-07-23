@@ -148,14 +148,13 @@ def assert_users_equal(actual_users, expected_users):
         for key in expected.keys():
             assert actual[key] == expected[key]
 
-def test_user_get_all(reset, sample_user):
+def test_user_get_all(reset):
     response = auth_register_raw('user2', 'user2@user2.com', 'user2')
     admin = response.cookies.get('token')
     response = auth_register_raw('user3', 'user3@user3.com', 'user3')
     user3 = response.cookies.get('token')
     make_admin('user2')
     expected = [
-        { 'username': 'johncena', 'email': 'johnsmith123@outlook.com' },
         { 'username': 'user2', 'email': 'user2@user2.com' },
         { 'username': 'user3', 'email': 'user3@user3.com' },
     ]
