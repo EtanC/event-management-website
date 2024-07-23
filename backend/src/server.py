@@ -274,7 +274,7 @@ def user_get_all_route():
     token = request.cookies.get('token')
     if not token:
         raise AccessError('Authorization token is missing')
-    return json.dumps(user_get_all())
+    return json.dumps(user_get_all(token))
 
 @app.delete('/clear')
 @swag_from(clear_spec)
