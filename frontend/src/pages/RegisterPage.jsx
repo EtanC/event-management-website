@@ -37,7 +37,6 @@ const RegisterPage = () => {
 
     const handleNext = (event) => {
         event.preventDefault();
-        console.log('handle next)')
         if (password !== confirmPassword) {
             setErrorMessage("Passwords do not match");
             setIsLoading(false);
@@ -50,7 +49,6 @@ const RegisterPage = () => {
 
     const handleBack = (event) => {
         event.preventDefault();
-        console.log('handle back)')
         setStep(1)
     }
 
