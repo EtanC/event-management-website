@@ -186,8 +186,8 @@ def auth_register(username, email, password, full_name, occupation, fun_fact, he
 
     response = make_response(
         {'message': 'Registration successful', 'session_end_time': session_end_time})
-    response.set_cookie('token', token, httponly=True,
-                        secure=False, samesite='Lax', expires=session_end_time)
+    response.set_cookie('token', token, httponly=False,
+                        secure=True, samesite='Lax', expires=session_end_time)
     return response
 
 
