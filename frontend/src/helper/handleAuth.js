@@ -17,10 +17,10 @@ export const handleLogin = async (email, password, navigate, setErrorMessage, se
     }
 };
 
-export const handleRegister = async (email, password, name, setErrorMessage, setIsLoading, navigate) => {
+export const handleRegister = async (username, email, password, full_name, occupation, fun_fact, headline, setErrorMessage, setIsLoading, navigate) => {
     setIsLoading(true);
     try {
-        await axios.post('http://127.0.0.1:5000/auth/register', { email, password, username: name }, { withCredentials: true });
+        await axios.post('http://127.0.0.1:5000/auth/register', { username, email, password, full_name, occupation, fun_fact, headline }, { withCredentials: true });
         await manageSessionAndNavigate(navigate);
     } catch (error) {
         setErrorMessage(error.response ? error.response.data.description : error.message);
