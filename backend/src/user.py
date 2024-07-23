@@ -6,6 +6,7 @@ from backend.src.error import AccessError, InputError
 from bson import ObjectId
 from backend.src.events import stringify_id
 from backend.src.auth import decode_token
+from backend.src.admin import is_admin
 from email.message import EmailMessage
 import ssl
 from smtplib import SMTP_SSL, SMTPRecipientsRefused 
@@ -195,3 +196,11 @@ def user_manage_events(token):
         'creator': creator_events,
         'manager': managed_events
     }
+
+def user_get_all(token):
+    if not is_admin(token):
+        raise AccessError('Only admins may access user list')
+    return {
+        'users': db.users.find(),
+    }
+    
