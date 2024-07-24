@@ -5,11 +5,11 @@ const manageSessionAndNavigate = async (navigate) => {
     navigate('/'); // navigate to home
 };
 
-export const handleLogin = async (email, password, navigate, setErrorMessage, setIsLoading, setTokenExpired) => {
+export const handleLogin = async (email, password, navigate, setErrorMessage, setIsLoading, setTokenExpires) => {
     setIsLoading(true);
     try {
         const response = await axios.post('http://127.0.0.1:5000/auth/login', { email, password }, { withCredentials: true });
-        setTokenExpired(new Date(response.data['session_end_time']))
+        setTokenExpires(new Date(response.data['session_end_time']))
         await manageSessionAndNavigate(navigate);
     } catch (error) {
         setErrorMessage(error.response ? error.response.data.description : error.message);
@@ -18,10 +18,11 @@ export const handleLogin = async (email, password, navigate, setErrorMessage, se
     }
 };
 
-export const handleRegister = async (email, password, name, setErrorMessage, setIsLoading, navigate) => {
+export const handleRegister = async (email, password, name, setErrorMessage, setIsLoading, navigate, setTokenExpires) => {
     setIsLoading(true);
     try {
-        await axios.post('http://127.0.0.1:5000/auth/register', { email, password, username: name }, { withCredentials: true });
+        const response = await axios.post('http://127.0.0.1:5000/auth/register', { email, password, username: name }, { withCredentials: true });
+        setTokenExpires(new Date(response.data['session_end_time']))
         await manageSessionAndNavigate(navigate);
     } catch (error) {
         setErrorMessage(error.response ? error.response.data.description : error.message);
@@ -30,9 +31,14 @@ export const handleRegister = async (email, password, name, setErrorMessage, set
     }
 };
 
-export const handleLogout = async (navigate) => {
+export const handleLogout = async (navigate, setTokenExpires) => {
     try {
-        await axios.post('http://127.0.0.1:5000/auth/logout', {}, { withCredentials: true });
+        const response = await axios.post('http://127.0.0.1:5000/auth/logout', {}, { withCredentials: true });
+        if (response.status == 200) {
+            const expires = new Date()
+            console.log(expires)
+            setTokenExpires(expires)
+        }
         navigate('/');
     } catch (error) {
         console.error('Error logging out:', error.response ? error.response.data.description : error.message);
