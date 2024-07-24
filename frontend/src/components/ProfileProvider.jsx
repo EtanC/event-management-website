@@ -24,6 +24,7 @@ export const ProfileProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
+        console.log("here")
     };
 
     useEffect(() => {
@@ -42,7 +43,7 @@ export const ProfileProvider = ({ children }) => {
         const intervalId = setInterval(checkAuth, 1000); // Check every second
 
         return () => clearInterval(intervalId); // Cleanup interval on unmount
-    }, [isAuthenticated]);
+    }, [isAuthenticated, tokenExpires]);
 
     return (
         <ProfileContext.Provider value={{ profileData, loading, isAuthenticated, setProfileData, tokenExpires, setTokenExpires }}>
