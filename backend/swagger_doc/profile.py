@@ -136,6 +136,7 @@ profile_update_password_spec = {
             'description': 'Incorrect old password or passwords don\'t match'
         }
     }
+<<<<<<< HEAD
 }
 
 profile_update_preferences_spec = {
@@ -183,4 +184,6 @@ profile_get_preferences_spec = {
             'description': 'Invalid Token'
         }
     }
+=======
+>>>>>>> cd1f0b43dac498fb691e7dc6882480f5b03b7ab4
 }
