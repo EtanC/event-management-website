@@ -9,15 +9,14 @@ import logging
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
-from config import config
+from backend.src.database import db
+from backend.src.config import config
 from easychair_scraper.ranking import Ranking, NameProcessor
+import random
 
 class EasychairScraperPipeline(object):
 
     def __init__(self):
-        client = MongoClient('mongodb+srv://comp3900:wowilovecompsci123@comp3900-database.dkmw7l9.mongodb.net/?retryWrites=true&w=majority&appName=COMP3900-Database')
-        db = client[config['DATABASE_NAME']]
-        self.db = db
         self.ranker = Ranking(NameProcessor())
         self.ranker.icore_to_ranking_map('./easychair_scraper/ranking_data/CORE.csv')
 
@@ -26,11 +25,11 @@ class EasychairScraperPipeline(object):
         # TODO:
         # - Case sensitivity
         # - Instead of dropping item, update event details, maybe they changed
-        if self.db.events.find_one({"name": item.get("name")}) is not None:
+        if db.events.find_one({"name": item.get("name")}) is not None:
             logging.debug("Duplicate item found: {0}".format(item.get("name")), extra={'spider': spider})
             raise DropItem("Duplicate item found: {0}".format(item.get("name")))
         item['ranking'] = self.ranker.rank_event(item['name'])
-        self.db.events.insert_one(dict(item))
+        db.events.insert_one(dict(item))
         logging.debug("Event added to MongoDB database!", extra={'spider': spider})
         
         return item
@@ -40,4 +39,12 @@ class RemoveInvalidPipeline(object):
         for data in item:
             if not data:
                 raise DropItem("Missing {0}!".format(data))
+        return item
+
+class RandomImagePipeline(object):
+    def __init__(self):
+        self.max = config['RANDOM_IMAGES_END_INDEX']
+        self.min = config['RANDOM_IMAGES_START_INDEX']
+    def process_item(self, item, spider):
+        item['image'] = random.randint(self.min, self.max)
         return item

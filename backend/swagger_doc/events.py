@@ -44,6 +44,11 @@ events_get_all_spec = {
 
 event_create_spec = {
     'tags': ['Events'],
+    'security': [
+        {
+            "bearerAuth": []
+        }
+    ],
     'parameters': [
         {
             'name': 'Body',
@@ -60,14 +65,20 @@ event_create_spec = {
                 'start_date': {
                     '$ref': '#/definitions/event_start_date'
                 },
-                'deadline': {
-                    '$ref': '#/definitions/event_deadline'
+                'end_date': {
+                    '$ref': '#/definitions/event_end_date'
                 },
-                'details': {
-                    '$ref': '#/definitions/event_details'
+                'tags': {
+                    '$ref': '#/definitions/event_tags'
                 },
-                'details_link': {
-                    '$ref': '#/definitions/event_details_link'
+                'description': {
+                    '$ref': '#/definitions/event_description'
+                },
+                'registration_link': {
+                    '$ref': '#/definitions/event_registration_link'
+                },
+                'image': {
+                    '$ref': '#/definitions/event_image'
                 },
             }
         }
@@ -90,11 +101,32 @@ event_create_spec = {
     }
 }
 
-event_update_spec = {
+events_get_page_spec = {
     'tags': ['Events'],
     'parameters': [
         {
-            'name': 'Event Id',
+            'name': 'page_number',
+            'in': 'path',
+            'type': 'string',
+            'required': 'true'
+        }
+    ],
+    'responses': {
+        200: {
+            'description': 'Successfully retrieved events',
+        },
+    }
+}
+event_update_spec = {
+    'tags': ['Events'],
+    'security': [
+        {
+            "bearerAuth": []
+        }
+    ],
+    'parameters': [
+        {
+            'name': 'event_id',
             'in': 'path',
             'type': 'string',
             'required': 'true'
@@ -139,9 +171,14 @@ event_update_spec = {
 
 event_delete_spec = {
     'tags': ['Events'],
+    'security': [
+        {
+            "bearerAuth": []
+        }
+    ],
     'parameters': [
         {
-            'name': 'Event Id',
+            'name': 'event_id',
             'in': 'path',
             'type': 'string',
             'required': 'true'
@@ -157,6 +194,38 @@ event_delete_spec = {
     }
 }
 
+event_authorize_spec = {
+    'tags': ['Events'],
+    'security': [
+        {
+            "bearerAuth": []
+        }
+    ],
+    'parameters': [
+        {
+            'name': 'Body',
+            'in': 'body',
+            'type': 'object',
+            'required': 'true',
+            'properties': {
+                'event_id': {
+                    '$ref': '#/definitions/event_id',
+                },
+                'email': {
+                    '$ref': '#/definitions/email',
+                }
+            }
+        }
+    ],
+    'responses': {
+        200: {
+            'description': 'Sucessfully authorized user to manage this event'
+        },
+        403: {
+            'description': 'Invalid token or user is not creator'
+        }
+    }
+}
 events_ai_description_spec = {
     'tags': ['Events'],
     'parameters': [],

@@ -1,25 +1,19 @@
 from backend.src.error import AccessError, InputError
-from backend.src.database import db, fs
+from backend.src.database import db
 from backend.src.config import config
-from backend.src.auth import hash
+from backend.src.auth import hash, decode_token
 from bson import ObjectId
 import jwt
 import hashlib
 import base64
 import string
+from flask import request, make_response
 
 # NOTE: keeping contact info as just email for now until we hear more
 
 
 def get_profile_details(token):
-    try:
-        token = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
-    except jwt.ExpiredSignatureError:
-        raise AccessError('Token has expired')
-    except jwt.InvalidTokenError:
-        raise AccessError('Invalid token')
-
-    user_id = token['user_id']
+    user_id = decode_token(token)
 
     # Check token validity
     user = db.users.find_one({"_id": ObjectId(user_id)})
@@ -28,7 +22,7 @@ def get_profile_details(token):
 
     file_id = user.get('profile_pic_id')
     if file_id:
-        file_data = fs.get(file_id).read()
+        file_data = db.fs().get(file_id).read()
         encoded_image = base64.b64encode(file_data).decode(
             'utf-8')  # Encode and convert to string
     else:
@@ -48,52 +42,40 @@ def get_profile_details(token):
 
 
 def update_profile_details(token, username, description, full_name, job_title, fun_fact, profile_pic):
-    try:
-        token = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
-    except jwt.ExpiredSignatureError:
-        raise AccessError('Token has expired')
-    except jwt.InvalidTokenError:
-        raise AccessError('Invalid token')
+	user_id = decode_token(token)
 
-    user_id = token['user_id']
+	filter = {'_id': ObjectId(user_id)}
 
-    filter = {'_id': ObjectId(user_id)}
+	user = db.users.find_one({"_id": ObjectId(user_id)})
+	changed_values = {"$set": {}}
 
-    user = db.users.find_one({"_id": ObjectId(user_id)})
-    if not user:
-        raise AccessError('User not found')
-    changed_values = {"$set": {}}
+	if username:
+		if db.users.find_one({'username': username}) is not None:
+			raise InputError('Username is already taken')
+		else:
+			changed_values['$set']['username'] = username
+	if description:
+		changed_values['$set']['description'] = description
+	if full_name:
+		changed_values['$set']['full_name'] = full_name
+	if job_title:
+		changed_values['$set']['job_title'] = job_title
+	if fun_fact:
+		changed_values['$set']['fun_fact'] = fun_fact
+	if profile_pic:
+		file_id = db.fs().put(profile_pic, filename=f"profile_pic_{user_id}")
+		if 'profile_pic_id' in user:
+			db.fs().delete(user['profile_pic_id'])
+		changed_values['$set']['profile_pic_id'] = file_id
 
-    if username:
-        changed_values['$set']['username'] = username
-    if description:
-        changed_values['$set']['description'] = description
-    if full_name:
-        changed_values['$set']['full_name'] = full_name
-    if job_title:
-        changed_values['$set']['job_title'] = job_title
-    if fun_fact:
-        changed_values['$set']['fun_fact'] = fun_fact
-    if profile_pic:
-        file_id = fs.put(profile_pic, filename=f"profile_pic_{user_id}")
-        if 'profile_pic_id' in user:
-            fs.delete(user['profile_pic_id'])
-        changed_values['$set']['profile_pic_id'] = file_id
-
-    result = db.users.update_one(filter, changed_values)
-    if result.matched_count == 0:
-        raise AccessError('User ID not found on database')
-
+	result = db.users.update_one(filter, changed_values)
+	if result.matched_count == 0:
+		raise AccessError('User ID not found on database')
+	response = make_response({ 'message': 'Successful Details Change' })
+	return response
 
 def update_profile_password(token, old_password, new_password, re_password):
-    try:
-        token = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
-    except jwt.ExpiredSignatureError:
-        raise AccessError('Token has expired')
-    except jwt.InvalidTokenError:
-        raise AccessError('Invalid token')
-
-    user_id = token['user_id']
+    user_id = decode_token(token)
 
     filter = {'_id': ObjectId(user_id)}
 
@@ -129,6 +111,8 @@ def update_profile_password(token, old_password, new_password, re_password):
     result = db.users.update_one(filter, changed_values)
     if result.matched_count == 0:
         raise AccessError('User ID not found on database')
+    response = make_response({ 'message': 'Successful Password Change' })
+    return response
 
 def update_preferences(token, new_preferences):
     # preferences set as a list of topics the user may be interested in
@@ -151,6 +135,8 @@ def update_preferences(token, new_preferences):
 	result = db.users.update_one(filter, changed_values)
 	if result.matched_count == 0:
 		raise AccessError('User ID not found on database')
+	response = make_response({ 'message': 'Successful Preferences Change' })
+	return response
 
 def get_user_preferences(token):
     #  split from profile details for now, will see if it needs to be integrated together later
