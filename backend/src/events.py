@@ -1,10 +1,12 @@
 import sys
+
+from flask import jsonify
 from backend.src.database import clear, db
 import subprocess
 import requests
 import os
 from dotenv import load_dotenv
-import datetime
+from datetime import datetime
 from backend.src.error import InputError, AccessError
 from backend.src.auth import decode_token
 from backend.src.config import config
@@ -21,6 +23,56 @@ def events_crawl():
 def stringify_id(x):
     x['_id'] = str(x['_id'])
     return x
+
+def events_get_page(page_number, name, location, date):
+    page_number = int(page_number)
+    PAGE_SIZE = 12
+    
+    match_stage = {}
+    if name:
+      match_stage['name'] = {"$regex": name, "$options": "i"}
+    if location:
+      match_stage["location"] = location 
+    if date:
+        try:
+            date_obj = datetime.strptime(date, "%d %B %Y")
+            match_stage["converted_start_date"] = {"$gt": date_obj}
+        except ValueError:
+            return jsonify({"error": "Invalid date format. Use 'DD MMMM YYYY'."}), 400
+    # Create events date format isn't consistent with the rest of the webcrawlers       
+    pipeline = [
+         {"$addFields": {
+            "converted_start_date": {
+                "$cond": {
+                    "if": {"$regexMatch": {"input": "$start_date", "regex": "^[0-9]{1,2} [A-Za-z]+ [0-9]{4}$"}},
+                    "then": {"$dateFromString": {"dateString": "$start_date", "format": "%d %B %Y"}},
+                    "else": {"$dateFromString": {"dateString": "$start_date", "format": "%b %d, %Y"}}
+                }
+            }
+        }},
+        {"$match": match_stage},
+        {"$facet": {
+            "totalCount": [{"$count": "count"}],
+            "events": [
+                {"$skip": (page_number - 1) * PAGE_SIZE},
+                {"$limit": PAGE_SIZE}
+            ]
+        }}
+    ]
+    
+    result = list(db.events.aggregate(pipeline))
+    
+    total_count = result[0]['totalCount'][0]['count'] if result[0]['totalCount'] else 0
+    page_count = (total_count + PAGE_SIZE - 1) // PAGE_SIZE
+    
+    events = result[0]['events']
+    events = list(map(stringify_id, events))
+    
+    return {
+        'events': events,
+        'page_count': page_count
+    }
+
 
 def events_get_all():
     return {
