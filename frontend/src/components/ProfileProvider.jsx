@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import useLocalStorageTokenExpires from '../hooks/useLocalStorageTokenExpires'
 
 const ProfileContext = createContext();
 
@@ -9,7 +10,8 @@ export const useProfile = () => useContext(ProfileContext);
 export const ProfileProvider = ({ children }) => {
     const [profileData, setProfileData] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [isAuthenticated, setIsAuthenticated] = useState(!!Cookies.get('token'));
+    const [tokenExpires, setTokenExpires] = useLocalStorageTokenExpires('tokenExpires', new Date());
+    const [isAuthenticated, setIsAuthenticated] = useState(tokenExpires ? new Date().getTime() < tokenExpires.getTime() : false);
 
     const fetchProfileData = async () => {
         setLoading(true);
@@ -26,10 +28,8 @@ export const ProfileProvider = ({ children }) => {
 
     useEffect(() => {
         const checkAuth = () => {
-            const tokenExists = !!Cookies.get('token');
-            if (tokenExists !== isAuthenticated) {
-                setIsAuthenticated(tokenExists);
-            }
+            const tokenNotExpired = new Date().getTime() < tokenExpires.getTime()
+            if (tokenNotExpired !== isAuthenticated) setIsAuthenticated(tokenNotExpired);
         };
 
         if (isAuthenticated) {
@@ -45,7 +45,7 @@ export const ProfileProvider = ({ children }) => {
     }, [isAuthenticated]);
 
     return (
-        <ProfileContext.Provider value={{ profileData, loading, isAuthenticated, setProfileData }}>
+        <ProfileContext.Provider value={{ profileData, loading, isAuthenticated, setProfileData, tokenExpires, setTokenExpires }}>
             {children}
         </ProfileContext.Provider>
     );
