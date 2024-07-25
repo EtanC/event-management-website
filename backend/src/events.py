@@ -110,10 +110,14 @@ def event_create(token, event):
 def get_event(event_id):
     return db.events.find_one({'_id': ObjectId(event_id)})
 
+def is_admin(user_id):
+    return db.users.find_one({"_id": ObjectId(user_id)}).get('isAdmin')
 
 def user_is_authorized(user_id, event_id):
     event = get_event(event_id)
     if user_id in event['authorized_users'] or user_id == event['creator']:
+        return True
+    if is_admin(user_id):
         return True
     return False
 
@@ -143,16 +147,14 @@ def event_update(token, event_id, new_event):
     return {}
 
 
-def user_is_creator(user_id, event_id):
-    print(user_id)
+def user_is_creator_or_admin_priviledges(user_id, event_id):
     creator = db['events'].find_one({'_id': ObjectId(event_id)})['creator']
-    print(creator)
-    return user_id == creator
+    return user_id == creator or is_admin(user_id)
 
 
 def event_delete(token, event_id):
     user_id = decode_token(token)
-    if not user_is_creator(user_id, event_id):
+    if not user_is_creator_or_admin_priviledges(user_id, event_id):
         raise AccessError('User not authorized to delete event')
     event = get_event(event_id)
     if event is None:
@@ -163,7 +165,7 @@ def event_delete(token, event_id):
 
 def event_authorize(token, event_id, to_be_added_email):
     user_id = decode_token(token)
-    if not user_is_creator(user_id, event_id):
+    if not user_is_creator_or_admin_priviledges(user_id, event_id):
         raise AccessError(
             'User is not authorized to allow other people to manage event')
     # Add user to authorized list
