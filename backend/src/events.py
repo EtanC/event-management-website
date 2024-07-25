@@ -35,7 +35,7 @@ def events_get_page(page_number, name, location, date):
       match_stage["location"] = location 
     if date:
         try:
-            date_obj = datetime.strptime(date, "%d %B %Y")
+            date_obj = datetime.strptime(date, "%Y-%m-%d")
             match_stage["converted_start_date"] = {"$gt": date_obj}
         except ValueError:
             return jsonify({"error": "Invalid date format. Use 'DD MMMM YYYY'."}), 400

@@ -1,14 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchEventsData } from '../helper/handleEventData';
 import filterEvents from '../helper/filterEvent';
 import SearchBar from './SearchBar';
 import EventCard from './EventCard';
 import { Box, CircularProgress, Typography, Grid, IconButton, Button } from '@mui/material';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import fetchEventsData from '../helper/fetchEventData';
 
-const ITEMS_PER_PAGE = 12; // customise this
 
 function HomePageEventCardSection() {
     const navigate = useNavigate();
@@ -16,7 +15,6 @@ function HomePageEventCardSection() {
     const [location, setLocation] = useState('');
     const [date, setDate] = useState('');
     const [events, setEvents] = useState([]);
-    const [filteredEvents, setFilteredEvents] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [locations, setLocations] = useState([]);
@@ -25,22 +23,37 @@ function HomePageEventCardSection() {
     const [pageCount, setPageCount] = useState(0);
     const [isSticky, setIsSticky] = useState(false); // for filter bar to not disappear from sight
     const [selectedEvent, setSelectedEvent] = useState(null);
+    // Debounce makes it so that we aren't spamming API calls everytime the search changes
+    // Has a 300 ms delay for search
+    function useDebounce(callback, delay) {
+      const [timeoutId, setTimeoutId] = useState();
+  
+      useEffect(() => {
+          return () => {
+              clearTimeout(timeoutId);
+          };
+      }, [timeoutId]);
+  
+      function debouncedCallback(...args) {
+          clearTimeout(timeoutId);
+          setTimeoutId(setTimeout(() => {
+              callback(...args);
+          }, delay));
+      }
+  
+      return debouncedCallback;
+    }
+
+    const debouncedFetchEventsData = useDebounce(fetchEventsData, 200);
 
     useEffect(() => {
-        fetchEventsData(setEvents, setLocations, setError, setIsLoading);
-    }, []);
-
-    useEffect(() => {
-        const result = filterEvents(events, eventType, location, date);
-        setTotalFilteredEvents(result.length);
-        setPageCount(Math.ceil(result.length / ITEMS_PER_PAGE));
-        setFilteredEvents(result);
-    }, [eventType, location, date, events]);
-
-    // this hook make sure user gets transported to page 1 when any search happens
-    useEffect(() => {
-        setPage(1);
+      setIsLoading(true)
+      debouncedFetchEventsData(setEvents, setLocations, setError, setIsLoading, page, setPageCount, eventType, location, date);
     }, [eventType, location, date]); 
+
+    useEffect(() => {
+      fetchEventsData(setEvents, setLocations, setError, setIsLoading, page, setPageCount, eventType, location, date)
+    }, [page])
 
     // this is to track where the filter bar is, when hit the nav bar then it stays
     useEffect(() => {
@@ -75,33 +88,7 @@ function HomePageEventCardSection() {
     const handlePreviousPage = () => {
         setPage(prev => Math.max(prev - 1, 1));
     };
-
-    // function to make sure theres only 5 buttons for pagination at a time
-    const renderPaginationButtons = () => {
-        const paginationButtons = [];
-        const startPage = Math.max(1, page - 2);
-        const endPage = Math.min(pageCount, startPage + 4);
-
-        for (let i = startPage; i <= endPage; i++) {
-            paginationButtons.push(
-                <Button
-                    key={i}
-                    variant={page === i ? "contained" : "outlined"}
-                    onClick={() => setPage(i)}
-                    sx={{
-                        border: 'none',
-                        minWidth: '30px', 
-                        padding: '0 8px', 
-                    }}
-                >
-                    {i}
-                </Button>
-            );
-        }
-
-        return paginationButtons;
-    };
-
+    console.log(events)
     return (
         <Box sx={{ backgroundColor: '#f5f5f5', padding: '20px 0' }}>
             <SearchBar
@@ -127,7 +114,7 @@ function HomePageEventCardSection() {
                         {error}
                     </Typography>
                 </Box>
-            ) : totalFilteredEvents === 0 ? (
+            ) : events.length === 0 ? (
                 <Box display="flex" justifyContent="center" alignItems="center" height="30vh">
                     <Typography variant="h6" color="textSecondary">
                         No search results
@@ -136,7 +123,7 @@ function HomePageEventCardSection() {
             ) : (
                 <Box sx={{ padding: 4 }}>
                     <Grid container spacing={2}>
-                        {filteredEvents.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE).map((event, index) => (
+                        {events.map((event, index) => (
                             <EventCard 
                                 key={index} 
                                 event={event} 
@@ -148,17 +135,29 @@ function HomePageEventCardSection() {
                 </Box>
             )}
             <Box display="flex" justifyContent="center" mt={2}>
-                {page > 1 && (
-                    <IconButton onClick={handlePreviousPage}>
-                        <KeyboardArrowLeftIcon />
-                    </IconButton>
-                )}
-                {renderPaginationButtons()}
-                {page < pageCount && (
-                    <IconButton onClick={handleNextPage}>
-                        <KeyboardArrowRightIcon />
-                    </IconButton>
-                )}
+              <div style={{display: 'flex', width: '100%',justifyContent: 'center'}}>
+                  {page != 1 && <IconButton onClick={handlePreviousPage}>
+                      <KeyboardArrowLeftIcon/>
+                  </IconButton>}
+                  {page > 2 && <Button onClick={() => setPage(page - 2)}>
+                      {page - 2}
+                  </Button>}
+                  {page > 1 && <Button onClick={() => setPage(page - 1)}>
+                      {page - 1}
+                  </Button>}
+                  <Button variant="contained">
+                      {page}
+                  </Button>
+                  {(page + 1 <= pageCount) && <Button onClick={() => setPage(page + 1)}>
+                      {page + 1}
+                  </Button>}
+                  {(page + 2 <= pageCount) && <Button onClick={() => setPage(page + 2)}>
+                      {page + 2}
+                  </Button>}
+                  {(page + 1 <= pageCount) && <IconButton onClick={handleNextPage}>
+                      <KeyboardArrowRightIcon/>
+                  </IconButton>}
+              </div>
             </Box>
             <style> {/*style for filter bar so it doesnt disappear from sight */}
 {`
