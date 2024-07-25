@@ -7,7 +7,9 @@ from dotenv import load_dotenv
 import datetime
 from backend.src.error import InputError, AccessError
 from backend.src.auth import decode_token
+from backend.src.config import config
 from bson import ObjectId
+import random
 
 
 def events_crawl():
@@ -19,23 +21,6 @@ def events_crawl():
 def stringify_id(x):
     x['_id'] = str(x['_id'])
     return x
-
-
-def events_get_page(page_number):
-    page_number = int(page_number)
-    PAGE_SIZE = 12
-    total_events = db.events.count_documents({})
-    page_count = (total_events + PAGE_SIZE - 1) // PAGE_SIZE
-    pipeline = [
-        {"$match": {}},
-        {"$skip": (page_number-1) * PAGE_SIZE},
-        {"$limit": PAGE_SIZE}
-    ]
-    return {
-        'events': list(map(stringify_id, db.events.aggregate(pipeline))),
-        'page_count': page_count
-    }
-
 
 def events_get_all():
     return {
@@ -106,10 +91,10 @@ def event_create(token, event):
         raise InputError('Event already exists')
     if not event_is_valid(event):
         raise InputError('Invalid event')
-    user = db['users'].find({'_id': user_id})
     event['ranking'] = 0
     event['authorized_users'] = []
     event['creator'] = user_id
+    event['image'] = random.randint(config['RANDOM_IMAGES_START_INDEX'], config['RANDOM_IMAGES_END_INDEX'])
     result = db.events.insert_one(event)
     db['users'].update_one(
         {'_id': ObjectId(user_id)},
@@ -125,10 +110,14 @@ def event_create(token, event):
 def get_event(event_id):
     return db.events.find_one({'_id': ObjectId(event_id)})
 
+def is_admin(user_id):
+    return db.users.find_one({"_id": ObjectId(user_id)}).get('isAdmin')
 
 def user_is_authorized(user_id, event_id):
     event = get_event(event_id)
     if user_id in event['authorized_users'] or user_id == event['creator']:
+        return True
+    if is_admin(user_id):
         return True
     return False
 
@@ -158,16 +147,14 @@ def event_update(token, event_id, new_event):
     return {}
 
 
-def user_is_creator(user_id, event_id):
-    print(user_id)
+def user_is_creator_or_admin_priviledges(user_id, event_id):
     creator = db['events'].find_one({'_id': ObjectId(event_id)})['creator']
-    print(creator)
-    return user_id == creator
+    return user_id == creator or is_admin(user_id)
 
 
 def event_delete(token, event_id):
     user_id = decode_token(token)
-    if not user_is_creator(user_id, event_id):
+    if not user_is_creator_or_admin_priviledges(user_id, event_id):
         raise AccessError('User not authorized to delete event')
     event = get_event(event_id)
     if event is None:
@@ -178,7 +165,7 @@ def event_delete(token, event_id):
 
 def event_authorize(token, event_id, to_be_added_email):
     user_id = decode_token(token)
-    if not user_is_creator(user_id, event_id):
+    if not user_is_creator_or_admin_priviledges(user_id, event_id):
         raise AccessError(
             'User is not authorized to allow other people to manage event')
     # Add user to authorized list

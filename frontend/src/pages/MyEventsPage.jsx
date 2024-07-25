@@ -1,141 +1,136 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Container, Card, Typography, Grid, CircularProgress } from '@mui/material';
-import { fetchUserEvents, fetchUserRegisteredEvents } from '../helper/handleEventData';
-import {
-    handleDeleteClick,
-    handleDeleteCancel,
-    handleDeleteConfirm,
-    handleEditClick,
-    handleEditClose,
-    handleAddManagerClick,
-    handleAddManagerClose
-} from '../helper/handleEditDeleteEvent';
-import EventCard from '../components/EventCard';
-import AlertPopup from '../components/AlertPopup';
-import { useNavigate } from 'react-router-dom';
-import EventModal from '../components/EventModal';
-import EventManagerModal from '../components/EventManagerModal';
+import { useState, useEffect } from 'react';
+import { Box, Container, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import CalendarSidebar from '../components/CalendarSideBar';
+import ViewRegisteredEventPopUp from '../components/calendarMainComponents/ViewRegisteredEventPopUp';
+import CalendarContainer from '../components/calendarMainComponents/CalendarContainer';
+import sortEventRanking from '../helper/sortEventRanking';
+import fetchRegisteredEvents from '../helper/fetchRegisteredEvents';
+import '../styles/UserCalendar.css';
+import theme from '../styles/Theme';
+import { ThemeProvider } from '@mui/material/styles';
+import MyEventsViewComponent from '../components/calendarMainComponents/MyEventsViewComponent'; // Create this component
+import { fetchUserEvents } from '../helper/handleEventData';
 
-function MyEvents() {
-    const navigate = useNavigate();
+const MyEventsPage = () => {
     const [events, setEvents] = useState([]);
-    const [registeredEvents, setRegisteredEvents] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [eventToDelete, setEventToDelete] = useState(null);
-    const [openEditEvent, setOpenEditEvent] = useState(false);
-    const [openAddManager, setOpenAddManager] = useState(false);
-    const [eventToEdit, setEventToEdit] = useState(null);
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [filteredEvents, setFilteredEvents] = useState([]);
+    const [selectedRanking, setSelectedRanking] = useState([]);
+    const [view, setView] = useState('calendar'); // new state to manage view
 
-    const fetchEvents = async () => {
-        try {
-            setLoading(true);
-            const eventData = await fetchUserEvents();
-            setEvents(eventData || []);
-            const registeredEventData = await fetchUserRegisteredEvents();
-            setRegisteredEvents(registeredEventData || []);
-            setLoading(false);
-        } catch (error) {
-            console.error('Failed to fetch events:', error);
-            setError('Failed to load events. Please try again later.');
-            setLoading(false);
-            setEvents([]);
-            setRegisteredEvents([]);
-        }
+    useEffect(() => {
+        fetchRegisteredEvents((fetchedEvents) => {
+            setEvents(fetchedEvents);
+            setFilteredEvents(fetchedEvents);
+            setIsLoading(false);
+        }, setError, setIsLoading);
+    }, []);
+
+    const refreshEvents = () => {
+        fetchRegisteredEvents((fetchedEvents) => {
+            setEvents(fetchedEvents);
+            setFilteredEvents(fetchedEvents);
+            setIsLoading(false);
+        }, setError, setIsLoading);
     };
 
     useEffect(() => {
-        fetchEvents();
-    }, []);
+        const rankingMap = {
+            'A+': 4,
+            'A': 3,
+            'B': 2,
+            'C': 1,
+            'Unspecified': 0,
+        };
 
-    const handleCardClick = (event) => {
-        navigate(`/event/${event._id}`, { state: { event } });
+        const filterByRanking = (events, ranking) => {
+            if (!Array.isArray(events)) { // return empty when nothing is found
+                return [];
+            }
+
+            if (ranking.length === 0) return events; // return all if no Ranking selected
+
+            const RankingValues = ranking.map(Ranking => rankingMap[Ranking]);
+            return events.filter(event => RankingValues.includes(event.ranking));
+        };
+
+        const filtered = filterByRanking(events, selectedRanking);
+        setFilteredEvents(filtered);
+    }, [events, selectedRanking]);
+
+    const calendarEvents = sortEventRanking(filteredEvents);
+
+    const handleEventClick = (event) => {
+        setSelectedEvent(event.resource);
     };
 
-    const renderEventCards = (events, isCreatedEvents, isManagedEvents) => {
-        if (loading) {
-            return (
-                <Box display="flex" justifyContent="center" alignItems="center" height="100%">
-                    <CircularProgress />
-                </Box>
-            );
-        }
-        if (error) return <Typography color="error">{error}</Typography>;
-        if (!events || events.length === 0) return <Typography>No events found.</Typography>;
+    const handleSearchResultClick = (event) => {
+        setSelectedEvent(event);
+    };
 
-        return (
-            <Grid container spacing={2}>
-                {events.map((event, index) => (
-                    <EventCard
-                        key={event._id || index}
-                        event={event}
-                        handleCardClick={handleCardClick}
-                        isCreatedEvent={isCreatedEvents}
-                        isManagedEvent={isManagedEvents}
-                        onEditEvent={() => handleEditClick(event, setEventToEdit, setOpenEditEvent)}
-                        onAddEventManager={() => handleAddManagerClick(event, setEventToEdit, setOpenAddManager)}
-                        onDeleteEvent={() => handleDeleteClick(event, setEventToDelete, setDeleteDialogOpen)}
-                    />
-                ))}
-            </Grid>
-        );
+    const handleClosePopUp = () => {
+        setSelectedEvent(null);
+        refreshEvents();
+    };
+
+    const handleRankingChange = (ranking) => {
+        setSelectedRanking(ranking);
     };
 
     return (
         <>
-            <AlertPopup
-                open={deleteDialogOpen}
-                onClose={() => handleDeleteCancel(setDeleteDialogOpen, setEventToDelete)}
-                onConfirm={() => handleDeleteConfirm(eventToDelete, setDeleteDialogOpen, setEventToDelete, fetchEvents)}
-                title={'Confirm Delete'}
-                content={'Are you sure you want to delete this event? This action cannot be undone.'}
-            />
-            <EventModal open={openEditEvent} handleClose={() => handleEditClose(setOpenEditEvent, fetchEvents)} headerText={'Edit Event'} event={eventToEdit} />
-            <EventManagerModal open={openAddManager} handleClose={() => handleAddManagerClose(setOpenAddManager, fetchEvents)} event={eventToEdit} />
-            <Box sx={{ backgroundColor: '#f5f5f5', paddingTop: '40px', minHeight: '90vh' }}>
-                <Container maxWidth="lg">
-                    <Typography variant="h4" sx={{ marginBottom: '40px' }}>My Events</Typography>
-                    <Card sx={styles.flexCard}>
-                        <Typography variant="h6" component="h2" sx={styles.headerFont}>My Created Events</Typography>
-                        {renderEventCards(events.createdEvents, true, false)}
-                    </Card>
-                    <Card sx={styles.flexCard}>
-                        <Typography variant="h6" component="h2" sx={styles.headerFont}>My Managed Events</Typography>
-                        {renderEventCards(events.managedEvents, false, true)}
-                    </Card>
-                    <Card sx={styles.flexCard}>
-                        <Typography variant="h6" component="h2" sx={styles.headerFont}>My Registered Events</Typography>
-                        {renderEventCards(registeredEvents, false, false)}
-                    </Card>
+            <ThemeProvider theme={theme}></ThemeProvider>
+            <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+                <CalendarSidebar
+                    events={Array.isArray(events) ? events : []}
+                    onSearchResultClick={handleSearchResultClick}
+                    onRankingChange={handleRankingChange}
+                    refreshEvents={refreshEvents}
+                />
+                <Container>
+                    <ToggleButtonGroup
+                        value={view}
+                        exclusive
+                        onChange={(event, newView) => {
+                            if (newView !== null) {
+                                setView(newView);
+                            }
+                        }}
+                        sx={{ width: '100%', marginBottom: '20px' }}
+                    >
+                        <ToggleButton value="calendar" sx={{ flex: 1 }}>
+                            Calendar
+                        </ToggleButton>
+                        <ToggleButton value="myEvents" sx={{ flex: 1 }}>
+                            My Events
+                        </ToggleButton>
+                    </ToggleButtonGroup>
+
+                    {view === 'calendar' ? (
+                        <CalendarContainer
+                            isLoading={isLoading}
+                            error={error}
+                            calendarEvents={calendarEvents}
+                            handleEventClick={handleEventClick}
+                        />
+                    ) : (
+                        <MyEventsViewComponent
+                            selectedRanking={selectedRanking}
+                            refreshEvents={refreshEvents}
+                        />
+                    )}
                 </Container>
             </Box>
+
+            <ViewRegisteredEventPopUp
+                selectedEvent={selectedEvent}
+                handleClosePopUp={handleClosePopUp}
+                refreshEvents={refreshEvents}
+            />
         </>
     );
-}
-
-const styles = {
-    flexbox: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column'
-    },
-    flexCard: {
-        marginBottom: '50px',
-        borderRadius: '10px',
-        padding: '30px',
-        paddingBottom: '50px',
-    },
-    headerFont: {
-        fontWeight: 'bold',
-        fontSize: '18px',
-        marginBottom: '40px',
-    },
-    button: {
-        borderRadius: '25px',
-        textTransform: 'none'
-    },
 };
 
-export default MyEvents;
+export default MyEventsPage;

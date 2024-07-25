@@ -90,10 +90,8 @@ definitions = {
     "securityDefinitions": {
         "bearerAuth": {
             "type": "apiKey",
-            "scheme": "bearer",
-            'in': 'header',
-            "bearerFormat": "JWT",
-            'name': 'Authorization',
+            'in': 'cookie',
+            'name': 'token',
         }
     }
 }

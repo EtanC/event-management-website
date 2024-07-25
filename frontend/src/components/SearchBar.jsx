@@ -5,15 +5,30 @@ import { TextField, Autocomplete, Box } from '@mui/material';
 
 const inputStyles = {
     borderRadius: '15px',
-    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
-    '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
-    '& .MuiInputBase-input': { color: 'white' },
-    '& .MuiFormLabel-root': { color: 'white' },
-    '& .MuiInputAdornment-root .MuiSvgIcon-root': { color: 'white' }
+    '& .MuiOutlinedInput-notchedOutline': { borderColor: '#B2B6B6' },
+    '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#B2B6B6' },
+    '& .MuiInputBase-input': { color: '#B2B6B6' },
+    '& .MuiFormLabel-root': { color: '#B2B6B6' },
+    '& .MuiInputAdornment-root .MuiSvgIcon-root': { color: '#B2B6B6' }
 };
 
-const SearchBar = ({ labelOne, labelTwo, eventType, setEventType, location, setLocation, locations, date, setDate }) => (
-    <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '40px', backgroundColor: '#1E4830', padding: '20px', borderRadius: '15px' }}>
+
+const SearchBar = ({ labelOne, labelTwo, eventType, setEventType, location, setLocation, locations, date, setDate, isSticky }) => (
+    <Box className={`search-bar ${isSticky ? 'sticky' : ''}`} 
+        sx={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            backgroundColor: '#1E4830', 
+            padding: '20px', 
+            borderRadius: '15px', 
+            position: 'absolute', 
+            top: '450px', 
+            left: '50%', 
+            transform: 'translateX(-50%)', 
+            zIndex: 2, 
+            width: '90%', 
+            maxWidth: '800px',
+        }}>
         <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', maxWidth: '800px', gap: '10px' }}>
             <TextField
                 label={labelOne}

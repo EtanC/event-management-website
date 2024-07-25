@@ -10,7 +10,7 @@ import { AppBar, Box, Toolbar, IconButton, Typography, Button, MenuItem, Menu } 
 function NavBar() {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
-    const { profileData, loading, isAuthenticated, setProfileData } = useProfile();
+    const { profileData, loading, isAuthenticated, setProfileData, setTokenExpires } = useProfile();
 
     const handleMenu = (event) => setAnchorEl(event.currentTarget);
 
@@ -20,7 +20,7 @@ function NavBar() {
     };
 
     const handleCalendar = () => {
-        navigate('/my-calendar');
+        navigate('/my-events');
         handleClose();
     };
 
@@ -51,14 +51,15 @@ function NavBar() {
 
     const logOutButton = () => {
         setProfileData(null); // Clear profile data
-        handleLogout(navigate);
+        handleLogout(navigate, setTokenExpires);
         handleClose();
     };
 
     return (
         <>
             <Box sx={{ flexGrow: 1 }}>
-                <AppBar position="fixed" elevation={0} sx={{ padding: "25px 10px 25px", backgroundColor: 'white', borderBottom: '1px solid #e0e0e0' }}>
+                {/* class name for filterbar to recognise where nav bar is */}
+                <AppBar position="fixed" elevation={0}className="navbar" sx={{ padding: "10px 10px 25px", backgroundColor: 'white', borderBottom: '1px solid #e0e0e0', height: '80px' }}>
                     <Toolbar>
                         <img
                             src={logo}
@@ -119,7 +120,7 @@ function NavBar() {
                             sx={{ mt: 1.5 }}
                         >
                             <MenuItem onClick={handleProfile}>Profile</MenuItem>
-                            <MenuItem onClick={handleCalendar}>Calendar</MenuItem>
+                            <MenuItem onClick={handleCalendar}>My Events</MenuItem>
                             <MenuItem onClick={handleAdmin}>Admin</MenuItem>
                             <MenuItem onClick={logOutButton}>Log Out</MenuItem>
                         </Menu>

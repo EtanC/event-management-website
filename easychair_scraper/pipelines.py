@@ -10,7 +10,9 @@ import logging
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 from backend.src.database import db
+from backend.src.config import config
 from easychair_scraper.ranking import Ranking, NameProcessor
+import random
 
 class EasychairScraperPipeline(object):
 
@@ -37,4 +39,12 @@ class RemoveInvalidPipeline(object):
         for data in item:
             if not data:
                 raise DropItem("Missing {0}!".format(data))
+        return item
+
+class RandomImagePipeline(object):
+    def __init__(self):
+        self.max = config['RANDOM_IMAGES_END_INDEX']
+        self.min = config['RANDOM_IMAGES_START_INDEX']
+    def process_item(self, item, spider):
+        item['image'] = random.randint(self.min, self.max)
         return item

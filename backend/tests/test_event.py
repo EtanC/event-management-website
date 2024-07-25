@@ -2,7 +2,9 @@ import pytest
 from backend.test_src.auth import auth_register_raw
 from backend.test_src.events import event_create, event_update, event_delete, events_get_all
 from backend.test_src.database import clear_all
+from backend.src.admin import make_admin
 from backend.src.error import AccessError, InputError
+from backend.src.database import db
 
 @pytest.fixture
 def sample_event():
@@ -25,6 +27,10 @@ def sample_user():
 @pytest.fixture
 def reset():
     clear_all()
+
+@pytest.fixture(scope='session', autouse=True)
+def move_to_test_db():
+    db.set_test_db()
 
 def test_event(reset, sample_event, sample_user):
     assert events_get_all()['events'] == []
@@ -105,3 +111,23 @@ def test_event_delete_without_auth(reset, sample_event, sample_user):
     event_id = event_create(sample_user, sample_event)['event_id']
     with pytest.raises(AccessError):
         event_delete(None, event_id)
+
+def test_admin_can_edit_delete(reset, sample_event, sample_user):
+    admin_details = {
+        'username': 'admin',
+        'email': 'admin@outlook.com',
+        'password': 'iamtheadmin',
+    }
+    response = auth_register_raw(
+        admin_details['username'],
+        admin_details['email'],
+        admin_details['password']
+    )
+    admin = response.cookies.get('token')
+    make_admin(admin_details['username'])
+    event_id = event_create(sample_user, sample_event)['event_id']
+    sample_event['name'] = 'some other event name'
+    event_update(admin, event_id, sample_event)
+    assert events_get_all()['events'][0]['name'] == 'some other event name'
+    event_delete(admin, event_id)
+    assert len(events_get_all()['events']) == 0
