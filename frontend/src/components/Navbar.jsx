@@ -10,7 +10,7 @@ import { AppBar, Box, Toolbar, IconButton, Typography, Button, MenuItem, Menu } 
 function NavBar() {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
-    const { profileData, loading, isAuthenticated, setProfileData } = useProfile();
+    const { profileData, loading, isAuthenticated, setProfileData, setTokenExpires } = useProfile();
 
     const handleMenu = (event) => setAnchorEl(event.currentTarget);
 
@@ -51,7 +51,7 @@ function NavBar() {
 
     const logOutButton = () => {
         setProfileData(null); // Clear profile data
-        handleLogout(navigate);
+        handleLogout(navigate, setTokenExpires);
         handleClose();
     };
 
