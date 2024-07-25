@@ -159,12 +159,12 @@ def test_update_profile_error(reset, user1):
     # test invalid token
     with pytest.raises(AccessError):
         update_profile_details(random_token, 'newusr',
-                               'newemail', None, None, None, None, None)
+                               'newemail', None, None, None, None)
 
     # test username already taken
     with pytest.raises(InputError):
         update_profile_details(token2, matchingUsername,
-                               None, None, None, None, None, None)
+                               None, None, None, None, None)
 
 
 def test_update_password(reset, user1):
