@@ -23,21 +23,21 @@ function ProfilePage() {
         profile_pic: null,
         receive_notifications: null,
     });
-    const [new_profile_pic, setNewProfilePic] = useState(null);
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState('');
     const [newProfile, setNewProfile] = useState({
         description: '',
         full_name: '',
         job_title: '',
         fun_fact: '',
     });
-
     const [password, setPassword] = useState({
         old_pw: '',
         new_pw: '',
         confirm_new_pw: '',
     });
+    const [new_profile_pic, setNewProfilePic] = useState(null);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+
     // for settings card
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [notificationsEnabled, setNotificationsEnabled] = useState(true);
@@ -47,6 +47,7 @@ function ProfilePage() {
         fetchProfileData(setProfile);
     }, []);
 
+    // get default state for email notifications
     useEffect(() => {
         setNotificationsEnabled(profile.receive_notifications)
     }, [profile])

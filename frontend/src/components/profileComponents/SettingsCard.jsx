@@ -24,10 +24,6 @@ const SettingsCard = ({ confirmOpen, notificationsEnabled, handleSwitchChange, h
                                 onChange={handleSwitchChange}
                             />
                         </Box>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <Typography variant="body1">Dark Mode</Typography>
-                            <Switch checked />
-                        </Box>
                     </Box>
                 </CardContent>
             </Card>
