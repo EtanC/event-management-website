@@ -9,7 +9,7 @@ from backend.src.auth import decode_token
 from backend.src.admin import is_admin
 from email.message import EmailMessage
 import ssl
-from smtplib import SMTP_SSL, SMTPRecipientsRefused 
+from smtplib import SMTP_SSL, SMTPRecipientsRefused
 from datetime import datetime, timedelta
 
 
@@ -19,7 +19,8 @@ def user_exists(user_id):
 
 def event_exists(event_id):
     valid_id = ObjectId.is_valid(event_id)
-    return valid_id and db.events.find_one({ '_id': ObjectId(event_id)}) is not None
+    return valid_id and db.events.find_one({'_id': ObjectId(event_id)}) is not None
+
 
 def user_register_event(token, event_id):
     user_id = decode_token(token)
@@ -41,9 +42,9 @@ def user_register_event(token, event_id):
             # call notification email
             subject = "You've just registered to an event!"
 
-            event = db.events.find_one({ "_id": ObjectId(event_id) })
+            event = db.events.find_one({"_id": ObjectId(event_id)})
 
-            user = db.users.find_one({ '_id': ObjectId(user_id) })
+            user = db.users.find_one({'_id': ObjectId(user_id)})
 
             body = f"""
     You've just registered to an event: {event['name']} at {event['start_date']} in {event['location']}. To see more go to {event['details_link']}.
@@ -51,10 +52,11 @@ def user_register_event(token, event_id):
             send_email(subject, body, user['email'])
     return {}
 
+
 def user_unregister_event(token, event_id):
     user_id = decode_token(token)
     result = db.users.update_one(
-        { '_id': ObjectId(user_id) },
+        {'_id': ObjectId(user_id)},
         {
             '$pull': {
                 'registered_events': event_id,
@@ -77,10 +79,12 @@ def event_ids_to_events(event_ids):
             }
          }
     )))
+
+
 def user_unregister_event(token, event_id):
     user_id = decode_token(token)
     result = db.users.update_one(
-        { '_id': ObjectId(user_id) },
+        {'_id': ObjectId(user_id)},
         {
             '$pull': {
                 'registered_events': event_id,
@@ -103,6 +107,7 @@ def user_events(token):
         'events': events,
     }
 
+
 def send_email(subject, body, receiver):
     em = EmailMessage()
     em['From'] = config['APP_EMAIL']
@@ -120,6 +125,7 @@ def send_email(subject, body, receiver):
             raise InputError('User email is not valid')
         # if SSL error, go to python folder on ur computer and double click Install Certificates.command
 
+
 def check_notifications():
     # check all events that every user is registered in, and send a reminder at 7 days before, 3 days before, 1 day before
     # lmk if thats too many reminders
@@ -128,7 +134,8 @@ def check_notifications():
     for user in db.users.find():
         for event_id in user['registered_events']:
             event = db.events.find_one({'_id': ObjectId(event_id)})
-            start_date_object = datetime.strptime(event['start_date'], "%d %B %Y")
+            start_date_object = datetime.strptime(
+                event['start_date'], "%d %B %Y")
             time_now = datetime.now()
             time_delta = start_date_object - time_now
 
@@ -166,11 +173,12 @@ The event {event['name']} starts in less than one week! It's on {event['start_da
 
                     user['notifications_sent']['seven_days'].append(event_id)
 
+
 def user_toggle_notifications(token):
     user_id = decode_token(token)
     user = get_user(user_id)
     result = db.users.update_one(
-        { '_id': ObjectId(user_id) },
+        {'_id': ObjectId(user_id)},
         {
             '$set': {
                 'receive_notifications': not user['receive_notifications'],
@@ -180,6 +188,7 @@ def user_toggle_notifications(token):
     if result.modified_count == 0:
         raise AccessError("User does not exist")
     return {}
+
 
 def get_user(user_id):
     return db.users.find_one({'_id': ObjectId(user_id)})
@@ -197,12 +206,16 @@ def user_manage_events(token):
         'manager': managed_events
     }
 
+
 def relevant_info_user(user):
     return {
         '_id': user['_id'],
         'username': user['username'],
+        'full_name': user['full_name'],
         'email': user['email'],
+        'is_admin': user['isAdmin'],
     }
+
 
 def user_get_all(token):
     if not is_admin(token):
@@ -218,4 +231,3 @@ def user_get_all(token):
             )
         ),
     }
-    

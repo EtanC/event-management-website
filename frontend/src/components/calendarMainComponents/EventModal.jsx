@@ -1,4 +1,4 @@
-import CreateEventPopUp from './CreateEventPopUp';
+import CreateEventPopUp from '../CreateEventPopUp';
 import EventManagerModal from '../EventManagerModal';
 import AlertPopup from './DeleteEventAlertPopup';
 

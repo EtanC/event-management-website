@@ -22,6 +22,7 @@ def stringify_id(x):
     x['_id'] = str(x['_id'])
     return x
 
+
 def events_get_all():
     return {
         'events': list(map(stringify_id, db.events.find({})))
@@ -94,7 +95,8 @@ def event_create(token, event):
     event['ranking'] = 0
     event['authorized_users'] = []
     event['creator'] = user_id
-    event['image'] = random.randint(config['RANDOM_IMAGES_START_INDEX'], config['RANDOM_IMAGES_END_INDEX'])
+    event['image'] = random.randint(
+        config['RANDOM_IMAGES_START_INDEX'], config['RANDOM_IMAGES_END_INDEX'])
     result = db.events.insert_one(event)
     db['users'].update_one(
         {'_id': ObjectId(user_id)},
@@ -110,8 +112,10 @@ def event_create(token, event):
 def get_event(event_id):
     return db.events.find_one({'_id': ObjectId(event_id)})
 
+
 def is_admin(user_id):
     return db.users.find_one({"_id": ObjectId(user_id)}).get('isAdmin')
+
 
 def user_is_authorized(user_id, event_id):
     event = get_event(event_id)

@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Typography, Box, Container, Link as MuiLink } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { Link } from 'react-router-dom';
-import SearchBar from '../components/SearchBar';
-import AdminTable from '../components/AdminTable';
-import AlertPopup from '../components/AlertPopup';
-import EventModal from '../components/EventModal';
-import { fetchAllEventsData } from '../helper/handleEventData';
+import AdminEventsSearchBar from '../components/adminComponents/AdminEventsSearchBar';
+import AdminTable from '../components/adminComponents/AdminTable';
+import DeleteEventAlertPopup from '../components/calendarMainComponents/DeleteEventAlertPopup';
+import EventModal from '../components/calendarMainComponents/EventModal';
+import { fetchEventsData } from '../helper/handleEventData';
 import {
     handleDeleteClick,
     handleDeleteCancel,
@@ -34,7 +34,7 @@ const AdminEventsPage = () => {
     const adminFetchEvents = async () => {
         try {
             setIsLoading(true);
-            await fetchAllEventsData(setEvents, setLocations, setError, setIsLoading);
+            await fetchEventsData(setEvents, setLocations, setError, setIsLoading);
             setIsLoading(false);
         } catch (error) {
             console.error('Failed to fetch events:', error);
@@ -68,7 +68,7 @@ const AdminEventsPage = () => {
 
     return (
         <>
-            <AlertPopup
+            <DeleteEventAlertPopup
                 open={deleteDialogOpen}
                 onClose={() => handleDeleteCancel(setDeleteDialogOpen, setEventToDelete)}
                 onConfirm={() => handleDeleteConfirm(eventToDelete, setDeleteDialogOpen, setEventToDelete, adminFetchEvents)}
@@ -86,7 +86,7 @@ const AdminEventsPage = () => {
                     <ArrowForwardIosIcon sx={{ marginTop: '10px', marginLeft: '15px', marginRight: '15px' }} />
                     <Typography variant="h4"> Events</Typography>
                 </Box>
-                <SearchBar
+                <AdminEventsSearchBar
                     labelOne='Event Name'
                     labelTwo='Location'
                     eventType={eventName}
@@ -96,6 +96,7 @@ const AdminEventsPage = () => {
                     locations={locations}
                     date={date}
                     setDate={setDate}
+                    isSticky={'false'}
                 />
                 {isLoading ? (
                     <Box display="flex" justifyContent="center" alignItems="center" height="70vh">
@@ -115,6 +116,8 @@ const AdminEventsPage = () => {
                         data={filteredData}
                         handleDelete={(event) => handleDeleteClick(event, setEventToDelete, setDeleteDialogOpen)}
                         handleEdit={(event) => handleEditClick(event, setEventToEdit, setOpenEditEvent)}
+                        showActions={true}
+                        showDropdown={false}
                     />
                 )}
             </Container>
