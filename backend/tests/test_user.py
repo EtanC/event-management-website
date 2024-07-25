@@ -1,11 +1,13 @@
 import pytest
 from backend.test_src.events import event_create, events_get_all
 from backend.test_src.auth import auth_register_raw
-from backend.test_src.user import user_events, user_register_event, user_manage_events, user_unregister_event
+from backend.test_src.user import user_events, user_register_event, user_manage_events, user_unregister_event, user_get_all
 from backend.test_src.database import clear_all
 from backend.test_src.events import event_authorize, event_delete
 from backend.src.error import InputError, AccessError
 from backend.src.config import config
+from backend.src.admin import make_admin
+from backend.src.database import db
 import jwt
 
 @pytest.fixture
@@ -28,6 +30,10 @@ def sample_user():
 @pytest.fixture(autouse=True)
 def reset():
     clear_all()
+
+@pytest.fixture(scope='session', autouse=True)
+def move_to_test_db():
+    db.set_test_db()
 
 def test_user(reset, sample_event, sample_user):
     # create event
@@ -132,4 +138,24 @@ def test_user_manage_events(reset, sample_event, sample_user):
     # Check that events returned are what we expect
     events = user_manage_events(sample_user)
     assert_event_equal(events['creator'][0], expected_event2)
-    assert_event_equal(events['manager'][0], expected_event1)
+    assert_event_equal(events['manager'][0], expected_event1)\
+
+def assert_users_equal(actual_users, expected_users):
+    sorted_actual = sorted(actual_users, key=lambda x: x['username'])
+    sorted_expected = sorted(expected_users, key=lambda x: x['username'])
+    assert len(sorted_actual) == len(sorted_expected)
+    for actual, expected in zip(sorted_actual, sorted_expected):
+        for key in expected.keys():
+            assert actual[key] == expected[key]
+
+def test_user_get_all(reset):
+    response = auth_register_raw('user2', 'user2@user2.com', 'user2')
+    admin = response.cookies.get('token')
+    response = auth_register_raw('user3', 'user3@user3.com', 'user3')
+    user3 = response.cookies.get('token')
+    make_admin('user2')
+    expected = [
+        { 'username': 'user2', 'email': 'user2@user2.com' },
+        { 'username': 'user3', 'email': 'user3@user3.com' },
+    ]
+    assert_users_equal(user_get_all(admin)['users'], expected)

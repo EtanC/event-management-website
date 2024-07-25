@@ -118,7 +118,7 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
     };
 
     const handleDeleteClick = (event) => {
-        setEventToDelete(event)
+        setEventToDelete(event);
         setDeleteDialogOpen(true);
     }
 

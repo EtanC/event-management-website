@@ -39,7 +39,7 @@ def add_login_session(user_id):
     response = db.active_sessions.insert_one(
         {
             'user_id': user_id,
-            'session_end_time': session_end_time
+            'session_end_time': session_end_time.isoformat()
         },
     )
     return (response.inserted_id, session_end_time)
@@ -76,12 +76,12 @@ def auth_google_login(auth_code):
             'session_end_time': str(session_end_time)
         })
         response = make_response(
-            {'message': 'Login successful', 'session_end_time': session_end_time})
+            {'message': 'Login successful', 'session_end_time': session_end_time.isoformat()})
         response.set_cookie(
             key='token',
             value=token,
-            httponly=False,
-            secure=True,
+            httponly=True,
+            secure=False,
             samesite='Lax',
             expires=session_end_time,
             path='/'
@@ -116,7 +116,7 @@ def auth_google_login(auth_code):
         })
 
         response = make_response(
-            {'message': 'Registration successful', 'session_end_time': session_end_time})
+            {'message': 'Registration successful', 'session_end_time': session_end_time.isoformat()})
         response.set_cookie('token', token, httponly=True,
                             secure=False, samesite='Lax', expires=session_end_time)
         return response
@@ -136,14 +136,14 @@ def auth_login(email, password):
 
     # Create a response object
     response = make_response(
-        {'message': 'Login successful', 'session_end_time': session_end_time})
+        {'message': 'Login successful', 'session_end_time': session_end_time.isoformat()})
 
     # Set a cookie on the response object
     response.set_cookie(
         key='token',
         value=token,
-        httponly=False,
-        secure=True,
+        httponly=True,
+        secure=False,
         samesite='Lax',
         expires=session_end_time,
         path='/'
@@ -185,7 +185,7 @@ def auth_register(username, email, password):
     })
 
     response = make_response(
-        {'message': 'Registration successful', 'session_end_time': session_end_time})
+        {'message': 'Registration successful', 'session_end_time': session_end_time.isoformat()})
     response.set_cookie('token', token, httponly=True,
                         secure=False, samesite='Lax', expires=session_end_time)
     return response

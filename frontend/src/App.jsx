@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import "./index.css";
-import { ProfileProvider } from "../src/components/ProfileProvider";
+import { ProfileProvider, useProfile } from "../src/components/ProfileProvider";
 import NavBar from "./components/Navbar";
 
 import HomePage from "./pages/HomePage";
@@ -19,6 +19,18 @@ import useSessionValidation from "./helper/userSessionValidation";
 const AppContent = () => {
     const location = useLocation();
     const showNavBar = !['/login', '/register'].includes(location.pathname);
+    const { isAuthenticated } = useProfile();
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            setIsPopupOpen(true);
+        }
+    }, [isAuthenticated]);
+
+    const handleClosePopup = () => {
+        setIsPopupOpen(false);
+    };
 
     return (
         <>
@@ -36,6 +48,7 @@ const AppContent = () => {
                 <Route path="/admin/events" element={<AdminEventsPage />} />
                 <Route path="/my-events" element={<MyEventsPage />} />
             </Routes>
+            <SessionTimeOutPopup open={isPopupOpen} handleClose={handleClosePopup} />
         </div>
         </>
     );
@@ -46,25 +59,11 @@ const App = () => {
         document.title = "EventHubb";
     }, []);
 
-    const isSessionValid = useSessionValidation();
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
-
-    useEffect(() => {
-        if (!isSessionValid) {
-            setIsPopupOpen(true);
-        }
-    }, [isSessionValid]);
-
-    const handleClosePopup = () => {
-        setIsPopupOpen(false);
-    };
-
     return (
         <Router basename="/">
             <ProfileProvider>
                 <AppContent />
             </ProfileProvider>
-            <SessionTimeOutPopup open={isPopupOpen} handleClose={handleClosePopup} />
         </Router>
     );
 };
