@@ -46,8 +46,9 @@ def auth_login_route():
 
 @app.post('/auth/google_login')
 def auth_google_login_route():
-  auth_code = request.get_json()['code']
-  return auth_google_login(auth_code)
+    auth_code = request.get_json()['code']
+    return auth_google_login(auth_code)
+
 
 @app.post('/auth/register')
 @swag_from(auth_register_spec)
@@ -142,6 +143,7 @@ def event_authorize_route():
         raise AccessError('Authorization token is missing')
     body = request.get_json()
     return event_authorize(token, body['event_id'], body['email'])
+
 
 @app.get('/profile/get')
 @swag_from(profile_get_spec)
@@ -258,15 +260,15 @@ def user_unregister_event_route(event_id):
         raise AccessError('Authorization token is missing')
     return json.dumps(user_unregister_event(token, event_id))
 
+
 @app.put('/user/toggle_notifications')
 @swag_from(user_toggle_notifications_spec)
 def user_toggle_notifications_route():
     token = request.cookies.get('token')
-
-    if token.startswith('Bearer '):
-        token = token[len('Bearer '):]
-
+    if not token:
+        raise AccessError('Authorization token is missing')
     return user_toggle_notifications(token)
+
 
 @app.delete('/clear')
 @swag_from(clear_spec)

@@ -81,7 +81,7 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
     const handleDeleteConfirm = async () => {
         if (eventToDelete) {
             try {
-                await handleDeleteEvent(selectedEvent._id);
+                await handleDeleteEvent(eventToDelete._id);
                 setDeleteDialogOpen(false);
                 setEventToDelete(null);
                 handleClosePopUp();
@@ -118,7 +118,6 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
     };
 
     const handleDeleteClick = (event) => {
-        // setEventToDelete(selectedEvent._id);
         setEventToDelete(event)
         setDeleteDialogOpen(true);
     }
