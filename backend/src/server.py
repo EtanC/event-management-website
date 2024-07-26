@@ -11,7 +11,7 @@ from backend.src.error import AccessError, InputError
 import json
 from werkzeug.exceptions import HTTPException
 from backend.src.auth import auth_google_login, auth_login, auth_register, auth_logout
-from backend.src.events import events_crawl, events_clear, events_get_all, event_create, event_update, event_delete, event_authorize, events_ai_description
+from backend.src.events import events_crawl, events_clear, events_get_all, event_create, event_update, event_delete, event_authorize, events_ai_description, events_get_page
 from backend.src.profile_details import get_profile_details, update_profile_details, update_profile_password
 from backend.src.admin import is_admin, invite_admin, remove_admin
 from backend.src.user import user_register_event, user_events, user_unregister_event, user_manage_events, user_toggle_notifications, user_get_all
@@ -70,6 +70,10 @@ def auth_logout_route():
 def events_crawl_route():
     return events_crawl()
 
+@app.get('/events/get_page/<page_number>')
+@swag_from(events_get_page_spec)
+def events_get_page_route(page_number):
+    return json.dumps(events_get_page(page_number, request.args.get('name'), request.args.get('location'), request.args.get('date')), default=str)
 
 @app.get('/events/get/all')
 @swag_from(events_get_all_spec)
