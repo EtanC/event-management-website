@@ -33,7 +33,6 @@ def events_get_tagged(tags):
     # loop through the tags and add each event to a list, paired with the number 1 aka the number of tags that have applied to them 
     # so far
 
-
     # then loop through the next tag and search through the events that match that tag, if the tag doesnt exist in the list already
     # then do the same as above, if it does already exist within the list just increment the numebr paired with the tag, as there has 
     # 2 matches so far
@@ -50,8 +49,6 @@ def events_get_tagged(tags):
                 event_increment[1] += 1
             else: 
                 events_list.append((event, 1))
-
-
 
     events_sorted = sorted(events_counted, key=lambda event: event[0], reverse=True)
 

@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, make_response
 from flasgger import Swagger, swag_from
 from backend.swagger_doc.auth import auth_login_spec, auth_register_spec, auth_logout_spec
-from backend.swagger_doc.events import events_crawl_spec, events_clear_spec, events_get_all_spec, event_create_spec, event_update_spec, event_delete_spec, event_authorize_spec, events_ai_description_spec, events_get_page_spec
+from backend.swagger_doc.events import events_crawl_spec, events_clear_spec, events_get_all_spec, event_create_spec, event_update_spec, event_delete_spec, event_authorize_spec, events_ai_description_spec, events_get_page_spec, events_get_tagged_spec
 from backend.swagger_doc.profile import profile_get_spec, profile_update_details_spec, profile_update_password_spec
 from backend.swagger_doc.admin import admin_invite_spec, admin_remove_spec, is_admin_spec
 from backend.swagger_doc.user import user_events_spec, user_register_event_spec, user_manage_events_spec, user_unregister_event_spec, user_toggle_notifications_spec, user_get_all_spec
@@ -11,7 +11,7 @@ from backend.src.error import AccessError, InputError
 import json
 from werkzeug.exceptions import HTTPException
 from backend.src.auth import auth_google_login, auth_login, auth_register, auth_logout
-from backend.src.events import events_crawl, events_clear, events_get_all, event_create, event_update, event_delete, event_authorize, events_ai_description
+from backend.src.events import events_crawl, events_clear, events_get_all, event_create, event_update, event_delete, event_authorize, events_ai_description, events_get_tagged
 from backend.src.profile_details import get_profile_details, update_profile_details, update_profile_password
 from backend.src.admin import is_admin, invite_admin, remove_admin
 from backend.src.user import user_register_event, user_events, user_unregister_event, user_manage_events, user_toggle_notifications, user_get_all
@@ -76,6 +76,10 @@ def events_crawl_route():
 def events_get_all_route():
     return events_get_all()
 
+@app.get('/events/get/tagged')
+@swag_from(events_get_tagged_spec)
+def events_get_tagged_route():
+    return events_get_tagged()
 
 @app.delete('/events/clear')
 @swag_from(events_clear_spec)

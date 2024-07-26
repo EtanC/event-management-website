@@ -1,5 +1,3 @@
-from backend.swagger_doc.definitions_profile import definitions_profile
-
 profile_get_spec = {
     'tags': ['Profile'],
     'security': [
@@ -117,7 +115,21 @@ profile_update_password_spec = {
     ],
     'parameters': [
         {
-            '$ref': '#/definitions/parameters/update_password'
+            'name': 'Body',
+            'in': 'body',
+            'type': 'object',
+            'required': 'true',
+            'properties': {
+                'old_password': {
+                    '$ref': '#/definitions/password',
+                },
+                'new_password': {
+                    '$ref': '#/definitions/password',
+                },
+                're_password': {
+                    '$ref': '#/definitions/password',
+                },
+            }
         },
     ],
     'responses': {

@@ -42,6 +42,32 @@ events_get_all_spec = {
     }
 }
 
+events_get_tagged_spec = {
+    'tags': ['Events'],
+    'security': [
+        {
+            "bearerAuth": []
+        }
+    ],
+    'parameters': [],
+    'responses': {
+        200: {
+            'description': 'Successfully retrieved users',
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'events': {
+                        'type': 'array',
+                        'items': {
+                            '$ref': "#definitions/event"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 event_create_spec = {
     'tags': ['Events'],
     'security': [
