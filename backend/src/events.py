@@ -14,7 +14,12 @@ from openai import OpenAI
 from bs4 import BeautifulSoup
 
 load_dotenv()
-OPENAI_API_KEY = os.getenv("AI_TOKEN")
+
+if os.getenv('ENV') == 'testing':
+    API_KEY = 'mock-api-key'
+else:
+    API_KEY = os.getenv('OPENAI_API_KEY')
+    
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 
