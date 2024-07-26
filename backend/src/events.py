@@ -38,7 +38,7 @@ def events_get_page(page_number, name, location, date):
             date_obj = datetime.strptime(date, "%Y-%m-%d")
             match_stage["converted_start_date"] = {"$gt": date_obj}
         except ValueError:
-            return jsonify({"error": "Invalid date format. Use 'DD MMMM YYYY'."}), 400
+            return jsonify({"error": "Invalid date format."}), 400
     # Create events date format isn't consistent with the rest of the webcrawlers       
     pipeline = [
          {"$addFields": {

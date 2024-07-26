@@ -24,7 +24,7 @@ function HomePageEventCardSection() {
     const [isSticky, setIsSticky] = useState(false); // for filter bar to not disappear from sight
     const [selectedEvent, setSelectedEvent] = useState(null);
     // Debounce makes it so that we aren't spamming API calls everytime the search changes
-    // Has a 300 ms delay for search
+    // Has a 200 ms delay for search
     function useDebounce(callback, delay) {
       const [timeoutId, setTimeoutId] = useState();
   
@@ -55,6 +55,10 @@ function HomePageEventCardSection() {
       fetchEventsData(setEvents, setLocations, setError, setIsLoading, page, setPageCount, eventType, location, date)
     }, [page])
 
+    useEffect(() => {
+      setPage(1)
+    }, [eventType, location, date])
+    
     // this is to track where the filter bar is, when hit the nav bar then it stays
     useEffect(() => {
         const handleScroll = () => {
@@ -88,7 +92,7 @@ function HomePageEventCardSection() {
     const handlePreviousPage = () => {
         setPage(prev => Math.max(prev - 1, 1));
     };
-    console.log(events)
+
     return (
         <Box sx={{ backgroundColor: '#f5f5f5', padding: '20px 0' }}>
             <SearchBar
