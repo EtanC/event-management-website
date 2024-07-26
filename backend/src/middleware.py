@@ -1,8 +1,8 @@
 # this middleware helps us protect routes that should not be accessible, eg. admin page.
 from flask import request, g
 from functools import wraps
-from src.error import AccessError
-from src.auth import decode_token
+from backend.src.error import AccessError
+from backend.src.auth import decode_token
 
 def token_required(f):
     @wraps(f)

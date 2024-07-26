@@ -1,8 +1,8 @@
 import pytest
 from test_src.auth import auth_register_raw
 from test_src.admin import is_admin, invite_admin, remove_admin
-from src.error import InputError, AccessError
-from src.database import clear, db
+from backend.src.error import InputError, AccessError
+from backend.src.database import clear, db
 import jwt
 
 

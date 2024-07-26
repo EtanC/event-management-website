@@ -1,11 +1,11 @@
-from src.database import db
+from backend.src.database import db
 from bson import ObjectId
 import jwt
-from src.config import config
-from src.error import AccessError, InputError
+from backend.src.config import config
+from backend.src.error import AccessError, InputError
 from bson import ObjectId
-from src.events import stringify_id
-from src.auth import decode_token
+from backend.src.events import stringify_id
+from backend.src.auth import decode_token
 from email.message import EmailMessage
 import ssl
 from smtplib import SMTP_SSL, SMTPRecipientsRefused 

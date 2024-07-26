@@ -2,9 +2,9 @@ import pytest
 from test_src.auth import auth_register_raw
 from test_src.events import event_create
 from test_src.user import user_register_event
-from src.events import event_create
-from src.user import check_notifications, user_toggle_notifications
-from src.database import clear, db
+from backend.src.events import event_create
+from backend.src.user import check_notifications, user_toggle_notifications
+from backend.src.database import clear, db
 from datetime import datetime, timedelta
 
 @pytest.fixture

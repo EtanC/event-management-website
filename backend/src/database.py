@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 import gridfs
 
-from src.config import config
+from backend.src.config import config
 # install pymongo
 # python3 -m pip install "pymongo[srv]"
 

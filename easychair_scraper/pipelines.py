@@ -9,8 +9,8 @@ import logging
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
-from src.database import db
-from src.config import config
+from backend.src.database import db
+from backend.src.config import config
 from easychair_scraper.ranking import Ranking, NameProcessor
 import random
 

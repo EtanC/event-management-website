@@ -1,7 +1,7 @@
-from src.error import AccessError, InputError
-from src.database import db
-from src.config import config
-from src.auth import hash, decode_token
+from backend.src.error import AccessError, InputError
+from backend.src.database import db
+from backend.src.config import config
+from backend.src.auth import hash, decode_token
 from bson import ObjectId
 import jwt
 import hashlib

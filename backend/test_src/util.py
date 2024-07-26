@@ -1,6 +1,6 @@
 import requests
-from src.error import AccessError, InputError
-from src.config import config
+from backend.src.error import AccessError, InputError
+from backend.src.config import config
 
 backend_url = f"http://localhost:{config['BACKEND_PORT']}"
 

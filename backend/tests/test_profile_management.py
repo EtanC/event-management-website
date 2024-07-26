@@ -1,7 +1,7 @@
 import pytest
 from test_src.profile_details import get_profile_details, update_profile_details, update_profile_password
 from test_src.auth import auth_register_raw, auth_login_raw
-from src.error import InputError, AccessError
+from backend.src.error import InputError, AccessError
 from test_src.database import clear_all
 import jwt
 from io import BytesIO

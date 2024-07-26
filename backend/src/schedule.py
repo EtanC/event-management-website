@@ -1,4 +1,4 @@
-from src.user import check_notifications
+from backend.src.user import check_notifications
 import schedule
 import time
 
