@@ -12,35 +12,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.9'
           cache: 'pip'
-
-      - name: Install dependencies
-        uses: py-actions/py-dependency-install@v4
+      - uses: py-actions/py-dependency-install@v4
         with:
           path: "./backend/requirements.txt"
 
+      # Set up environment variables
       - name: Set up environment variables
-        run: |
-          echo "ENV=testing" >> $GITHUB_ENV
-          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
+        run: echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
 
-      - name: Run tests with coverage
-        run: |
-          python -m backend.src.server test
-          coverage run -m pytest
-
-      - name: Generate coverage report
-        run: coverage html
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
+      - run: python -m backend.src.server test & coverage run -m pytest
+      - run: coverage html
+      - uses: actions/upload-artifact@v4
         with:
           name: Coverage Report
           path: htmlcov/
