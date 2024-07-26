@@ -43,6 +43,12 @@ def events_crawl():
 def events_get_all():
     response = requests.get(f'{backend_url}/events/get/all')
     return parse_response(response)
+def events_get_tagged(tags):
+    body = {
+        'tags': tags
+    }
+    response = requests.get(f'{backend_url}/events/get/tagged', json=body)
+    return parse_response(response)
 def events_clear():
     response = requests.delete(f'{backend_url}/events/clear')
     return parse_response(response)

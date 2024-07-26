@@ -1,6 +1,6 @@
 import pytest
 from backend.test_src.auth import auth_register_raw
-from backend.test_src.events import event_create, event_update, event_delete, events_get_all
+from backend.test_src.events import event_create, event_update, event_delete, events_get_all, events_get_tagged
 from backend.test_src.database import clear_all
 from backend.src.admin import make_admin
 from backend.src.error import AccessError, InputError
@@ -17,6 +17,47 @@ def sample_event():
         'start_date': '30 June 2024'
     }
     return event
+
+@pytest.fixture
+def event_tag_1():
+    event = {
+        'deadline': '1 July 2024',
+        'details': 'This is a great event, everyone should come',
+        'details_link': 'http://www.realeventpage.com',
+        'name': 'AI',
+        'location': 'Lesotho, South Africa',
+        'start_date': '30 June 2024',
+        'tags': ['Artificial Intelligence']
+    }
+    return event
+
+@pytest.fixture
+def event_tag_2():
+    event = {
+        'deadline': '1 July 2024',
+        'details': 'This is a great event, everyone should come',
+        'details_link': 'http://www.realeventpage.com',
+        'name': 'AI + SE',
+        'location': 'Lesotho, South Africa',
+        'start_date': '30 June 2024',
+        'tags': ['Artificial Intelligence, Software Engineering']
+    }
+    return event
+
+
+@pytest.fixture
+def event_tag_3():
+    event = {
+        'deadline': '1 July 2024',
+        'details': 'This is a great event, everyone should come',
+        'details_link': 'http://www.realeventpage.com',
+        'name': 'AI + SE + DS',
+        'location': 'Lesotho, South Africa',
+        'start_date': '30 June 2024',
+        'tags': ['Artificial Intelligence, Software Engineering, Data Science']
+    }
+    return event
+
 
 @pytest.fixture
 def sample_user():
@@ -58,6 +99,16 @@ def test_event(reset, sample_event, sample_user):
         assert events_get_all()['events'][0][key] == expected_event[key]
     event_delete(sample_user, event_id)
     assert events_get_all()['events'] == []
+
+def test_event_tags(reset, event_tag_1, event_tag_2, event_tag_3, sample_user):
+    event_id_1 = event_create(sample_user, event_tag_1)['event_id']
+    event_id_2 = event_create(sample_user, event_tag_2)['event_id']
+    event_id_3 = event_create(sample_user, event_tag_3)['event_id']
+
+    assert events_get_tagged(['Human-Computer Interaction'])['events'] == []
+
+    
+
 
 def test_event_creation(reset, sample_event, sample_user):
     assert events_get_all()['events'] == []

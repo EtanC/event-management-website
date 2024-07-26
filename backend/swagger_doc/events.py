@@ -49,7 +49,27 @@ events_get_tagged_spec = {
             "bearerAuth": []
         }
     ],
-    'parameters': [],
+    'parameters': [
+        {
+            'name': 'Body',
+            'in': 'body',
+            'type': 'object',
+            'required': 'true',
+            'properties': {
+                'tags': {
+                        'type': 'array',
+                        'items': {
+                            'type': 'object',
+                            'properties': {
+                                'tag': {
+                                    'type': 'string'
+                                }
+                            }
+                        }
+                    }
+            }
+        }
+    ],
     'responses': {
         200: {
             'description': 'Successfully retrieved users',
@@ -59,7 +79,36 @@ events_get_tagged_spec = {
                     'events': {
                         'type': 'array',
                         'items': {
-                            '$ref': "#definitions/event"
+                            'type': 'object',
+                            'properties': {
+                                'name': {
+                                    '$ref': '#/definitions/name'
+                                },
+                                'location': {
+                                    '$ref': '#/definitions/event_location'
+                                },
+                                'start_date': {
+                                    '$ref': '#/definitions/event_start_date'
+                                },
+                                'end_date': {
+                                    '$ref': '#/definitions/event_end_date'
+                                },
+                                'tags': {
+                                    '$ref': '#/definitions/event_tags'
+                                },
+                                'description': {
+                                    '$ref': '#/definitions/event_description'
+                                },
+                                'registration_link': {
+                                    '$ref': '#/definitions/event_registration_link'
+                                },
+                                'image': {
+                                    '$ref': '#/definitions/event_image'
+                                },
+                                'ranking': {
+                                    '$ref': '#/definitions/event_rank'
+                                }
+                            }
                         }
                     }
                 }

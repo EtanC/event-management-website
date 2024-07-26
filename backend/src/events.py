@@ -52,7 +52,9 @@ def events_get_tagged(tags):
 
     events_sorted = sorted(events_counted, key=lambda event: event[0], reverse=True)
 
-    return [event[0] for event in events_sorted]
+    return {
+        'events': [event[0] for event in events_sorted]
+    }
 
 
 def events_clear():

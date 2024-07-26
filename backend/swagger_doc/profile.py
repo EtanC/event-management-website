@@ -62,7 +62,7 @@ profile_update_details_spec = {
                     '$ref': '#/definitions/full_name',
                 },
                 'description': {
-                    '$ref': '#/definitions/desciption',
+                    '$ref': '#/definitions/description',
                 },
                 'fun_fact': {
                     '$ref': '#/definitions/fun_fact',
