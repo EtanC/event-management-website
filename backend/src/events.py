@@ -10,6 +10,12 @@ from backend.src.auth import decode_token
 from backend.src.config import config
 from bson import ObjectId
 import random
+from openai import OpenAI
+from bs4 import BeautifulSoup
+
+load_dotenv()
+OPENAI_API_KEY = os.getenv("AI_TOKEN")
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 
 def events_crawl():
@@ -33,24 +39,110 @@ def events_clear():
     return {}
 
 
+# def events_ai_description():
+#     load_dotenv()
+#     AI_TOKEN = os.getenv("AI_TOKEN")
+#     # loop through each event listing
+#     cursor = db.events.find()
+#     # ai API
+#     API_URL = "https://api-inference.huggingface.co/models/pszemraj/led-large-book-summary"
+#     headers = {"Authorization": f"Bearer {AI_TOKEN}"}
+#     for event in cursor:
+#         ai_description = event.get("ai_description")
+#         if ai_description is None or (ai_description and 'error' in ai_description):
+#             query_filter = {"_id": event["_id"]}
+#             output = query({
+#                 "inputs": event.get("details"),
+#                 "options": {"wait_for_model": True}
+#             }, API_URL, headers)
+#             db.events.update_one(
+#                 query_filter, {"$set": {"ai_description": output}})
+#     return {}
+
+
+####################################################
+####               AI SECTION
+####################################################
+def clean_html(html_content):
+    # this sanitises input, get rid of all html tags so that its cheaper to run chatgpt
+    soup = BeautifulSoup(html_content, 'html.parser')
+    return soup.get_text(separator=" ")
+
+def generate_summary_and_tags(details):
+    # Clean the input HTML content
+    cleaned_details = clean_html(details)
+    prompt = (
+        "You summarize event descriptions and assign relevant tags from a given list. "
+        "Use 'Unspecified' if no other tags fit.\n\n"
+        "Output format:\n"
+        "{\n"
+        "    \"summary\": \"Summary of event in 50 words\",\n"
+        "    \"tags\": []\n"
+        "}\n\n"
+        "Restrict the tags from this list:\n"
+        "- Tag: Artificial Intelligence\n"
+        "  Description: Conferences focusing on advancements and research in artificial intelligence.\n"
+        "- Tag: Cybersecurity\n"
+        "  Description: Events centered around developments and strategies in protecting digital information.\n"
+        "- Tag: Software Engineering\n"
+        "  Description: Conferences discussing methodologies and innovations in software development.\n"
+        "- Tag: Data Science\n"
+        "  Description: Gatherings that explore data analysis, big data technologies, and data management.\n"
+        "- Tag: Computer Networks\n"
+        "  Description: Events covering topics related to networking technologies and communication systems.\n"
+        "- Tag: Human-Computer Interaction\n"
+        "  Description: Conferences dedicated to the study of interaction between humans and computers.\n"
+        "- Tag: Blockchain\n"
+        "  Description: Conferences focusing on blockchain technology and cryptocurrencies.\n"
+        "- Tag: Robotics\n"
+        "  Description: Events exploring research and applications in robotics and automation.\n"
+        "- Tag: Cloud Computing\n"
+        "  Description: Events discussing cloud infrastructure, services, and security.\n"
+        "- Tag: Quantum Computing\n"
+        "  Description: Conferences discussing theoretical and practical aspects of quantum computing.\n"
+        "- Tag: Computer Vision\n"
+        "  Description: Events focusing on the development of algorithms for interpreting visual data.\n"
+        "- Tag: Programming Languages\n"
+        "  Description: Conferences focusing on the design and implementation of programming languages.\n"
+        "- Tag: High Performance Computing\n"
+        "  Description: Events discussing architecture and application of high performance computing systems.\n\n"
+        f"Event Details:\n{cleaned_details}"
+    )
+    
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",  # Use the appropriate model
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
+        ]
+    )
+    
+    # Access the response correctly
+    output = response.choices[0].message.content
+    
+    try:
+        # Assume that the output is a properly formatted JSON string
+        result = eval(output)
+        
+        if isinstance(result, dict) and "summary" in result and "tags" in result:
+            return result
+        else:
+            raise ValueError("Response format is incorrect.")
+    except (SyntaxError, ValueError) as e:
+        print("Error parsing response:", e)
+        return {"summary": "Error in generating summary", "tags": ["Error"]}
+
+
 def events_ai_description():
-    load_dotenv()
-    AI_TOKEN = os.getenv("AI_TOKEN")
-    # loop through each event listing
     cursor = db.events.find()
-    # ai API
-    API_URL = "https://api-inference.huggingface.co/models/pszemraj/led-large-book-summary"
-    headers = {"Authorization": f"Bearer {AI_TOKEN}"}
     for event in cursor:
         ai_description = event.get("ai_description")
-        if ai_description is None or (ai_description and 'error' in ai_description):
-            query_filter = {"_id": event["_id"]}
-            output = query({
-                "inputs": event.get("details"),
-                "options": {"wait_for_model": True}
-            }, API_URL, headers)
-            db.events.update_one(
-                query_filter, {"$set": {"ai_description": output}})
+        # if ai_description is None or (ai_description and 'error' in ai_description):
+        query_filter = {"_id": event["_id"]}
+        details = event.get("details")
+        output = generate_summary_and_tags(details)
+        db.events.update_one(
+            query_filter, {"$set": {"ai_description": output["summary"], "tags": output["tags"]}})
     return {}
 
 
