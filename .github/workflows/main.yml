@@ -1,4 +1,5 @@
 name: Backend Pytest
+
 on:
   push:
     branches:
@@ -6,21 +7,40 @@ on:
   pull_request:
     branches:
       - 'main'
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.9' 
+          python-version: '3.9'
           cache: 'pip'
-      - uses: py-actions/py-dependency-install@v4
+
+      - name: Install dependencies
+        uses: py-actions/py-dependency-install@v4
         with:
           path: "./backend/requirements.txt"
-      - run: python -m backend.src.server test & coverage run -m pytest
-      - run: coverage html
-      - uses: actions/upload-artifact@v4
+
+      - name: Set up environment variables
+        run: |
+          echo "ENV=testing" >> $GITHUB_ENV
+          echo "OPENAI_API_KEY=mock-api-key" >> $GITHUB_ENV
+
+      - name: Run tests with coverage
+        run: |
+          python -m backend.src.server test
+          coverage run -m pytest
+
+      - name: Generate coverage report
+        run: coverage html
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
         with:
           name: Coverage Report
           path: htmlcov/
