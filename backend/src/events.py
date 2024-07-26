@@ -137,12 +137,12 @@ def events_ai_description():
     cursor = db.events.find()
     for event in cursor:
         ai_description = event.get("ai_description")
-        # if ai_description is None or (ai_description and 'error' in ai_description):
-        query_filter = {"_id": event["_id"]}
-        details = event.get("details")
-        output = generate_summary_and_tags(details)
-        db.events.update_one(
-            query_filter, {"$set": {"ai_description": output["summary"], "tags": output["tags"]}})
+        if ai_description is None or (ai_description and 'error' in ai_description):
+            query_filter = {"_id": event["_id"]}
+            details = event.get("details")
+            output = generate_summary_and_tags(details)
+            db.events.update_one(
+                query_filter, {"$set": {"ai_description": output["summary"], "tags": output["tags"]}})
     return {}
 
 
