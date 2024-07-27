@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Container, Box, Grid, Snackbar, ThemeProvider } from '@mui/material';
+import { Container, Box, Grid, Snackbar, ThemeProvider, Alert } from '@mui/material';
 import { fetchProfileData, updateProfileDetails, updateProfilePassword, toggleNotifications } from '../helper/handleProfileData';
 import theme from '../styles/Theme';
 import ProfileCard from '../components/profileComponents/ProfileCard';
