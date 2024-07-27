@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Container, Box, Grid, Snackbar, ThemeProvider } from '@mui/material';
-import { fetchProfileData, updateProfileDetails, updateProfilePassword } from '../helper/handleProfileData';
+import { fetchProfileData, updateProfileDetails, updateProfilePassword, toggleNotifications } from '../helper/handleProfileData';
 import theme from '../styles/Theme';
 import ProfileCard from '../components/profileComponents/ProfileCard';
 import AccountInfoCard from '../components/profileComponents/AccountInfoCard';
@@ -9,6 +9,7 @@ import PasswordCard from '../components/profileComponents/PasswordCard';
 import EditButtons from '../components/profileComponents/EditButtons';
 
 function ProfilePage() {
+    // useStates
     const [isEditing, setIsEditing] = useState(false);
     const [isEditingPW, setIsEditingPW] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -20,26 +21,36 @@ function ProfilePage() {
         fun_fact: "",
         pw: "",
         profile_pic: null,
+        receive_notifications: null,
     });
-    const [new_profile_pic, setNewProfilePic] = useState(null);
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState('');
     const [newProfile, setNewProfile] = useState({
         description: '',
         full_name: '',
         job_title: '',
         fun_fact: '',
     });
-
     const [password, setPassword] = useState({
         old_pw: '',
         new_pw: '',
         confirm_new_pw: '',
     });
+    const [new_profile_pic, setNewProfilePic] = useState(null);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
 
+    // for settings card
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+
+    // get profile data
     useEffect(() => {
         fetchProfileData(setProfile);
     }, []);
+
+    // get default state for email notifications
+    useEffect(() => {
+        setNotificationsEnabled(profile.receive_notifications)
+    }, [profile])
 
     const handleEditClick = () => {
         setIsEditing(!isEditing);
@@ -125,6 +136,28 @@ function ProfilePage() {
         setSnackbarOpen(true);
     };
 
+    // notification functions
+    const handleSwitchChange = () => {
+        if (notificationsEnabled) {
+            setConfirmOpen(true);
+        } else handleNotifConfirm();
+    };
+
+    const handleNotifConfirm = async () => {
+        try {
+            await toggleNotifications();
+            console.log(profile)
+            setNotificationsEnabled(!notificationsEnabled);
+            setConfirmOpen(false);
+        } catch (error) {
+            console.error('Failed to toggle notifications');
+        }
+    };
+
+    const handleNotifCancel = () => {
+        setConfirmOpen(false);
+    };
+
     return (
         <ThemeProvider theme={theme}>
             <Box sx={{ minHeight: '90vh' }}>
@@ -147,7 +180,13 @@ function ProfilePage() {
                             />
                         </Grid>
                         <Grid item xs={6}>
-                            <SettingsCard />
+                            <SettingsCard
+                                confirmOpen={confirmOpen}
+                                notificationsEnabled={notificationsEnabled}
+                                handleSwitchChange={handleSwitchChange}
+                                handleNotifConfirm={handleNotifConfirm}
+                                handleNotifCancel={handleNotifCancel}
+                            />
                             <PasswordCard
                                 isEditingPW={isEditingPW}
                                 password={password}
