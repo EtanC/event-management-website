@@ -133,3 +133,32 @@ user_toggle_notifications_spec = {
         }
     }
 }
+
+user_get_all_spec = {
+    'tags': ['User'],
+    'security': [
+        {
+            "bearerAuth": []
+        }
+    ],
+    'parameters': [],
+    'responses': {
+        200: {
+            'description': 'Successfully retrieved users',
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'users': {
+                        'type': 'array',
+                        'items': {
+                            'type': 'string'
+                        }
+                    }
+                }
+            }
+        },
+        403: {
+            'description': 'Invalid token OR Expired token OR Invalid user'
+        }
+    }
+}

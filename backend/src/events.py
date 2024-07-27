@@ -1,10 +1,12 @@
 import sys
+
+from flask import jsonify
 from backend.src.database import clear, db
 import subprocess
 import requests
 import os
 from dotenv import load_dotenv
-import datetime
+from datetime import datetime
 from backend.src.error import InputError, AccessError
 from backend.src.auth import decode_token
 from backend.src.config import config
@@ -21,6 +23,56 @@ def events_crawl():
 def stringify_id(x):
     x['_id'] = str(x['_id'])
     return x
+
+def events_get_page(page_number, name, location, date):
+    page_number = int(page_number)
+    PAGE_SIZE = 12
+    
+    match_stage = {}
+    if name:
+      match_stage['name'] = {"$regex": name, "$options": "i"}
+    if location:
+      match_stage["location"] = location 
+    if date:
+        try:
+            date_obj = datetime.strptime(date, "%Y-%m-%d")
+            match_stage["converted_start_date"] = {"$gt": date_obj}
+        except ValueError:
+            return jsonify({"error": "Invalid date format."}), 400
+    # Create events date format isn't consistent with the rest of the webcrawlers       
+    pipeline = [
+         {"$addFields": {
+            "converted_start_date": {
+                "$cond": {
+                    "if": {"$regexMatch": {"input": "$start_date", "regex": "^[0-9]{1,2} [A-Za-z]+ [0-9]{4}$"}},
+                    "then": {"$dateFromString": {"dateString": "$start_date", "format": "%d %B %Y"}},
+                    "else": {"$dateFromString": {"dateString": "$start_date", "format": "%b %d, %Y"}}
+                }
+            }
+        }},
+        {"$match": match_stage},
+        {"$facet": {
+            "totalCount": [{"$count": "count"}],
+            "events": [
+                {"$skip": (page_number - 1) * PAGE_SIZE},
+                {"$limit": PAGE_SIZE}
+            ]
+        }}
+    ]
+    
+    result = list(db.events.aggregate(pipeline))
+    
+    total_count = result[0]['totalCount'][0]['count'] if result[0]['totalCount'] else 0
+    page_count = (total_count + PAGE_SIZE - 1) // PAGE_SIZE
+    
+    events = result[0]['events']
+    events = list(map(stringify_id, events))
+    
+    return {
+        'events': events,
+        'page_count': page_count
+    }
+
 
 def events_get_all():
     return {
@@ -110,10 +162,14 @@ def event_create(token, event):
 def get_event(event_id):
     return db.events.find_one({'_id': ObjectId(event_id)})
 
+def is_admin(user_id):
+    return db.users.find_one({"_id": ObjectId(user_id)}).get('isAdmin')
 
 def user_is_authorized(user_id, event_id):
     event = get_event(event_id)
     if user_id in event['authorized_users'] or user_id == event['creator']:
+        return True
+    if is_admin(user_id):
         return True
     return False
 
@@ -143,16 +199,14 @@ def event_update(token, event_id, new_event):
     return {}
 
 
-def user_is_creator(user_id, event_id):
-    print(user_id)
+def user_is_creator_or_admin_priviledges(user_id, event_id):
     creator = db['events'].find_one({'_id': ObjectId(event_id)})['creator']
-    print(creator)
-    return user_id == creator
+    return user_id == creator or is_admin(user_id)
 
 
 def event_delete(token, event_id):
     user_id = decode_token(token)
-    if not user_is_creator(user_id, event_id):
+    if not user_is_creator_or_admin_priviledges(user_id, event_id):
         raise AccessError('User not authorized to delete event')
     event = get_event(event_id)
     if event is None:
@@ -163,7 +217,7 @@ def event_delete(token, event_id):
 
 def event_authorize(token, event_id, to_be_added_email):
     user_id = decode_token(token)
-    if not user_is_creator(user_id, event_id):
+    if not user_is_creator_or_admin_priviledges(user_id, event_id):
         raise AccessError(
             'User is not authorized to allow other people to manage event')
     # Add user to authorized list
