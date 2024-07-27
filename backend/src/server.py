@@ -11,7 +11,7 @@ from backend.src.error import AccessError, InputError
 import json
 from werkzeug.exceptions import HTTPException
 from backend.src.auth import auth_google_login, auth_login, auth_register, auth_logout
-from backend.src.events import events_crawl, events_clear, events_get_all, event_create, event_update, event_delete, event_authorize, events_ai_description
+from backend.src.events import events_crawl, events_clear, events_get_all, event_create, event_update, event_delete, event_authorize, events_ai_description, events_get_page
 from backend.src.profile_details import get_profile_details, update_profile_details, update_profile_password
 from backend.src.admin import is_admin, invite_admin, remove_admin
 from backend.src.user import user_register_event, user_events, user_unregister_event, user_manage_events, user_toggle_notifications, user_get_all
@@ -46,8 +46,9 @@ def auth_login_route():
 
 @app.post('/auth/google_login')
 def auth_google_login_route():
-  auth_code = request.get_json()['code']
-  return auth_google_login(auth_code)
+    auth_code = request.get_json()['code']
+    return auth_google_login(auth_code)
+
 
 @app.post('/auth/register')
 @swag_from(auth_register_spec)
@@ -70,6 +71,10 @@ def auth_logout_route():
 def events_crawl_route():
     return events_crawl()
 
+@app.get('/events/get_page/<page_number>')
+@swag_from(events_get_page_spec)
+def events_get_page_route(page_number):
+    return json.dumps(events_get_page(page_number, request.args.get('name'), request.args.get('location'), request.args.get('date')), default=str)
 
 @app.get('/events/get/all')
 @swag_from(events_get_all_spec)
@@ -142,6 +147,7 @@ def event_authorize_route():
         raise AccessError('Authorization token is missing')
     body = request.get_json()
     return event_authorize(token, body['event_id'], body['email'])
+
 
 @app.get('/profile/get')
 @swag_from(profile_get_spec)
@@ -258,15 +264,15 @@ def user_unregister_event_route(event_id):
         raise AccessError('Authorization token is missing')
     return json.dumps(user_unregister_event(token, event_id))
 
+
 @app.put('/user/toggle_notifications')
 @swag_from(user_toggle_notifications_spec)
 def user_toggle_notifications_route():
     token = request.cookies.get('token')
-
-    if token.startswith('Bearer '):
-        token = token[len('Bearer '):]
-
+    if not token:
+        raise AccessError('Authorization token is missing')
     return user_toggle_notifications(token)
+
 
 @app.get('/user/get/all')
 @swag_from(user_get_all_spec)
@@ -275,6 +281,7 @@ def user_get_all_route():
     if not token:
         raise AccessError('Authorization token is missing')
     return json.dumps(user_get_all(token))
+
 
 @app.delete('/clear')
 @swag_from(clear_spec)
