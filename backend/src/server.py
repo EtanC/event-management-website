@@ -79,7 +79,9 @@ def events_get_all_route():
 @app.get('/events/get/tagged')
 @swag_from(events_get_tagged_spec)
 def events_get_tagged_route():
-    return events_get_tagged()
+    tags = request.args.get('tags', '')
+    tags_list = tags.split(',')
+    return events_get_tagged(tags_list)
 
 @app.delete('/events/clear')
 @swag_from(events_clear_spec)
@@ -106,7 +108,8 @@ def event_create_route():
         'details_link': body['details_link'],
         'name': body['name'],
         'location': body['location'],
-        'start_date': body['start_date']
+        'start_date': body['start_date'],
+        'tags': body['tags']
     }
     return event_create(token, event)
 

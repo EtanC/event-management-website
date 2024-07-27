@@ -28,34 +28,9 @@ def events_get_all():
     }
 
 def events_get_tagged(tags):
-    # Will return all events with at least 1 matching tag, events with more matching tags are prioritised first
-
-    # loop through the tags and add each event to a list, paired with the number 1 aka the number of tags that have applied to them 
-    # so far
-
-    # then loop through the next tag and search through the events that match that tag, if the tag doesnt exist in the list already
-    # then do the same as above, if it does already exist within the list just increment the numebr paired with the tag, as there has 
-    # 2 matches so far
-
-    events_counted = []
-
-    for tag in tags:
-        events_matched = list(map(stringify_id, db.events.find({"tag": tag})))
-
-        events_list = [event[0] for event in events_counted]
-        for event in events_matched:
-            if event in events_list: 
-                event_increment = next(e for e in events_counted if events_counted[0] == event)
-                event_increment[1] += 1
-            else: 
-                events_list.append((event, 1))
-
-    events_sorted = sorted(events_counted, key=lambda event: event[0], reverse=True)
-
     return {
-        'events': [event[0] for event in events_sorted]
+        'events': list(map(stringify_id, db.events.find({"tags": { '$all': tags }})))
     }
-
 
 def events_clear():
     clear('events')

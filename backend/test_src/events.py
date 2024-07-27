@@ -8,7 +8,8 @@ def event_create(token, event):
         'details_link': event['details_link'],
         'name': event['name'],
         'location': event['location'],
-        'start_date': event['start_date']
+        'start_date': event['start_date'],
+        'tags': event.get('tags', [])
     }
     cookies = make_cookies(token)
     response = requests.post(f'{backend_url}/event/create', json=body, cookies=cookies)
@@ -44,10 +45,10 @@ def events_get_all():
     response = requests.get(f'{backend_url}/events/get/all')
     return parse_response(response)
 def events_get_tagged(tags):
-    body = {
-        'tags': tags
+    params = {
+        'tags': ','.join(tags)
     }
-    response = requests.get(f'{backend_url}/events/get/tagged', json=body)
+    response = requests.get(f'{backend_url}/events/get/tagged', params=params)
     return parse_response(response)
 def events_clear():
     response = requests.delete(f'{backend_url}/events/clear')

@@ -40,7 +40,7 @@ def event_tag_2():
         'name': 'AI + SE',
         'location': 'Lesotho, South Africa',
         'start_date': '30 June 2024',
-        'tags': ['Artificial Intelligence, Software Engineering']
+        'tags': ['Artificial Intelligence', 'Software Engineering']
     }
     return event
 
@@ -54,7 +54,7 @@ def event_tag_3():
         'name': 'AI + SE + DS',
         'location': 'Lesotho, South Africa',
         'start_date': '30 June 2024',
-        'tags': ['Artificial Intelligence, Software Engineering, Data Science']
+        'tags': ['Artificial Intelligence', 'Software Engineering', 'Data Science']
     }
     return event
 
@@ -105,9 +105,51 @@ def test_event_tags(reset, event_tag_1, event_tag_2, event_tag_3, sample_user):
     event_id_2 = event_create(sample_user, event_tag_2)['event_id']
     event_id_3 = event_create(sample_user, event_tag_3)['event_id']
 
+    expected_event_1 = {
+        **event_tag_1,
+        '_id': str(event_id_1),
+        'ranking': 0
+    }
+
+    expected_event_2 = {
+        **event_tag_2,
+        '_id': str(event_id_2),
+        'ranking': 0
+    }
+
+    expected_event_3 = {
+        **event_tag_3,
+        '_id': str(event_id_3),
+        'ranking': 0
+    }
+
     assert events_get_tagged(['Human-Computer Interaction'])['events'] == []
 
-    
+    assert events_get_tagged(['Human-Computer Interaction', 'Artificial Intelligence'])['events'] == []
+
+    # assert events_get_tagged(['Artificial Intelligence'])['events'] == [event_tag_1, event_tag_2, event_tag_3]
+    result = events_get_tagged(['Artificial Intelligence'])['events']
+
+    assert len(result) == 3
+    for index, expected_event in enumerate([expected_event_1, expected_event_2, expected_event_3]):
+        for key in expected_event.keys():
+            assert result[index][key] == expected_event[key]
+
+    # assert events_get_tagged(['Artificial Intelligence', 'Software Engineering'])['events'] == [event_tag_2, event_tag_3]
+    result = events_get_tagged(['Artificial Intelligence', 'Software Engineering'])['events']
+
+    assert len(result) == 2
+    for index, expected_event in enumerate([expected_event_2, expected_event_3]):
+        for key in expected_event.keys():
+            assert result[index][key] == expected_event[key]
+
+    # assert events_get_tagged(['Artificial Intelligence', 'Software Engineering', 'Data Science'])['events'] == [event_tag_3]
+    result = events_get_tagged(['Artificial Intelligence', 'Software Engineering', 'Data Science'])['events']
+
+    assert len(result) == 1
+    for index, expected_event in enumerate([expected_event_3]):
+        for key in expected_event.keys():
+            assert result[index][key] == expected_event[key]
 
 
 def test_event_creation(reset, sample_event, sample_user):
