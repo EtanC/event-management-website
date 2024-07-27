@@ -183,7 +183,25 @@ events_get_page_spec = {
             'name': 'page_number',
             'in': 'path',
             'type': 'string',
-            'required': 'true'
+            'required': True
+        },
+        {
+          'name': 'name',
+          'in': 'query',
+          'type': 'string',
+          'required': False
+        },
+        {
+          'name': 'location',
+          'in': 'query',
+          'type': 'string',
+          'required': False
+        },
+        {
+          'name': 'date',
+          'in': 'query',
+          'type': 'string',
+          'required': False
         }
     ],
     'responses': {

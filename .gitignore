@@ -5,3 +5,5 @@ __pycache__
 backend/.DS_Store
 .gitignore
 .coverage
+node_modules
+nohup.out
