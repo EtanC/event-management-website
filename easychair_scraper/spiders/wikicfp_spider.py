@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import re
+from backend.src.database import client
 
 class EasychairSpider(scrapy.Spider):
     name = 'wikicfp'
     allowed_domains = ['wikicfp.com']
     start_urls = ['http://www.wikicfp.com/cfp/allcfp?page=15']
+
+    def __init__(self, database_name):
+        self.db = client[database_name]
 
     def parse(self, response):
         table = response.css('.contsec table > tr:nth-child(3) table')

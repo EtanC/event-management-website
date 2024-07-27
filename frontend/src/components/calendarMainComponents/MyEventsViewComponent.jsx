@@ -4,7 +4,7 @@ import {
 } from '@mui/material';
 import { fetchUserEvents, fetchUserRegisteredEvents } from '../../helper/handleEventData';
 import EventCard from '../EventCard';
-import DeleteEventAlertPopup from './DeleteEventAlertPopup';
+import ActionConfirmationPopup from '../ActionConfirmationPopup';
 import CreateEventPopUp from '../CreateEventPopUp';
 import EventManagerModal from '../EventManagerModal';
 import ViewRegisteredEventPopUp from './ViewRegisteredEventPopUp';
@@ -17,10 +17,10 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [eventToDelete, setEventToDelete] = useState(null);
     const [openEditEvent, setOpenEditEvent] = useState(false);
     const [openAddManager, setOpenAddManager] = useState(false);
     const [eventToEdit, setEventToEdit] = useState(null);
+    const [eventToDelete, setEventToDelete] = useState(null);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [isEditEvent, setIsEditEvent] = useState(false);
 
@@ -156,12 +156,13 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
 
     return (
         <>
-            <DeleteEventAlertPopup
+            <ActionConfirmationPopup
                 open={deleteDialogOpen}
                 onClose={handleDeleteCancel}
                 onConfirm={handleDeleteConfirm}
                 title={'Confirm Delete'}
                 content={'Are you sure you want to delete this event? This action cannot be undone.'}
+                primaryButtonText={'Delete'}
             />
             <CreateEventPopUp open={openEditEvent} handleClose={handleEditClose} headerText={'Edit Event'} event={eventToEdit} />
             <EventManagerModal open={openAddManager} handleClose={handleAddManagerClose} event={eventToEdit} />
