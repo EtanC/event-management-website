@@ -314,7 +314,7 @@ def user_get_all_route():
         raise AccessError('Authorization token is missing')
     return json.dumps(user_get_all(token))
 
-
+  
 @app.delete('/clear')
 @swag_from(clear_spec)
 def clear_all():
