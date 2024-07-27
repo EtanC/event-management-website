@@ -1,8 +1,8 @@
 import pytest
-from test_src.profile_details import get_profile_details, update_profile_details, update_profile_password
-from test_src.auth import auth_register_raw, auth_login_raw
+from backend.test_src.profile_details import get_profile_details, update_profile_details, update_profile_password
+from backend.test_src.auth import auth_register_raw, auth_login_raw
 from backend.src.error import InputError, AccessError
-from test_src.database import clear_all
+from backend.test_src.database import clear_all
 import jwt
 from io import BytesIO
 import base64

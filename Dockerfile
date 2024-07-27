@@ -10,6 +10,8 @@ COPY ./backend ./backend
 
 COPY ./easychair_scraper ./easychair_scraper
 
+COPY .env ./
+
 EXPOSE 5000
 
 CMD [ "python3", "-m", "backend.src.server" ]

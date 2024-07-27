@@ -1,12 +1,13 @@
 import pytest
-from test_src.events import event_create, events_get_all
-from test_src.auth import auth_register_raw
-from test_src.user import user_events, user_register_event, user_manage_events, user_unregister_event
-from test_src.database import clear_all
-from test_src.events import event_authorize, event_delete
+from backend.test_src.events import event_create, events_get_all
+from backend.test_src.auth import auth_register_raw
+from backend.test_src.user import user_events, user_register_event, user_manage_events, user_unregister_event
+from backend.test_src.database import clear_all
+from backend.test_src.events import event_authorize, event_delete
 from backend.src.error import InputError, AccessError
 from backend.src.config import config
 import jwt
+from dotenv import load_dotenv
 
 @pytest.fixture
 def sample_event():
@@ -28,6 +29,10 @@ def sample_user():
 @pytest.fixture(autouse=True)
 def reset():
     clear_all()
+
+@pytest.fixture(scope='session', autouse=True)
+def load_env_variables():
+    load_dotenv()
 
 def test_user(reset, sample_event, sample_user):
     # create event
@@ -101,7 +106,7 @@ def test_register_invalid_event(sample_user):
         user_register_event(sample_user, invalid_event_id)
 
 def decode_token(token):
-    data = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
+    data = jwt.decode(token, os.getenv('AUTH_SECRET'), algorithms=['HS256'])
     return data['user_id']
 
 def assert_event_equal(event, expected_event):

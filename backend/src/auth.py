@@ -12,7 +12,7 @@ from flask import make_response
 
 def decode_token(token):
     try:
-        data = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
+        data = jwt.decode(token, os.getenv('AUTH_SECRET'), algorithms=['HS256'])
     except (jwt.InvalidSignatureError, jwt.DecodeError) as e:
         raise AccessError('Invalid token')
     if db.active_sessions.find_one({ '_id': ObjectId(data['session_id'])}) is None:
@@ -22,7 +22,7 @@ def decode_token(token):
     return data['user_id']
 
 def encode_jwt(data):
-    return jwt.encode(data, config['SECRET'], algorithm='HS256')
+    return jwt.encode(data, os.getenv('AUTH_SECRET'), algorithm='HS256')
 
 
 def hash(string):
@@ -179,7 +179,7 @@ def auth_register(username, email, password):
 
 
 def auth_logout(token):
-    data = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
+    data = jwt.decode(token, os.getenv('AUTH_SECRET'), algorithms=['HS256'])
     db.active_sessions.delete_one({'_id': ObjectId(data['session_id'])})
 
     response = make_response({'message': 'Logout successful'})

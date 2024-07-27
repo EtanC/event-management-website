@@ -1,5 +1,5 @@
 import requests
-from test_src.util import parse_response, backend_url, make_cookies
+from backend.test_src.util import parse_response, backend_url, make_cookies
 
 def user_register_event(token, event_id):
     cookies = make_cookies(token)
