@@ -8,6 +8,7 @@ from backend.src.error import InputError, AccessError
 from backend.src.config import config
 import jwt
 from dotenv import load_dotenv
+import os
 
 @pytest.fixture
 def sample_event():
