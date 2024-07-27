@@ -5,7 +5,7 @@ import GoogleIcon from '@mui/icons-material/Google';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-function GoogleAuth(error) {
+function GoogleAuth({ error, setTokenExpires }) {
   const navigate = useNavigate();
 
   async function getUserInfo(codeResponse) {
@@ -25,6 +25,7 @@ function GoogleAuth(error) {
     flow: "auth-code",
     onSuccess: async (codeResponse) => {
       let res = await getUserInfo(codeResponse);
+      setTokenExpires(new Date(res.body['session_end_time']));
       console.log(res)
       navigate('/')
     },

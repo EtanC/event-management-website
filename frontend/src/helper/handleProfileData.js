@@ -54,3 +54,13 @@ export const updateProfilePassword = async (password, setErrorMessage) => {
     }
 }
 
+
+export const toggleNotifications = async () => {
+    try {
+        const response = await axios.put('http://127.0.0.1:5000/user/toggle_notifications', {}, { withCredentials: true });
+        return response.data;
+    } catch (error) {
+        console.error('Error toggling notifications:', error);
+        throw error;
+    }
+};

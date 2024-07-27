@@ -4,7 +4,7 @@ import {
 } from '@mui/material';
 import { fetchUserEvents, fetchUserRegisteredEvents } from '../../helper/handleEventData';
 import EventCard from '../EventCard';
-import DeleteEventAlertPopup from './DeleteEventAlertPopup';
+import ActionConfirmationPopup from '../ActionConfirmationPopup';
 import CreateEventPopUp from '../CreateEventPopUp';
 import EventManagerModal from '../EventManagerModal';
 import ViewRegisteredEventPopUp from './ViewRegisteredEventPopUp';
@@ -17,10 +17,10 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [eventToDelete, setEventToDelete] = useState(null);
     const [openEditEvent, setOpenEditEvent] = useState(false);
     const [openAddManager, setOpenAddManager] = useState(false);
     const [eventToEdit, setEventToEdit] = useState(null);
+    const [eventToDelete, setEventToDelete] = useState(null);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [isEditEvent, setIsEditEvent] = useState(false);
 
@@ -33,10 +33,10 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
             'C': 1,
             'Unspecified': 0,
         };
-    
+
         const RankingValues = (selectedRanking || []).map(ranking => rankingMap[ranking]);
         if (RankingValues.length === 0) return events; // Return all events if no ranking is selected
-    
+
         return events.filter(event => {
             const eventRanking = event.ranking !== undefined ? event.ranking : 0; // Assume 0 (Unspecified) if ranking is not defined
             return RankingValues.includes(eventRanking);
@@ -81,7 +81,7 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
     const handleDeleteConfirm = async () => {
         if (eventToDelete) {
             try {
-                await handleDeleteEvent(selectedEvent._id);
+                await handleDeleteEvent(eventToDelete._id);
                 setDeleteDialogOpen(false);
                 setEventToDelete(null);
                 handleClosePopUp();
@@ -111,14 +111,14 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
         setEventToEdit(event);
         setOpenEditEvent(true);
     };
-    
+
     const handleManagerClick = (event) => {
         setEventToEdit(event);
         setOpenAddManager(true);
     };
-    
-    const handleDeleteClick = () => {
-        setEventToDelete(selectedEvent._id);
+
+    const handleDeleteClick = (event) => {
+        setEventToDelete(event);
         setDeleteDialogOpen(true);
     }
 
@@ -133,7 +133,7 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
         }
         if (error) return <Typography color="error">{error}</Typography>;
         if (!filteredEvents || filteredEvents.length === 0) return <Typography>No events found.</Typography>;
-    
+
         return (
             <Box sx={{ maxHeight: '65vh', overflowY: 'auto' }}>
                 <Grid container spacing={2}>
@@ -146,7 +146,7 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
                             isManagedEvent={isManagedEvents}
                             onEditEvent={() => handleEditClick(event)}
                             onAddEventManager={() => handleManagerClick(event)}
-                            onDeleteEvent={() => handleDeleteClick()}
+                            onDeleteEvent={() => handleDeleteClick(event)}
                         />
                     ))}
                 </Grid>
@@ -156,12 +156,13 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
 
     return (
         <>
-            <DeleteEventAlertPopup
+            <ActionConfirmationPopup
                 open={deleteDialogOpen}
                 onClose={handleDeleteCancel}
                 onConfirm={handleDeleteConfirm}
                 title={'Confirm Delete'}
                 content={'Are you sure you want to delete this event? This action cannot be undone.'}
+                primaryButtonText={'Delete'}
             />
             <CreateEventPopUp open={openEditEvent} handleClose={handleEditClose} headerText={'Edit Event'} event={eventToEdit} />
             <EventManagerModal open={openAddManager} handleClose={handleAddManagerClose} event={eventToEdit} />

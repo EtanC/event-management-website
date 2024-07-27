@@ -5,6 +5,7 @@ import { TextField, Button, Typography, Box, Grid, Alert } from '@mui/material';
 import background from '../Image/LHSBackground.png';
 import { handleRegister } from '../helper/handleAuth';
 import Logo from '../components/CompanyLogo.jsx';
+import { useProfile } from '../components/ProfileProvider.jsx';
 
 const RegisterPage = () => {
     const [email, setEmail] = useState('');
@@ -13,6 +14,7 @@ const RegisterPage = () => {
     const [name, setName] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const { setTokenExpires } = useProfile();
     const navigate = useNavigate();
 
     // Password validation
@@ -38,7 +40,7 @@ const RegisterPage = () => {
         }
 
         // Use the handleRegister function to register the user
-        await handleRegister(email, password, name, setErrorMessage, setIsLoading, navigate);
+        await handleRegister(email, password, name, setErrorMessage, setIsLoading, navigate, setTokenExpires);
     };
 
     return (
