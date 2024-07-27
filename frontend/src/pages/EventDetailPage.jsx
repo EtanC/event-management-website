@@ -86,7 +86,7 @@ function EventDetailPage() {
                                     </Box>
                                 ) : (
                                     <div>
-                                        {Array.isArray(event.ai_description) && <Accordion defaultExpanded>
+                                        {event.ai_description && <Accordion defaultExpanded>
                                             <AccordionSummary
                                                 expandIcon={<ExpandMoreIcon />}
                                             >
@@ -94,7 +94,7 @@ function EventDetailPage() {
                                             </AccordionSummary>
                                             <AccordionDetails>
                                                 <Typography>
-                                                    {event.ai_description[0]['summary_text']}
+                                                    {event.ai_description}
                                                 </Typography>
                                             </AccordionDetails>
                                         </Accordion>}
