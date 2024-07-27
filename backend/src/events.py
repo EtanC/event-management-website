@@ -167,8 +167,7 @@ def get_event(event_id):
 def is_admin(user_id):
     return db.users.find_one({"_id": ObjectId(user_id)}).get('isAdmin')
 
-def user_is_authorized(user_id, event_id):
-    event = get_event(event_id)
+def user_is_authorized(user_id, event):
     if user_id in event['authorized_users'] or user_id == event['creator']:
         return True
     if is_admin(user_id):
@@ -181,7 +180,7 @@ def event_update(token, event_id, new_event):
     event = get_event(event_id)
     if event['crawled']:
         raise InputError('Cannot edit an event crawled from another source')
-    if not user_is_authorized(user_id, event_id):
+    if not user_is_authorized(user_id, event):
         raise AccessError('User not authorized to update event')
     if event is None:
         raise InputError('No event in database with specified event_id')
@@ -203,30 +202,28 @@ def event_update(token, event_id, new_event):
     return {}
 
 
-def user_is_creator_or_admin_priviledges(user_id, event_id):
-    creator = db['events'].find_one({'_id': ObjectId(event_id)})['creator']
-    return user_id == creator or is_admin(user_id)
+def user_is_creator(user_id, event):
+    return user_id == event['creator']
 
 
 def event_delete(token, event_id):
     user_id = decode_token(token)
-    if not user_is_creator_or_admin_priviledges(user_id, event_id):
-        raise AccessError('User not authorized to delete event')
     event = get_event(event_id)
+    if event['crawled'] and not is_admin(user_id):
+        raise InputError('Only admins permitted to delete crawled events')
+    if not user_is_creator(user_id, event):
+        raise AccessError('User not authorized to delete event')
     if event is None:
         raise InputError('No event in database with specified event_id')
     db.events.delete_one({'_id': ObjectId(event_id)})
     return {}
 
-def is_crawled_event(event_id):
-    event = db.events.find_one({ '_id': ObjectId(event_id)})
-    return event['crawled']
-
 def event_authorize(token, event_id, to_be_added_email):
-    if is_crawled_event(event_id):
+    event = get_event(event_id)
+    if event['crawled']:
         raise InputError('Cannot manage an event crawled from another source')
     user_id = decode_token(token)
-    if not user_is_creator_or_admin_priviledges(user_id, event_id):
+    if not user_is_creator(user_id, event) and not is_admin(user_id):
         raise AccessError(
             'User is not authorized to allow other people to manage event')
     # Add user to authorized list
