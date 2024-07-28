@@ -127,6 +127,22 @@ events_get_page_spec = {
           'in': 'query',
           'type': 'string',
           'required': False
+        }, 
+        {
+          'name': 'tags',
+          'in': 'query',
+          'type': 'array',
+          'items': {
+              'type': 'string'
+          },
+          'required': False
+        },
+        {
+          'name': 'sort_by',
+          'in': 'query',
+          'type': 'string',
+          'required': False,
+          'enum': ['alphabetical', 'reverse', 'view_count']
         }
     ],
     'responses': {
@@ -253,6 +269,26 @@ events_ai_description_spec = {
         },
         500: {
             'description': 'Error',
+        }
+    }
+}
+
+event_event_view_count_spec = {
+    'tags': ['Events'],
+    'parameters': [
+        {
+            'name': 'event_id',
+            'in': 'path',
+            'type': 'string',
+            'required': True
+        },
+    ],
+    'responses': {
+        200: {
+            'description': 'Successfully incremented view count',
+        },
+        400: {
+            'description': 'Invalid event_id or error incrementing view count',
         }
     }
 }

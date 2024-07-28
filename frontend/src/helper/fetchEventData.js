@@ -1,26 +1,24 @@
 import axios from 'axios';
 
 
-const fetchEventsData = async (setEvents, setLocations, setError, setIsLoading, page, setPageCount, eventType, location, date) => {
+const fetchEventsData = async (setEvents, setLocations, setError, setIsLoading, page, setPageCount, eventType, location, date, tags, sortBy) => {
     setIsLoading(true);
     try {
-      const queryParams = new URLSearchParams();
-      
-      if (eventType) {
-        queryParams.append('name', eventType); 
-      }
+        const queryParams = new URLSearchParams();
+        
+        if (eventType) queryParams.append('name', eventType);
+        if (location) queryParams.append('location', location);
+        if (date) queryParams.append('date', date);
+        if (tags && tags.length > 0) {
+            tags.forEach(tag => queryParams.append('tags', tag));
+        }
+        if (sortBy) queryParams.append('sort_by', sortBy);
+
     
-      if (location) {
-          queryParams.append('location', location);
-      }
-      
-      if (date) {
-          queryParams.append('date', date);
-      }
-    
-    const queryString = queryParams.toString();
-    const url = `http://127.0.0.1:5000/events/get_page/${page}?${queryString}`;
-      const response = await axios.get(url);
+        const queryString = queryParams.toString();
+        const url = `http://127.0.0.1:5000/events/get_page/${page}?${queryString}`;
+
+        const response = await axios.get(url);
         const eventData = response.data.events;
         setPageCount(response.data.page_count);
         setEvents(eventData);

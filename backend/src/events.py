@@ -31,7 +31,7 @@ def stringify_id(x):
     x['_id'] = str(x['_id'])
     return x
 
-def events_get_page(page_number, name, location, date):
+def events_get_page(page_number, name, location, date, tags, sort_by):
     page_number = int(page_number)
     PAGE_SIZE = 12
     
@@ -46,6 +46,28 @@ def events_get_page(page_number, name, location, date):
             match_stage["converted_start_date"] = {"$gt": date_obj}
         except ValueError:
             return jsonify({"error": "Invalid date format."}), 400
+    if tags:
+        match_stage["tags"] = {"$all": tags}
+
+    # alphabetical sort and view count sort
+    sort_stage = {"name": 1} # default to sorting name
+    if sort_by:
+        if sort_by == 'alphabetical':
+            sort_stage = {"name": 1}
+        elif sort_by == 'reverse':
+            sort_stage = {"name": -1}
+        elif sort_by == 'view_count':
+            sort_stage = {"view_count": -1}
+
+    # Ensure the fields to sort by are present
+    projection_stage = {
+        "name": 1,
+        "location": 1,
+        "start_date": 1,
+        "view_count": 1,
+        "tags": 1
+    }
+
     # Create events date format isn't consistent with the rest of the webcrawlers       
     pipeline = [
          {"$addFields": {
@@ -58,6 +80,7 @@ def events_get_page(page_number, name, location, date):
             }
         }},
         {"$match": match_stage},
+        {"$sort": sort_stage},
         {"$facet": {
             "totalCount": [{"$count": "count"}],
             "events": [
@@ -69,12 +92,17 @@ def events_get_page(page_number, name, location, date):
     
     result = list(db.events.aggregate(pipeline))
     
-    total_count = result[0]['totalCount'][0]['count'] if result[0]['totalCount'] else 0
+    # Handle the case where totalCount or events might not be present
+    if result and 'totalCount' in result[0] and result[0]['totalCount']:
+        total_count = result[0]['totalCount'][0]['count']
+    else:
+        total_count = 0
     page_count = (total_count + PAGE_SIZE - 1) // PAGE_SIZE
     
-    events = result[0]['events']
+    events = result[0]['events'] if result and 'events' in result[0] else []
     events = list(map(stringify_id, events))
-    
+
+    # Debugging logs
     return {
         'events': events,
         'page_count': page_count
@@ -293,6 +321,24 @@ def event_update(token, event_id, new_event):
         }}
     )
     return {}
+
+def event_view_count(event_id):
+    try:
+        if not ObjectId.is_valid(event_id):
+            raise InputError('Invalid event_id format')
+        event = get_event(event_id)
+        if event is None:
+            raise InputError('No event in database with specified event_id')
+        
+        db.events.update_one(
+            {"_id": ObjectId(event_id)},
+            {"$inc": {"view_count": 1}}
+        )
+        return jsonify({"message": "View count incremented successfully"}), 200
+    except InputError as e:
+        return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 def user_is_creator_or_admin_priviledges(user_id, event_id):
