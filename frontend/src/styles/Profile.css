@@ -29,3 +29,7 @@
 .button-edit {
     width: 300px !important;
 }
+
+.button-responsive {
+    width: 100% !important;
+}

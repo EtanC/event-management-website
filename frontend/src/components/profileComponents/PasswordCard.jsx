@@ -16,7 +16,7 @@ const PasswordCard = ({ isEditingPW, password, errorMessage, handlePWChange, han
                 )}
             </Box>
             <Box className='flexbox'>
-                <Box>
+                <Box sx={{ display: 'flex', flexDirection: 'column', width: '80%', justifyContent: 'center', alignItems: 'center' }}>
                     {isEditingPW ? (
                         <>
                             <TextField
@@ -27,7 +27,7 @@ const PasswordCard = ({ isEditingPW, password, errorMessage, handlePWChange, han
                                 onChange={handlePWChange}
                                 fullWidth
                                 required
-                                InputProps={{ sx: { borderRadius: '40px', mb: 2 } }}
+                                InputProps={{ sx: { borderRadius: '40px', mb: 2} }}
                             />
                             <TextField
                                 name="new_pw"
@@ -50,17 +50,17 @@ const PasswordCard = ({ isEditingPW, password, errorMessage, handlePWChange, han
                                 InputProps={{ sx: { borderRadius: '40px', mb: 2 } }}
                             />
                             {errorMessage && <Alert severity="error" sx={{ marginBottom: '20px' }}>{errorMessage}</Alert>}
-                            <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'row', gap: '20px' }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'row', gap: '20px', width: '100%' }}>
                                 <Button
                                     variant="outlined" color="primary"
-                                    className='button-common'
+                                    className='button-common button-responsive'
                                     onClick={handleEditPWClick}
                                 >
                                     Cancel
                                 </Button>
                                 <Button
                                     variant="contained" color="primary"
-                                    className='button-common'
+                                    className='button-common button-responsive'
                                     onClick={updatePassword}
                                 >
                                     Save Password
@@ -71,7 +71,7 @@ const PasswordCard = ({ isEditingPW, password, errorMessage, handlePWChange, han
                         <>
                             <Button
                                 variant="contained" color="primary"
-                                className='button-common button-edit'
+                                className='button-common button-edit button-responsive'
                                 onClick={handleEditPWClick}
                             >
                                 Change Password

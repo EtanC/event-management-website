@@ -129,8 +129,11 @@ function ProfilePage() {
         <ThemeProvider theme={theme}>
             <Box sx={{ minHeight: '90vh' }}>
                 <Container maxWidth="md" sx={{ mt: 2 }}>
-                    <Grid container spacing={4} sx={{ mb: 5 }}>
-                        <Grid item xs={6}>
+                    <Grid container spacing={{ xs: 0, sm: 4 }} sx={{ mb: 5, display: 'flex', flexDirection: {
+                        xs: 'column',
+                        sm: 'row'
+                    }}}>
+                        <Grid item xs={12} sm={6}>
                             <ProfileCard
                                 profile={profile}
                                 isEditing={isEditing}
@@ -146,7 +149,7 @@ function ProfilePage() {
                                 handleChange={handleChange}
                             />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} sm={6}>
                             <SettingsCard />
                             <PasswordCard
                                 isEditingPW={isEditingPW}
