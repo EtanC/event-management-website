@@ -7,12 +7,12 @@ from backend.src.error import AccessError, InputError
 @pytest.fixture
 def sample_event():
     event = {
-        'deadline': '1 July 2024',
+        'deadline': 'Jul 1, 2024',
         'details': 'This is a great event, everyone should come',
         'details_link': 'http://www.realeventpage.com',
         'name': 'A real event',
         'location': 'Lesotho, South Africa',
-        'start_date': '30 June 2024'
+        'start_date': 'Jun 30, 2024'
     }
     return event
 
@@ -35,12 +35,12 @@ def test_event(reset, sample_event, sample_user):
     for key in expected_event.keys():    
         assert events_get_all()['events'][0][key] == expected_event[key]
     updated_event = {
-        'deadline': '2 July 2024',
+        'deadline': 'Jul 2, 2024',
         'details': 'This is a somewhat ok event, everyone should come',
         'details_link': 'http://www.notrealeventpage.com',
         'name': 'A not so real event',
         'location': 'Benin, West Africa',
-        'start_date': '1 July 2024'
+        'start_date': 'Jul 1, 2024'
     }
     event_update(sample_user, event_id, updated_event)
     expected_event = {
@@ -63,12 +63,12 @@ def test_event_creation(reset, sample_event, sample_user):
 def test_event_update(reset, sample_event, sample_user):
     event_id = event_create(sample_user, sample_event)['event_id']
     updated_event = {
-        'deadline': '2 July 2024',
+        'deadline': 'Jul 2, 2024',
         'details': 'This is a somewhat ok event, everyone should come',
         'details_link': 'http://www.notrealeventpage.com',
         'name': 'A not so real event',
         'location': 'Benin, West Africa',
-        'start_date': '1 July 2024'
+        'start_date': 'Jul 1, 2024'
     }
     event_update(sample_user, event_id, updated_event)
     expected_event = {
@@ -91,12 +91,12 @@ def test_event_creation_without_auth(reset, sample_event):
 def test_event_update_without_auth(reset, sample_event, sample_user):
     event_id = event_create(sample_user, sample_event)['event_id']
     updated_event = {
-        'deadline': '2 July 2024',
+        'deadline': 'Jul 2, 2024',
         'details': 'This is a somewhat ok event, everyone should come',
         'details_link': 'http://www.notrealeventpage.com',
         'name': 'A not so real event',
         'location': 'Benin, West Africa',
-        'start_date': '1 July 2024'
+        'start_date': 'Jul 1, 2024'
     }
     with pytest.raises(AccessError):
         event_update(None, event_id, updated_event)
