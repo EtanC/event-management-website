@@ -22,14 +22,20 @@ const SearchBar = ({ labelOne, labelTwo, eventType, setEventType, location, setL
             padding: '20px', 
             borderRadius: '15px', 
             position: 'absolute', 
-            top: '450px', 
+            top: {
+                xs: '250px',
+                sm: '450px'
+            }, 
             left: '50%', 
             transform: 'translateX(-50%)', 
             zIndex: 2, 
             width: '90%', 
             maxWidth: '800px',
         }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', maxWidth: '800px', gap: '10px' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', maxWidth: '800px', gap: '10px', flexDirection: {
+            xs: 'column',
+            sm: 'row'
+        }}}>
             <TextField
                 label={labelOne}
                 value={eventType}
@@ -43,7 +49,7 @@ const SearchBar = ({ labelOne, labelTwo, eventType, setEventType, location, setL
                 getOptionLabel={(option) => option}
                 value={location}
                 onChange={(e, newValue) => setLocation(newValue)}
-                sx={{ flex: 1, ...inputStyles }}
+                sx={{ flex: 1, width: '100%', ...inputStyles }}
                 renderInput={(params) => (
                     <TextField
                         {...params}
