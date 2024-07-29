@@ -14,7 +14,7 @@ from backend.src.auth import auth_google_login, auth_login, auth_register, auth_
 from backend.src.events import events_crawl, events_clear, events_get_all, event_create, event_update, event_delete, event_authorize, events_ai_description, events_get_page, event_view_count
 from backend.src.profile_details import get_profile_details, update_profile_details, update_profile_password, update_preferences, get_user_preferences
 from backend.src.admin import is_admin, invite_admin, remove_admin
-from backend.src.user import user_register_event, user_events, user_unregister_event, user_manage_events, user_toggle_notifications, user_get_all
+from backend.src.user import user_register_event, user_events, user_unregister_event, user_manage_events, user_toggle_notifications, user_get_all, user_delete
 from flask_cors import CORS
 from backend.src.config import config
 from backend.src.database import db
@@ -318,6 +318,12 @@ def user_get_all_route():
         raise AccessError('Authorization token is missing')
     return json.dumps(user_get_all(token))
 
+@app.delete('/user/delete')
+def user_delete_route():
+    token = request.cookies.get('token')
+    if not token:
+        raise AccessError('Authorization token is missing')
+    return json.dumps(user_delete(token))
 
 @app.delete('/clear')
 @swag_from(clear_spec)
