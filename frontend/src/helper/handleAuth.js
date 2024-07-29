@@ -10,6 +10,7 @@ export const handleLogin = async (email, password, navigate, setErrorMessage, se
     try {
         const response = await axios.post('http://127.0.0.1:5000/auth/login', { email, password }, { withCredentials: true });
         setTokenExpires(new Date(response.data['session_end_time']))
+        console.log(response.data['session_end_time'])
         await manageSessionAndNavigate(navigate);
     } catch (error) {
         setErrorMessage(error.response ? error.response.data.description : error.message);

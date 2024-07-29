@@ -1,6 +1,5 @@
 import { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import Cookies from 'js-cookie';
 import useLocalStorageTokenExpires from '../hooks/useLocalStorageTokenExpires'
 
 const ProfileContext = createContext();
@@ -12,7 +11,8 @@ export const ProfileProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [tokenExpires, setTokenExpires] = useLocalStorageTokenExpires('tokenExpires', new Date());
     const [isAuthenticated, setIsAuthenticated] = useState(tokenExpires ? new Date().getTime() < tokenExpires.getTime() : false);
-
+    const [sessionExpired, setSessionExpired] = useState(false);
+    
     const fetchProfileData = async () => {
         setLoading(true);
         try {
@@ -45,7 +45,7 @@ export const ProfileProvider = ({ children }) => {
     }, [isAuthenticated, tokenExpires]);
 
     return (
-        <ProfileContext.Provider value={{ profileData, loading, isAuthenticated, setProfileData, tokenExpires, setTokenExpires }}>
+        <ProfileContext.Provider value={{ profileData, loading, isAuthenticated, setProfileData, tokenExpires, setTokenExpires, sessionExpired, setSessionExpired }}>
             {children}
         </ProfileContext.Provider>
     );
