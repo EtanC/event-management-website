@@ -57,8 +57,7 @@ def test_auth_error(user1):
 
     # Logging in with the wrong email gives an error
     with pytest.raises(InputError):
-        auth_login("wrong email", user1['password'],
-                   None, None, None, None, None)
+        auth_login("wrong email", user1['password'])
 
 
 def test_auth_register_token_contents(user1):

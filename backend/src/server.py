@@ -54,7 +54,7 @@ def auth_google_login_route():
 @swag_from(auth_register_spec)
 def auth_register_route():
     body = request.get_json()
-    return auth_register(body['username'], body['email'], body['password'], body['full_name'], body['occupation'], body['fun_fact'],  body['description'], body['preference'])
+    return auth_register(body['username'], body['email'], body['password'], body['full_name'], body['job_title'], body['fun_fact'],  body['description'], body['preferences'])
 
 
 @app.post('/auth/logout')

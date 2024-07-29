@@ -63,6 +63,7 @@ def test_get_profile(reset, user1):
                        'full_name': 'John Smith',
                        'fun_fact': 'test data',
                        'job_title': 'student',
+                       'preferences': ['Computer Vision', 'Robotics'],
                        'receive_notifications': True}
 
 
@@ -94,6 +95,7 @@ def test_update_profile(reset, user2):
                                           'fun_fact': None,
                                           'job_title': None,
                                           'profile_pic': None,
+                                          'preferences': None,
                                           'receive_notifications': True}
 
     # test update description
@@ -106,6 +108,7 @@ def test_update_profile(reset, user2):
                                           'fun_fact': None,
                                           'job_title': None,
                                           'profile_pic': None,
+                                          'preferences': None,
                                           'receive_notifications': True}
 
     # test update full name
@@ -117,6 +120,7 @@ def test_update_profile(reset, user2):
                                           'fun_fact': None,
                                           'job_title': None,
                                           'profile_pic': None,
+                                          'preferences': None,
                                           'receive_notifications': True}
 
     # test update job title
@@ -128,6 +132,7 @@ def test_update_profile(reset, user2):
                                           'fun_fact': None,
                                           'job_title': new_job_title,
                                           'profile_pic': None,
+                                          'preferences': None,
                                           'receive_notifications': True}
 
     # test update fun fact
@@ -139,6 +144,7 @@ def test_update_profile(reset, user2):
                                           'fun_fact': new_fun_fact,
                                           'job_title': new_job_title,
                                           'profile_pic': None,
+                                          'preferences': None,
                                           'receive_notifications': True}
 
     # test update profile pic
