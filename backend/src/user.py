@@ -219,4 +219,12 @@ def user_get_all(token):
             )
         ),
     }
-    
+
+def user_delete(token, to_be_deleted):
+    user_id = decode_token(token)
+    if not is_admin(user_id):
+        raise AccessError('Only admins may delete users')
+    response = db.users.delete_one({ '_id': ObjectId(to_be_deleted) })
+    if response.deleted_count == 0:
+        raise Exception('Failed to delete user')
+    return {}
