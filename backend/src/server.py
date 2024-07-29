@@ -19,6 +19,7 @@ from flask_cors import CORS
 from backend.src.config import config
 from backend.src.database import db
 import sys
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 CORS(app, expose_headers='Authorization', supports_credentials=True)
@@ -326,9 +327,10 @@ def clear_all():
 
 
 if __name__ == '__main__':
+    load_dotenv()
     if len(sys.argv) > 1 and sys.argv[1] == 'test':
         db.set_test_db()
         print("==========================================")
         print("running server.py on test mode")
         print("==========================================")
-    app.run(port=config['BACKEND_PORT'], debug=True)
+    app.run(port=config['BACKEND_PORT'], debug=True, host='0.0.0.0')

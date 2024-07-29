@@ -9,6 +9,8 @@ from backend.src.config import config
 from backend.src.admin import make_admin
 from backend.src.database import db
 import jwt
+from dotenv import load_dotenv
+import os
 
 @pytest.fixture
 def sample_event():
@@ -30,6 +32,10 @@ def sample_user():
 @pytest.fixture(autouse=True)
 def reset():
     clear_all()
+
+@pytest.fixture(scope='session', autouse=True)
+def load_env_variables():
+    load_dotenv()
 
 @pytest.fixture(scope='session', autouse=True)
 def move_to_test_db():
@@ -107,7 +113,7 @@ def test_register_invalid_event(sample_user):
         user_register_event(sample_user, invalid_event_id)
 
 def decode_token(token):
-    data = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
+    data = jwt.decode(token, os.getenv('AUTH_SECRET'), algorithms=['HS256'])
     return data['user_id']
 
 def assert_event_equal(event, expected_event):
