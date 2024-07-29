@@ -6,7 +6,17 @@ import logo from '../Image/CompanyLogo.png';
 // eslint-disable-next-line react/prop-types
 const Logo = ({ navigate }) => (
     <Box 
-        sx={{ position: 'absolute', top: '100px', right: '100px', cursor: 'pointer' }}
+        sx={{ position: 'absolute',
+            top: {
+                xs: '20px',
+                md: '100px'
+            },
+            right: {
+                xs: '20px',
+                md: '100px'
+            },
+            cursor: 'pointer'
+        }}
         onClick={() => navigate('/')}
     >
         <img
