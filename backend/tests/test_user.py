@@ -1,7 +1,7 @@
 import pytest
 from backend.test_src.events import event_create, events_get_all
 from backend.test_src.auth import auth_register_raw
-from backend.test_src.user import user_events, user_register_event, user_manage_events, user_unregister_event, user_get_all
+from backend.test_src.user import user_events, user_register_event, user_manage_events, user_unregister_event, user_get_all, user_delete
 from backend.test_src.database import clear_all
 from backend.test_src.events import event_authorize, event_delete
 from backend.src.error import InputError, AccessError
@@ -177,16 +177,22 @@ def assert_users_equal(actual_users, expected_users):
             assert actual[key] == expected[key]
 
 
-def test_user_get_all(reset):
+def test_user_management(reset):
     response = auth_register_raw(
         'user2', 'user2@user2.com', 'user2', None, None, None, None, None)
     admin = response.cookies.get('token')
     response = auth_register_raw(
         'user3', 'user3@user3.com', 'user3', None, None, None, None, None)
     user3 = response.cookies.get('token')
+    user3_id = decode_token(user3)
     make_admin('user2')
     expected = [
         {'username': 'user2', 'email': 'user2@user2.com'},
         {'username': 'user3', 'email': 'user3@user3.com'},
+    ]
+    assert_users_equal(user_get_all(admin)['users'], expected)
+    user_delete(admin, user3_id)
+    expected = [
+        {'username': 'user2', 'email': 'user2@user2.com'},
     ]
     assert_users_equal(user_get_all(admin)['users'], expected)

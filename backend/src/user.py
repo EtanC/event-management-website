@@ -4,9 +4,8 @@ import jwt
 from backend.src.config import config
 from backend.src.error import AccessError, InputError
 from bson import ObjectId
-from backend.src.events import stringify_id
+from backend.src.events import stringify_id, is_admin
 from backend.src.auth import decode_token
-from backend.src.admin import is_admin
 from email.message import EmailMessage
 import ssl
 from smtplib import SMTP_SSL, SMTPRecipientsRefused 
@@ -206,7 +205,8 @@ def relevant_info_user(user):
     }
 
 def user_get_all(token):
-    if not is_admin(token):
+    user_id = decode_token(token)
+    if not is_admin(user_id):
         raise AccessError('Only admins may access user list')
     return {
         'users': list(
