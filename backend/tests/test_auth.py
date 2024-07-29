@@ -6,6 +6,8 @@ from backend.test_src.database import clear_all
 import jwt
 from backend.src.config import config
 import datetime
+import os
+from dotenv import load_dotenv
 
 
 @pytest.fixture
@@ -26,6 +28,10 @@ def user1():
 def reset():
     clear_all()
 
+
+@pytest.fixture(scope='session', autouse=True)
+def load_env_variables():
+    load_dotenv()
 
 def test_auth_register_sets_cookie(user1):
     response = auth_register_raw(
@@ -64,7 +70,7 @@ def test_auth_register_token_contents(user1):
     response = auth_register_raw(user1['username'], user1['email'], user1['password'], user1['full_name'],
                                  user1['description'], user1['job_title'], user1['fun_fact'], user1['preferences'])
     token = response.cookies.get('token')
-    data = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
+    data = jwt.decode(token, os.getenv('AUTH_SECRET'), algorithms=['HS256'])
 
     # Check JWT token contains the right things
     assert sorted(data.keys()) == ['session_end_time', 'session_id', 'user_id']
@@ -81,7 +87,7 @@ def test_auth_login_token_contents(user1):
                       user1['description'], user1['job_title'], user1['fun_fact'], user1['preferences'])
     response = auth_login_raw(user1['email'], user1['password'])
     token = response.cookies.get('token')
-    data = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
+    data = jwt.decode(token, os.getenv('AUTH_SECRET'), algorithms=['HS256'])
 
     # Check JWT token contains the right things
     assert sorted(data.keys()) == ['session_end_time', 'session_id', 'user_id']

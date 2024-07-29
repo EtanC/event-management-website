@@ -11,6 +11,7 @@ from email.message import EmailMessage
 import ssl
 from smtplib import SMTP_SSL, SMTPRecipientsRefused 
 from datetime import datetime, timedelta
+import os
 
 
 def user_exists(user_id):
@@ -105,7 +106,7 @@ def user_events(token):
 
 def send_email(subject, body, receiver):
     em = EmailMessage()
-    em['From'] = config['APP_EMAIL']
+    em['From'] = os.getenv('APP_EMAIL')
     em['To'] = receiver
     em['Subject'] = subject
     em.set_content(body)
@@ -113,9 +114,9 @@ def send_email(subject, body, receiver):
     context = ssl.create_default_context()
 
     with SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
-        smtp.login(config['APP_EMAIL'], config['APP_PASSWORD'])
+        smtp.login(os.getenv('APP_EMAIL'), os.getenv('APP_PASSWORD'))
         try:
-            smtp.sendmail(config['APP_EMAIL'], receiver, em.as_string())
+            smtp.sendmail(os.getenv('APP_EMAIL'), receiver, em.as_string())
         except SMTPRecipientsRefused:
             raise InputError('User email is not valid')
         # if SSL error, go to python folder on ur computer and double click Install Certificates.command

@@ -6,6 +6,7 @@ import defaultImage from '../Image/eventInfo-background.jpeg';
 import theme from '../styles/Theme';
 import { ThemeProvider } from '@mui/material/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Chip } from '@mui/material';
 
 import {
     Accordion,
@@ -113,6 +114,18 @@ function EventDetailPage() {
                                         <Box display="flex" alignItems="center">
                                             <LocationOn sx={{ marginRight: '8px' }} />
                                             <Typography variant="body1">{event.location}</Typography>
+                                        </Box>
+                                    </CardContent>
+                                </Card>
+                                <Card sx={{ marginBottom: '20px' }}>
+                                    <CardContent>
+                                        <Typography variant="h6" component="h2" gutterBottom>
+                                            Tags
+                                        </Typography>
+                                        <Box display="flex" alignItems="center" flexWrap="wrap" gap={1}>
+                                            {event.tags.map((tag, index) => (
+                                                <Chip key={index} label={tag} />
+                                            ))}
                                         </Box>
                                     </CardContent>
                                 </Card>

@@ -11,14 +11,15 @@ from backend.src.error import AccessError, InputError
 import json
 from werkzeug.exceptions import HTTPException
 from backend.src.auth import auth_google_login, auth_login, auth_register, auth_logout
+from backend.src.events import events_crawl, events_clear, events_get_all, event_create, event_update, event_delete, event_authorize, events_ai_description, events_get_page, event_view_count
 from backend.src.profile_details import get_profile_details, update_profile_details, update_profile_password, update_preferences, get_user_preferences
-from backend.src.events import events_crawl, events_clear, events_get_all, event_create, event_update, event_delete, event_authorize, events_ai_description, events_get_page
 from backend.src.admin import is_admin, invite_admin, remove_admin
 from backend.src.user import user_register_event, user_events, user_unregister_event, user_manage_events, user_toggle_notifications, user_get_all
 from flask_cors import CORS
 from backend.src.config import config
 from backend.src.database import db
 import sys
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 CORS(app, expose_headers='Authorization', supports_credentials=True)
@@ -75,7 +76,14 @@ def events_crawl_route():
 @app.get('/events/get_page/<page_number>')
 @swag_from(events_get_page_spec)
 def events_get_page_route(page_number):
-    return json.dumps(events_get_page(page_number, request.args.get('name'), request.args.get('location'), request.args.get('date')), default=str)
+    return jsonify(events_get_page(
+        page_number, 
+        request.args.get('name'), 
+        request.args.get('location'), 
+        request.args.get('date'), 
+        request.args.getlist('tags'),
+        request.args.get('sort_by'),
+    ))
 
 
 @app.get('/events/get/all')
@@ -149,6 +157,11 @@ def event_authorize_route():
         raise AccessError('Authorization token is missing')
     body = request.get_json()
     return event_authorize(token, body['event_id'], body['email'])
+
+
+@app.post('/event/view_count/<event_id>')
+def event_view_count_route(event_id):
+    return event_view_count(event_id)
 
 
 @app.get('/profile/get')
@@ -314,9 +327,10 @@ def clear_all():
 
 
 if __name__ == '__main__':
+    load_dotenv()
     if len(sys.argv) > 1 and sys.argv[1] == 'test':
         db.set_test_db()
         print("==========================================")
         print("running server.py on test mode")
         print("==========================================")
-    app.run(port=config['BACKEND_PORT'], debug=True)
+    app.run(port=config['BACKEND_PORT'], debug=True, host='0.0.0.0')

@@ -9,7 +9,6 @@ import Alert from '@mui/material/Alert';
 import { useNavigate } from 'react-router-dom';
 
 const EventDetail = ({ event, setEvent}) => {
-    const navigate = useNavigate();
     const [userCanEdit, setUserCanEdit] = useState(false);
     const formattedDate = formatDate(event.start_date);
     const [openEditEvent, setOpenEditEvent] = useState(false);
