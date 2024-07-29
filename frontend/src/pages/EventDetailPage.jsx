@@ -123,7 +123,8 @@ function EventDetailPage() {
                                             Tags
                                         </Typography>
                                         <Box display="flex" alignItems="center" flexWrap="wrap" gap={1}>
-                                            {event.tags.map((tag, index) => (
+                                        {/* shoudn't happen but just incase some events don't have tags yet, assign it as unspecified on the*/}
+                                            {(event.tags && event.tags.length > 0 ? event.tags : ['Unspecified']).map((tag, index) => (
                                                 <Chip key={index} label={tag} />
                                             ))}
                                         </Box>
