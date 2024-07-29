@@ -9,49 +9,66 @@ import datetime
 import os
 from dotenv import load_dotenv
 
+
 @pytest.fixture
 def user1():
     return {
         'username': 'John',
         'email': 'johnsmith1234@outlook.com',
         'password': '12345678',
+        'full_name': 'John Smith',
+        'description': 'final year student from UNSW',
+        'job_title': 'student',
+        'fun_fact': 'test data',
+        'preferences': ['Computer Vision', 'Robotics']
     }
+
 
 @pytest.fixture(autouse=True)
 def reset():
     clear_all()
+
 
 @pytest.fixture(scope='session', autouse=True)
 def load_env_variables():
     load_dotenv()
 
 def test_auth_register_sets_cookie(user1):
-    response = auth_register_raw(user1['username'], user1['email'], user1['password'])
+    response = auth_register_raw(
+        user1['username'], user1['email'], user1['password'], user1['full_name'], user1['description'], user1['job_title'], user1['fun_fact'], user1['preferences'])
     token = response.cookies.get('token')
     assert token is not None
 
+
 def test_auth_login_sets_cookie(user1):
-    auth_register_raw(user1['username'], user1['email'], user1['password'])
+    response = auth_register_raw(user1['username'], user1['email'], user1['password'], user1['full_name'],
+                                 user1['description'], user1['job_title'], user1['fun_fact'], user1['preferences'])
     response = auth_login_raw(user1['email'], user1['password'])
     token = response.cookies.get('token')
     assert token is not None
 
+
 def test_auth_error(user1):
-    auth_register(user1['username'], user1['email'], user1['password'])
+    auth_register(user1['username'], user1['email'],
+                  user1['password'], None, None, None, None, None)
     # Registering with the same email gives an error
     with pytest.raises(InputError):
-        auth_register('randomUsername', user1['email'], user1['password'])
+        auth_register(
+            'randomUsername', user1['email'], user1['password'], None, None, None, None, None)
 
     # registering with same username gives an error
     with pytest.raises(InputError):
-        auth_register(user1['username'], 'randomEmail@outlook.com', user1['password'])
+        auth_register(user1['username'],
+                      'randomEmail@outlook.com', user1['password'], None, None, None, None, None)
 
     # Logging in with the wrong email gives an error
     with pytest.raises(InputError):
         auth_login("wrong email", user1['password'])
 
+
 def test_auth_register_token_contents(user1):
-    response = auth_register_raw(user1['username'], user1['email'], user1['password'])
+    response = auth_register_raw(user1['username'], user1['email'], user1['password'], user1['full_name'],
+                                 user1['description'], user1['job_title'], user1['fun_fact'], user1['preferences'])
     token = response.cookies.get('token')
     data = jwt.decode(token, os.getenv('AUTH_SECRET'), algorithms=['HS256'])
 
@@ -61,10 +78,13 @@ def test_auth_register_token_contents(user1):
     # Check data type of values
     assert isinstance(data['user_id'], str)
     assert isinstance(data['session_id'], str)
-    assert isinstance(datetime.datetime.strptime(data['session_end_time'], "%Y-%m-%d %H:%M:%S.%f"), datetime.datetime)
+    assert isinstance(datetime.datetime.strptime(
+        data['session_end_time'], "%Y-%m-%d %H:%M:%S.%f"), datetime.datetime)
+
 
 def test_auth_login_token_contents(user1):
-    auth_register_raw(user1['username'], user1['email'], user1['password'])
+    auth_register_raw(user1['username'], user1['email'], user1['password'], user1['full_name'],
+                      user1['description'], user1['job_title'], user1['fun_fact'], user1['preferences'])
     response = auth_login_raw(user1['email'], user1['password'])
     token = response.cookies.get('token')
     data = jwt.decode(token, os.getenv('AUTH_SECRET'), algorithms=['HS256'])
@@ -75,4 +95,5 @@ def test_auth_login_token_contents(user1):
     # Check data type of values
     assert isinstance(data['user_id'], str)
     assert isinstance(data['session_id'], str)
-    assert isinstance(datetime.datetime.strptime(data['session_end_time'], "%Y-%m-%d %H:%M:%S.%f"), datetime.datetime)
+    assert isinstance(datetime.datetime.strptime(
+        data['session_end_time'], "%Y-%m-%d %H:%M:%S.%f"), datetime.datetime)

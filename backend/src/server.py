@@ -55,7 +55,7 @@ def auth_google_login_route():
 @swag_from(auth_register_spec)
 def auth_register_route():
     body = request.get_json()
-    return auth_register(body['username'], body['email'], body['password'])
+    return auth_register(body['username'], body['email'], body['password'], body['full_name'], body['job_title'], body['fun_fact'],  body['description'], body['preferences'])
 
 
 @app.post('/auth/logout')
@@ -318,7 +318,7 @@ def user_get_all_route():
         raise AccessError('Authorization token is missing')
     return json.dumps(user_get_all(token))
 
-  
+
 @app.delete('/clear')
 @swag_from(clear_spec)
 def clear_all():

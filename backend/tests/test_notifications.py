@@ -7,6 +7,7 @@ from backend.src.user import check_notifications, user_toggle_notifications
 from backend.src.database import clear, db
 from datetime import datetime, timedelta
 
+
 @pytest.fixture
 def sample_event():
     # shouldn't send any reminders
@@ -19,6 +20,7 @@ def sample_event():
         'start_date': '30 January 2026'
     }
     return event
+
 
 @pytest.fixture
 def sample_event_1():
@@ -33,6 +35,7 @@ def sample_event_1():
     }
     return event
 
+
 @pytest.fixture
 def sample_event_3():
     date = datetime.now() + timedelta(days=3)
@@ -45,6 +48,7 @@ def sample_event_3():
         'start_date': date.strftime("%d %B %Y")
     }
     return event
+
 
 @pytest.fixture
 def sample_event_7():
@@ -59,21 +63,26 @@ def sample_event_7():
     }
     return event
 
+
 @pytest.fixture
 def sample_user():
     # use your real email to check if the notification is sent
-    response = auth_register_raw('kevchen', 'kchen397@gmail.com', 'testing')
+    response = auth_register_raw(
+        'kevchen', 'kchen397@gmail.com', 'testing', None, None, None, None, None)
     token = response.cookies.get('token')
     return token
+
 
 @pytest.fixture
 def reset():
     clear('events')
     clear('users')
 
+
 @pytest.fixture(scope='session', autouse=True)
 def move_to_test_db():
     db.set_test_db()
+
 
 def test_notification(reset, sample_event, sample_user):
     # create event
@@ -81,11 +90,13 @@ def test_notification(reset, sample_event, sample_user):
     user_register_event(sample_user, event_id)
     # afaik have to check manually on ur email if the notification is sent
 
+
 def test_reminders_none(reset, sample_event, sample_user):
     # should be no remindesr since event is far away
     event_id = event_create(sample_user, sample_event)['event_id']
     user_register_event(sample_user, event_id)
     check_notifications()
+
 
 def test_reminders(reset, sample_event_1, sample_event_3, sample_event_7, sample_user):
     # check for all reminders
@@ -95,8 +106,9 @@ def test_reminders(reset, sample_event_1, sample_event_3, sample_event_7, sample
     user_register_event(sample_user, event_id)
     event_id = event_create(sample_user, sample_event_7)['event_id']
     user_register_event(sample_user, event_id)
-    
+
     check_notifications()
+
 
 def test_notifications_off(reset, sample_event_1, sample_event_3, sample_event_7, sample_user):
     # toggle off notifications
@@ -109,8 +121,9 @@ def test_notifications_off(reset, sample_event_1, sample_event_3, sample_event_7
     user_register_event(sample_user, event_id)
     event_id = event_create(sample_user, sample_event_7)['event_id']
     user_register_event(sample_user, event_id)
-    
+
     check_notifications()
+
 
 def test_notifications_toggled_off_then_on(reset, sample_event_1, sample_event_3, sample_event_7, sample_user):
     # create event
@@ -125,5 +138,5 @@ def test_notifications_toggled_off_then_on(reset, sample_event_1, sample_event_3
     user_register_event(sample_user, event_id)
     event_id = event_create(sample_user, sample_event_7)['event_id']
     user_register_event(sample_user, event_id)
-    
+
     check_notifications()
