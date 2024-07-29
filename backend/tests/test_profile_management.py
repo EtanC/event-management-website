@@ -1,5 +1,5 @@
 import pytest
-from backend.test_src.profile_details import get_profile_details, update_profile_details, update_profile_password
+from backend.test_src.profile_details import get_profile_details, update_profile_details, update_profile_password, update_preferences, get_preferences
 from backend.test_src.auth import auth_register_raw, auth_login_raw
 from backend.src.error import InputError, AccessError
 from backend.test_src.database import clear_all
@@ -214,3 +214,15 @@ def test_update_password_error(reset, user1):
     no_number = 'abcdef!@#$%'
     with pytest.raises(InputError):
         update_profile_password(token, user1['password'], no_number, no_number)
+
+
+def test_update_preferences(reset, user1):
+    response = auth_register_raw(
+        user1['username'], user1['email'], user1['password'])
+    token = response.cookies.get('token')
+
+    preferences = ['AI', 'Computer Vision', 'Deep Learning', 'Block Chain']
+
+    update_preferences(token, preferences)
+
+    assert (get_preferences(token) == {'preferences': preferences})
