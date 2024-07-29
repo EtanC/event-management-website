@@ -8,7 +8,7 @@ def event_create(token, event):
         'details_link': event['details_link'],
         'name': event['name'],
         'location': event['location'],
-        'start_date': event['start_date']
+        'start_date': event['start_date'],
     }
     cookies = make_cookies(token)
     response = requests.post(f'{backend_url}/event/create', json=body, cookies=cookies)

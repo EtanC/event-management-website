@@ -12,11 +12,18 @@ from backend.src.auth import decode_token
 from backend.src.config import config
 from bson import ObjectId
 import random
+from openai import OpenAI
+from bs4 import BeautifulSoup
+
+load_dotenv()
+OPENAI_API_KEY = os.getenv("AI_TOKEN")
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 
 def events_crawl():
-    subprocess.run(["python3 -m scrapy crawl easychair"], shell=True)
-    subprocess.run(["python3 -m scrapy crawl wikicfp"], shell=True)
+    database_name = config['TESTDB_NAME'] if db.test else config['DATABASE_NAME']
+    subprocess.run([f"python3 -m scrapy crawl easychair -a database_name={database_name}"], shell=True)
+    subprocess.run([f"python3 -m scrapy crawl wikicfp -a database_name={database_name}"], shell=True)
     return {}
 
 
@@ -24,7 +31,7 @@ def stringify_id(x):
     x['_id'] = str(x['_id'])
     return x
 
-def events_get_page(page_number, name, location, date):
+def events_get_page(page_number, name, location, date, tags, sort_by):
     page_number = int(page_number)
     PAGE_SIZE = 12
     
@@ -39,18 +46,41 @@ def events_get_page(page_number, name, location, date):
             match_stage["converted_start_date"] = {"$gt": date_obj}
         except ValueError:
             return jsonify({"error": "Invalid date format."}), 400
+    if tags:
+        match_stage["tags"] = {"$all": tags}
+
+    # alphabetical sort and view count sort
+    sort_stage = {"name": 1} # default to sorting name
+    if sort_by:
+        if sort_by == 'alphabetical':
+            sort_stage = {"name": 1}
+        elif sort_by == 'reverse':
+            sort_stage = {"name": -1}
+        elif sort_by == 'view_count':
+            sort_stage = {"view_count": -1}
+
+    # Ensure the fields to sort by are present
+    projection_stage = {
+        "name": 1,
+        "location": 1,
+        "start_date": 1,
+        "view_count": 1,
+        "tags": 1
+    }
+
     # Create events date format isn't consistent with the rest of the webcrawlers       
     pipeline = [
          {"$addFields": {
             "converted_start_date": {
                 "$cond": {
-                    "if": {"$regexMatch": {"input": "$start_date", "regex": "^[0-9]{1,2} [A-Za-z]+ [0-9]{4}$"}},
-                    "then": {"$dateFromString": {"dateString": "$start_date", "format": "%d %B %Y"}},
+                    "if": {"$regexMatch": {"input": "$start_date", "regex": "^\d{4}-\d{2}-\d{2}$"}},
+                    "then": {"$dateFromString": {"dateString": "$start_date", "format": "%Y-%m-%d"}},
                     "else": {"$dateFromString": {"dateString": "$start_date", "format": "%b %d, %Y"}}
                 }
             }
         }},
         {"$match": match_stage},
+        {"$sort": sort_stage},
         {"$facet": {
             "totalCount": [{"$count": "count"}],
             "events": [
@@ -62,12 +92,17 @@ def events_get_page(page_number, name, location, date):
     
     result = list(db.events.aggregate(pipeline))
     
-    total_count = result[0]['totalCount'][0]['count'] if result[0]['totalCount'] else 0
+    # Handle the case where totalCount or events might not be present
+    if result and 'totalCount' in result[0] and result[0]['totalCount']:
+        total_count = result[0]['totalCount'][0]['count']
+    else:
+        total_count = 0
     page_count = (total_count + PAGE_SIZE - 1) // PAGE_SIZE
     
-    events = result[0]['events']
+    events = result[0]['events'] if result and 'events' in result[0] else []
     events = list(map(stringify_id, events))
-    
+
+    # Debugging logs
     return {
         'events': events,
         'page_count': page_count
@@ -85,24 +120,110 @@ def events_clear():
     return {}
 
 
+# def events_ai_description():
+#     load_dotenv()
+#     AI_TOKEN = os.getenv("AI_TOKEN")
+#     # loop through each event listing
+#     cursor = db.events.find()
+#     # ai API
+#     API_URL = "https://api-inference.huggingface.co/models/pszemraj/led-large-book-summary"
+#     headers = {"Authorization": f"Bearer {AI_TOKEN}"}
+#     for event in cursor:
+#         ai_description = event.get("ai_description")
+#         if ai_description is None or (ai_description and 'error' in ai_description):
+#             query_filter = {"_id": event["_id"]}
+#             output = query({
+#                 "inputs": event.get("details"),
+#                 "options": {"wait_for_model": True}
+#             }, API_URL, headers)
+#             db.events.update_one(
+#                 query_filter, {"$set": {"ai_description": output}})
+#     return {}
+
+
+####################################################
+####               AI SECTION
+####################################################
+def clean_html(html_content):
+    # this sanitises input, get rid of all html tags so that its cheaper to run chatgpt
+    soup = BeautifulSoup(html_content, 'html.parser')
+    return soup.get_text(separator=" ")
+
+def generate_summary_and_tags(details):
+    # Clean the input HTML content
+    cleaned_details = clean_html(details)
+    prompt = (
+        "You summarize event descriptions and assign relevant tags from a given list. "
+        "Use 'Unspecified' if no other tags fit.\n\n"
+        "Output format:\n"
+        "{\n"
+        "    \"summary\": \"Summary of event in 50 words\",\n"
+        "    \"tags\": []\n"
+        "}\n\n"
+        "Restrict the tags from this list:\n"
+        "- Tag: Artificial Intelligence\n"
+        "  Description: Conferences focusing on advancements and research in artificial intelligence.\n"
+        "- Tag: Cybersecurity\n"
+        "  Description: Events centered around developments and strategies in protecting digital information.\n"
+        "- Tag: Software Engineering\n"
+        "  Description: Conferences discussing methodologies and innovations in software development.\n"
+        "- Tag: Data Science\n"
+        "  Description: Gatherings that explore data analysis, big data technologies, and data management.\n"
+        "- Tag: Computer Networks\n"
+        "  Description: Events covering topics related to networking technologies and communication systems.\n"
+        "- Tag: Human-Computer Interaction\n"
+        "  Description: Conferences dedicated to the study of interaction between humans and computers.\n"
+        "- Tag: Blockchain\n"
+        "  Description: Conferences focusing on blockchain technology and cryptocurrencies.\n"
+        "- Tag: Robotics\n"
+        "  Description: Events exploring research and applications in robotics and automation.\n"
+        "- Tag: Cloud Computing\n"
+        "  Description: Events discussing cloud infrastructure, services, and security.\n"
+        "- Tag: Quantum Computing\n"
+        "  Description: Conferences discussing theoretical and practical aspects of quantum computing.\n"
+        "- Tag: Computer Vision\n"
+        "  Description: Events focusing on the development of algorithms for interpreting visual data.\n"
+        "- Tag: Programming Languages\n"
+        "  Description: Conferences focusing on the design and implementation of programming languages.\n"
+        "- Tag: High Performance Computing\n"
+        "  Description: Events discussing architecture and application of high performance computing systems.\n\n"
+        f"Event Details:\n{cleaned_details}"
+    )
+    
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",  # Use the appropriate model
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
+        ]
+    )
+    
+    # Access the response correctly
+    output = response.choices[0].message.content
+    
+    try:
+        # Assume that the output is a properly formatted JSON string
+        result = eval(output)
+        
+        if isinstance(result, dict) and "summary" in result and "tags" in result:
+            return result
+        else:
+            raise ValueError("Response format is incorrect.")
+    except (SyntaxError, ValueError) as e:
+        print("Error parsing response:", e)
+        return {"summary": "Error in generating summary", "tags": ["Error"]}
+
+
 def events_ai_description():
-    load_dotenv()
-    AI_TOKEN = os.getenv("AI_TOKEN")
-    # loop through each event listing
     cursor = db.events.find()
-    # ai API
-    API_URL = "https://api-inference.huggingface.co/models/pszemraj/led-large-book-summary"
-    headers = {"Authorization": f"Bearer {AI_TOKEN}"}
     for event in cursor:
         ai_description = event.get("ai_description")
         if ai_description is None or (ai_description and 'error' in ai_description):
             query_filter = {"_id": event["_id"]}
-            output = query({
-                "inputs": event.get("details"),
-                "options": {"wait_for_model": True}
-            }, API_URL, headers)
+            details = event.get("details")
+            output = generate_summary_and_tags(details)
             db.events.update_one(
-                query_filter, {"$set": {"ai_description": output}})
+                query_filter, {"$set": {"ai_description": output["summary"], "tags": output["tags"]}})
     return {}
 
 
@@ -147,6 +268,7 @@ def event_create(token, event):
     event['authorized_users'] = []
     event['creator'] = user_id
     event['image'] = random.randint(config['RANDOM_IMAGES_START_INDEX'], config['RANDOM_IMAGES_END_INDEX'])
+    event['crawled'] = False
     result = db.events.insert_one(event)
     db['users'].update_one(
         {'_id': ObjectId(user_id)},
@@ -176,9 +298,11 @@ def user_is_authorized(user_id, event_id):
 
 def event_update(token, event_id, new_event):
     user_id = decode_token(token)
+    event = get_event(event_id)
+    if event['crawled']:
+        raise InputError('Cannot edit an event crawled from another source')
     if not user_is_authorized(user_id, event_id):
         raise AccessError('User not authorized to update event')
-    event = get_event(event_id)
     if event is None:
         raise InputError('No event in database with specified event_id')
     if not event_is_valid(new_event):
@@ -198,6 +322,24 @@ def event_update(token, event_id, new_event):
     )
     return {}
 
+def event_view_count(event_id):
+    try:
+        if not ObjectId.is_valid(event_id):
+            raise InputError('Invalid event_id format')
+        event = get_event(event_id)
+        if event is None:
+            raise InputError('No event in database with specified event_id')
+        
+        db.events.update_one(
+            {"_id": ObjectId(event_id)},
+            {"$inc": {"view_count": 1}}
+        )
+        return jsonify({"message": "View count incremented successfully"}), 200
+    except InputError as e:
+        return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 def user_is_creator_or_admin_priviledges(user_id, event_id):
     creator = db['events'].find_one({'_id': ObjectId(event_id)})['creator']
@@ -214,8 +356,13 @@ def event_delete(token, event_id):
     db.events.delete_one({'_id': ObjectId(event_id)})
     return {}
 
+def is_crawled_event(event_id):
+    event = db.events.find_one({ '_id': ObjectId(event_id)})
+    return event['crawled']
 
 def event_authorize(token, event_id, to_be_added_email):
+    if is_crawled_event(event_id):
+        raise InputError('Cannot manage an event crawled from another source')
     user_id = decode_token(token)
     if not user_is_creator_or_admin_priviledges(user_id, event_id):
         raise AccessError(

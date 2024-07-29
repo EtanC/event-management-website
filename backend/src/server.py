@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, make_response
 from flasgger import Swagger, swag_from
 from backend.swagger_doc.auth import auth_login_spec, auth_register_spec, auth_logout_spec
 from backend.swagger_doc.events import events_crawl_spec, events_clear_spec, events_get_all_spec, event_create_spec, event_update_spec, event_delete_spec, event_authorize_spec, events_ai_description_spec, events_get_page_spec
-from backend.swagger_doc.profile import profile_get_spec, profile_update_details_spec, profile_update_password_spec
+from backend.swagger_doc.profile import profile_get_spec, profile_update_details_spec, profile_update_password_spec, profile_update_preferences_spec, profile_get_preferences_spec
 from backend.swagger_doc.admin import admin_invite_spec, admin_remove_spec, is_admin_spec
 from backend.swagger_doc.user import user_events_spec, user_register_event_spec, user_manage_events_spec, user_unregister_event_spec, user_toggle_notifications_spec, user_get_all_spec
 from backend.swagger_doc.database import clear_spec
@@ -11,8 +11,8 @@ from backend.src.error import AccessError, InputError
 import json
 from werkzeug.exceptions import HTTPException
 from backend.src.auth import auth_google_login, auth_login, auth_register, auth_logout
-from backend.src.events import events_crawl, events_clear, events_get_all, event_create, event_update, event_delete, event_authorize, events_ai_description, events_get_page
-from backend.src.profile_details import get_profile_details, update_profile_details, update_profile_password
+from backend.src.events import events_crawl, events_clear, events_get_all, event_create, event_update, event_delete, event_authorize, events_ai_description, events_get_page, event_view_count
+from backend.src.profile_details import get_profile_details, update_profile_details, update_profile_password, update_preferences, get_user_preferences
 from backend.src.admin import is_admin, invite_admin, remove_admin
 from backend.src.user import user_register_event, user_events, user_unregister_event, user_manage_events, user_toggle_notifications, user_get_all
 from flask_cors import CORS
@@ -47,8 +47,9 @@ def auth_login_route():
 
 @app.post('/auth/google_login')
 def auth_google_login_route():
-  auth_code = request.get_json()['code']
-  return auth_google_login(auth_code)
+    auth_code = request.get_json()['code']
+    return auth_google_login(auth_code)
+
 
 @app.post('/auth/register')
 @swag_from(auth_register_spec)
@@ -71,10 +72,19 @@ def auth_logout_route():
 def events_crawl_route():
     return events_crawl()
 
+
 @app.get('/events/get_page/<page_number>')
 @swag_from(events_get_page_spec)
 def events_get_page_route(page_number):
-    return json.dumps(events_get_page(page_number, request.args.get('name'), request.args.get('location'), request.args.get('date')), default=str)
+    return jsonify(events_get_page(
+        page_number, 
+        request.args.get('name'), 
+        request.args.get('location'), 
+        request.args.get('date'), 
+        request.args.getlist('tags'),
+        request.args.get('sort_by'),
+    ))
+
 
 @app.get('/events/get/all')
 @swag_from(events_get_all_spec)
@@ -148,6 +158,12 @@ def event_authorize_route():
     body = request.get_json()
     return event_authorize(token, body['event_id'], body['email'])
 
+
+@app.post('/event/view_count/<event_id>')
+def event_view_count_route(event_id):
+    return event_view_count(event_id)
+
+
 @app.get('/profile/get')
 @swag_from(profile_get_spec)
 def profile_get_route():
@@ -178,6 +194,27 @@ def profile_update_details_route():
             profile_pic = file.read()
 
     return update_profile_details(token, username, description, full_name, job_title, fun_fact, profile_pic)
+
+
+@app.put('/profile/update/preferences')
+@swag_from(profile_update_preferences_spec)
+def profile_update_preferences_route():
+    token = request.cookies.get('token')
+    if not token:
+        raise AccessError('Authorization token is missing')
+
+    body = request.get_json()
+    return update_preferences(token, body['new_preferences'])
+
+
+@app.get('/profile/get/preferences')
+@swag_from(profile_get_preferences_spec)
+def profile_get_preferences_route():
+    token = request.cookies.get('token')
+    if not token:
+        raise AccessError('Authorization token is missing')
+
+    return get_user_preferences(token)
 
 
 @app.post('/profile/update/password')
@@ -263,15 +300,15 @@ def user_unregister_event_route(event_id):
         raise AccessError('Authorization token is missing')
     return json.dumps(user_unregister_event(token, event_id))
 
+
 @app.put('/user/toggle_notifications')
 @swag_from(user_toggle_notifications_spec)
 def user_toggle_notifications_route():
     token = request.cookies.get('token')
-
-    if token.startswith('Bearer '):
-        token = token[len('Bearer '):]
-
+    if not token:
+        raise AccessError('Authorization token is missing')
     return user_toggle_notifications(token)
+
 
 @app.get('/user/get/all')
 @swag_from(user_get_all_spec)
@@ -281,6 +318,7 @@ def user_get_all_route():
         raise AccessError('Authorization token is missing')
     return json.dumps(user_get_all(token))
 
+  
 @app.delete('/clear')
 @swag_from(clear_spec)
 def clear_all():

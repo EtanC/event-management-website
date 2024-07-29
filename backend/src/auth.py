@@ -167,6 +167,7 @@ def auth_register(username, email, password):
         'profile_pic': None,
         'password': hash(password),
         'registered_events': [],
+        'preferences': [],
         'managed_events': [],
         'owned_events': [],
         'isAdmin': False,
