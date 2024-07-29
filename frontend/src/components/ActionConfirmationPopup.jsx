@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
 
-const DeleteEventAlertPopup = ({ open, onClose, onConfirm, title, content }) => {
+const ActionConfirmationPopup = ({ open, onClose, onConfirm, title, content, primaryButtonText }) => {
     return (
         <Dialog
             open={open}
@@ -18,7 +18,7 @@ const DeleteEventAlertPopup = ({ open, onClose, onConfirm, title, content }) => 
             </DialogContent>
             <DialogActions>
                 <Button variant="outlined" color="primary" sx={styles.button} onClick={onClose}>Cancel</Button>
-                <Button variant="contained" color="primary" sx={styles.button} onClick={onConfirm}>Delete</Button>
+                <Button variant="contained" color="primary" sx={styles.button} onClick={onConfirm}>{primaryButtonText}</Button>
             </DialogActions>
         </Dialog>
     );
@@ -31,4 +31,4 @@ const styles = {
     },
 };
 
-export default DeleteEventAlertPopup;
+export default ActionConfirmationPopup;

@@ -271,12 +271,11 @@ const CreateEventPopUp = ({ open, handleClose, headerText, event, refreshEvents 
                     </Card>
                 </Fade>
             </Modal>
-            <Snackbar
-                open={snackbarOpen}
-                autoHideDuration={6000}
-                onClose={handleSnackbarClose}
-                message={snackbarMessage}
-            />
+            <Snackbar open={snackbarOpen} autoHideDuration={6000}>
+                <Alert onClose={handleSnackbarClose} severity={'success'}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </>
     );
 };

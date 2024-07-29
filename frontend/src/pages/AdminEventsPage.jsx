@@ -94,9 +94,6 @@ const AdminEventsPage = () => {
                     location={location}
                     setLocation={setLocation}
                     locations={locations}
-                    date={date}
-                    setDate={setDate}
-                    isSticky={'false'}
                 />
                 {isLoading ? (
                     <Box display="flex" justifyContent="center" alignItems="center" height="70vh">

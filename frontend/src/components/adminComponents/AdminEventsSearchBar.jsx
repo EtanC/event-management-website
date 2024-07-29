@@ -13,7 +13,7 @@ const inputStyles = {
 };
 
 
-const AdminEventsSearchBar = ({ labelOne, labelTwo, eventType, setEventType, location, setLocation, locations, date, setDate }) => (
+const AdminEventsSearchBar = ({ labelOne, labelTwo, eventType, setEventType, location, setLocation, locations }) => (
     <Box
         sx={{
             display: 'flex',
@@ -50,15 +50,6 @@ const AdminEventsSearchBar = ({ labelOne, labelTwo, eventType, setEventType, loc
                         fullWidth
                     />
                 )}
-            />
-            <TextField
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                InputLabelProps={{ shrink: true }}
-                fullWidth
-                variant="outlined"
-                sx={{ flex: 1, ...inputStyles }}
             />
         </Box>
     </Box>

@@ -26,6 +26,12 @@ definitions_profile = {
         },
         'profile_pic': {
             'type': 'object'
+        },
+        'new_preferences': {
+            'type': 'array',
+            'items': {
+                'type': 'string'
+            }
         }
     },
     'parameters': {
@@ -73,6 +79,17 @@ definitions_profile = {
                 're_password': {
                     '$ref': '#/definitions/data/password',
                 },
+            }
+        },
+        'update_preferences': {
+            'name': 'Update Preferences',
+            'in': 'body',
+            'type': 'object',
+            'required': 'true',
+            'properties': {
+                'new_preferences': {
+                    '$ref': '#/definitions/data/new_preferences',
+                }
             }
         },
         'token': {
