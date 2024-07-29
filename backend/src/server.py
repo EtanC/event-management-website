@@ -4,7 +4,7 @@ from backend.swagger_doc.auth import auth_login_spec, auth_register_spec, auth_l
 from backend.swagger_doc.events import events_crawl_spec, events_clear_spec, events_get_all_spec, event_create_spec, event_update_spec, event_delete_spec, event_authorize_spec, events_ai_description_spec, events_get_page_spec
 from backend.swagger_doc.profile import profile_get_spec, profile_update_details_spec, profile_update_password_spec, profile_update_preferences_spec, profile_get_preferences_spec
 from backend.swagger_doc.admin import admin_invite_spec, admin_remove_spec, is_admin_spec
-from backend.swagger_doc.user import user_events_spec, user_register_event_spec, user_manage_events_spec, user_unregister_event_spec, user_toggle_notifications_spec, user_get_all_spec
+from backend.swagger_doc.user import user_events_spec, user_register_event_spec, user_manage_events_spec, user_unregister_event_spec, user_toggle_notifications_spec, user_get_all_spec, user_delete_spec
 from backend.swagger_doc.database import clear_spec
 from backend.swagger_doc.definitions import definitions
 from backend.src.error import AccessError, InputError
@@ -319,11 +319,13 @@ def user_get_all_route():
     return json.dumps(user_get_all(token))
 
 @app.delete('/user/delete')
+@swag_from(user_delete_spec)
 def user_delete_route():
     token = request.cookies.get('token')
     if not token:
         raise AccessError('Authorization token is missing')
-    return json.dumps(user_delete(token))
+    body = request.get_json()
+    return json.dumps(user_delete(token, body['user_id']))
 
 @app.delete('/clear')
 @swag_from(clear_spec)
