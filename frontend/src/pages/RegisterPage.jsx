@@ -7,6 +7,7 @@ import UserDetailsForm from '../components/registerComponents/UserDetailsForm';
 import ProfileDetailsForm from '../components/registerComponents/ProfileDetailsForm';
 import Logo from '../components/CompanyLogo.jsx';
 import { handleRegister } from '../helper/handleAuth';
+import { useProfile } from '../components/ProfileProvider.jsx';
 
 const RegisterPage = () => {
     const [step, setStep] = useState(1);
@@ -24,6 +25,7 @@ const RegisterPage = () => {
     const [fun_fact, setFunFact] = useState('');
     const [preference, setPreference] = useState([]);
 
+    const { setTokenExpires } = useProfile();
     const navigate = useNavigate();
 
     const handleRegisterFormSubmit = async (event) => {
@@ -32,7 +34,7 @@ const RegisterPage = () => {
 
         // Call handleRegister here or perform other form validation
         // Note: no preferences yeta
-        await handleRegister(username, email, password, full_name, occupation, fun_fact, headline, setErrorMessage, setIsLoading, navigate)
+        await handleRegister(username, email, password, full_name, occupation, fun_fact, headline, setErrorMessage, setIsLoading, navigate, setTokenExpires)
     }
 
     const handleNext = (event) => {

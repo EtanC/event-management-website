@@ -32,3 +32,16 @@ def update_profile_password(token, old_password, new_password, re_password):
     cookies = make_cookies(token)
     response = requests.post(f'{backend_url}/profile/update/password', json=body, cookies=cookies)
     return parse_response(response)
+
+def update_preferences(token, new_preferences):
+    body = {
+        'new_preferences': new_preferences
+    }
+    cookies = make_cookies(token)
+    response = requests.put(f'{backend_url}/profile/update/preferences', json=body, cookies=cookies)
+    return parse_response(response)
+
+def get_preferences(token):
+    cookies = make_cookies(token)
+    response = requests.get(f'{backend_url}/profile/get/preferences', cookies=cookies)
+    return parse_response(response)

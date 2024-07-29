@@ -7,17 +7,19 @@ import background from '../Image/LHSBackground.png';
 import Logo from '../components/CompanyLogo';
 import { handleLogin } from '../helper/handleAuth';
 import LoginWithSocial from '../components/LoginWithSocialButtons';
+import { useProfile } from '../components/ProfileProvider';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const { setTokenExpires } = useProfile();
     const navigate = useNavigate();
 
     const onSubmit = (event) => {
         event.preventDefault();
-        handleLogin(email, password, navigate, setErrorMessage, setIsLoading);
+        handleLogin(email, password, navigate, setErrorMessage, setIsLoading, setTokenExpires);
     };
 
     return (
