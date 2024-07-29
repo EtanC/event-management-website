@@ -36,7 +36,8 @@ def get_profile_details(token):
         'job_title': user.get('job_title', ''),
         'fun_fact': user.get('fun_fact', ''),
         'profile_pic': encoded_image,
-        'receive_notifications': user.get('receive_notifications', '')
+        'receive_notifications': user.get('receive_notifications', ''),
+        'preferences': user.get('preferences', ''),
     }
 
 # mayeb won't deal with profile pics first, but might have to use GridFS to store on mongoDB

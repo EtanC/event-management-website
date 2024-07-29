@@ -6,6 +6,7 @@ from backend.src.admin import make_admin
 from backend.src.error import AccessError, InputError
 from backend.src.database import db
 
+
 @pytest.fixture
 def sample_event():
     event = {
@@ -18,19 +19,24 @@ def sample_event():
     }
     return event
 
+
 @pytest.fixture
 def sample_user():
-    response = auth_register_raw('John', 'johnsmith1234@outlook.com', '12345678')
+    response = auth_register_raw(
+        'John', 'johnsmith1234@outlook.com', '12345678', None, None, None, None, None)
     token = response.cookies.get('token')
     return token
+
 
 @pytest.fixture
 def reset():
     clear_all()
 
+
 @pytest.fixture(scope='session', autouse=True)
 def move_to_test_db():
     db.set_test_db()
+
 
 def test_event(reset, sample_event, sample_user):
     assert events_get_all()['events'] == []
@@ -38,7 +44,7 @@ def test_event(reset, sample_event, sample_user):
         **sample_event,
     }
     event_id = event_create(sample_user, sample_event)['event_id']
-    for key in expected_event.keys():    
+    for key in expected_event.keys():
         assert events_get_all()['events'][0][key] == expected_event[key]
     updated_event = {
         'deadline': 'Jul 2, 2024',
@@ -54,10 +60,11 @@ def test_event(reset, sample_event, sample_user):
         '_id': str(event_id),
         'ranking': 0,
     }
-    for key in expected_event.keys():    
+    for key in expected_event.keys():
         assert events_get_all()['events'][0][key] == expected_event[key]
     event_delete(sample_user, event_id)
     assert events_get_all()['events'] == []
+
 
 def test_event_creation(reset, sample_event, sample_user):
     assert events_get_all()['events'] == []
@@ -65,6 +72,7 @@ def test_event_creation(reset, sample_event, sample_user):
     event_id = event_create(sample_user, sample_event)['event_id']
     for key in expected_event.keys():
         assert events_get_all()['events'][0][key] == expected_event[key]
+
 
 def test_event_update(reset, sample_event, sample_user):
     event_id = event_create(sample_user, sample_event)['event_id']
@@ -85,14 +93,17 @@ def test_event_update(reset, sample_event, sample_user):
     for key in expected_event.keys():
         assert events_get_all()['events'][0][key] == expected_event[key]
 
+
 def test_event_delete(reset, sample_event, sample_user):
     event_id = event_create(sample_user, sample_event)['event_id']
     event_delete(sample_user, event_id)
     assert events_get_all()['events'] == []
 
+
 def test_event_creation_without_auth(reset, sample_event):
     with pytest.raises(AccessError):
         event_create(None, sample_event)
+
 
 def test_event_update_without_auth(reset, sample_event, sample_user):
     event_id = event_create(sample_user, sample_event)['event_id']
@@ -107,21 +118,33 @@ def test_event_update_without_auth(reset, sample_event, sample_user):
     with pytest.raises(AccessError):
         event_update(None, event_id, updated_event)
 
+
 def test_event_delete_without_auth(reset, sample_event, sample_user):
     event_id = event_create(sample_user, sample_event)['event_id']
     with pytest.raises(AccessError):
         event_delete(None, event_id)
+
 
 def test_admin_can_edit_delete(reset, sample_event, sample_user):
     admin_details = {
         'username': 'admin',
         'email': 'admin@outlook.com',
         'password': 'iamtheadmin',
+        'full_name': 'Admin',
+        'description': 'final year student from UNSW',
+        'job_title': 'student',
+        'fun_fact': 'test data',
+        'preferences': ['Computer Vision', 'Robotics']
     }
     response = auth_register_raw(
         admin_details['username'],
         admin_details['email'],
-        admin_details['password']
+        admin_details['password'],
+        admin_details['full_name'],
+        admin_details['description'],
+        admin_details['job_title'],
+        admin_details['fun_fact'],
+        admin_details['preferences'],
     )
     admin = response.cookies.get('token')
     make_admin(admin_details['username'])

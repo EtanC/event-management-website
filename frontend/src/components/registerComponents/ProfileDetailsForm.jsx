@@ -1,5 +1,6 @@
 import React from 'react';
-import { TextField, Button, Box, MenuItem, Select, InputLabel, FormControl, Chip, OutlinedInput, Alert } from '@mui/material';
+import { TextField, Button, Box, FormControl, InputLabel, Alert } from '@mui/material';
+import PreferencesSelect from '../PreferencesSelectBox'; // Update the import path as needed
 
 const ProfileCreationForm = ({ fullName, setFullName, occupation, setOccupation, funFact, setFunFact, headline, setHeadline, preference, setPreference, handleProfileSubmit, handleBack, errorMessage }) => (
     <Box
@@ -47,26 +48,10 @@ const ProfileCreationForm = ({ fullName, setFullName, occupation, setOccupation,
         />
         <FormControl fullWidth>
             <InputLabel>Preferences</InputLabel>
-            <Select
-                multiple
+            <PreferencesSelect
                 value={preference}
-                onChange={(e) => setPreference(e.target.value)}
-                input={<OutlinedInput label="Preferences" />}
-                renderValue={(selected) => (
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {selected.map((value) => (
-                            <Chip key={value} label={value} />
-                        ))}
-                    </Box>
-                )}
-                fullWidth
-                sx={{ borderRadius: '20px' }}
-            >
-                <MenuItem value="Computer Science">Computer Science</MenuItem>
-                <MenuItem value="Artificial Intelligence">Artificial Intelligence</MenuItem>
-                <MenuItem value="IT">IT</MenuItem>
-                <MenuItem value="UX/UI">UX/UI</MenuItem>
-            </Select>
+                onChange={setPreference}
+            />
         </FormControl>
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
         <Box sx={{ display: 'flex', gap: '10px' }}>

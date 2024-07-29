@@ -55,6 +55,21 @@ export const updateProfilePassword = async (password, setErrorMessage) => {
 }
 
 
+export const updateProfilePreferences = async (newPreferences) => {
+    try {
+        const response = await axios.put('http://127.0.0.1:5000/profile/update/preferences', {
+            new_preferences: newPreferences
+        }, {
+            withCredentials: true
+        });
+        return response.status;
+    } catch (error) {
+        console.error('Failed to update preferences:', error);
+        throw error;
+    }
+};
+
+
 export const toggleNotifications = async () => {
     try {
         const response = await axios.put('http://127.0.0.1:5000/user/toggle_notifications', {}, { withCredentials: true });
