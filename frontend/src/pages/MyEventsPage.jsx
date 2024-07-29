@@ -71,7 +71,6 @@ const MyEventsPage = () => {
 
     const handleClosePopUp = () => {
         setSelectedEvent(null);
-        refreshEvents();
     };
 
     const handleRankingChange = (ranking) => {

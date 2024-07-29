@@ -24,7 +24,6 @@ export const ProfileProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
-        console.log("here")
     };
 
     useEffect(() => {

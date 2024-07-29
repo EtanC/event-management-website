@@ -70,10 +70,10 @@ def events_get_page(page_number, name, location, date, tags, sort_by):
 
     # Create events date format isn't consistent with the rest of the webcrawlers       
     pipeline = [
-         {"$addFields": {
+        {"$addFields": {
             "converted_start_date": {
                 "$cond": {
-                    "if": {"$regexMatch": {"input": "$start_date", "regex": "^\d{4}-\d{2}-\d{2}$"}},
+                    "if": {"$regexMatch": {"input": "$start_date", "regex": "^\\d{4}-\\d{2}-\\d{2}$"}},
                     "then": {"$dateFromString": {"dateString": "$start_date", "format": "%Y-%m-%d"}},
                     "else": {"$dateFromString": {"dateString": "$start_date", "format": "%b %d, %Y"}}
                 }
@@ -269,6 +269,8 @@ def event_create(token, event):
     event['creator'] = user_id
     event['image'] = random.randint(config['RANDOM_IMAGES_START_INDEX'], config['RANDOM_IMAGES_END_INDEX'])
     event['crawled'] = False
+    event['tag'] = []
+    event['view_count'] = 0
     result = db.events.insert_one(event)
     db['users'].update_one(
         {'_id': ObjectId(user_id)},
