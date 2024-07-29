@@ -36,7 +36,7 @@ const CalendarSidebar = ({ events, onSearchResultClick, onRankingChange, refresh
             <CreateEventPopUp open={open} handleClose={handleCloseNewEvent} headerText={'Create New Event'} refreshEvents={refreshEvents}/>
             <Box
                 sx={{
-                    width: { xs: '100%', sm: '250px', md: '300px' },
+                    width: { xs: '40%', sm: '250px', md: '300px' },
                     backgroundColor: 'white',
                     padding: '20px',
                     borderRight: '1px solid #ddd',

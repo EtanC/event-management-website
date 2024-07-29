@@ -8,7 +8,7 @@ const EventTypeAccordion = () => {
                 <Typography variant="h6">Event Type</Typography>
             </AccordionSummary>
             <AccordionDetails>
-                <FormGroup>
+                <FormGroup sx={{ overflow: 'scroll' }}>
                     <FormControlLabel control={<Checkbox />} label="All Events" />
                     <FormControlLabel control={<Checkbox />} label="Registered" />
                     <FormControlLabel control={<Checkbox />} label="Saved" />
