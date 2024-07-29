@@ -15,7 +15,7 @@ def user1():
         'email': 'johnsmith1234@outlook.com',
         'password': 'ilovesmith123!',
         'full_name': 'John Smith',
-        'headline': 'final year student from UNSW',
+        'description': 'final year student from UNSW',
         'job_title': 'student',
         'fun_fact': 'test data',
         'preferences': ['Computer Vision', 'Robotics']
@@ -28,7 +28,7 @@ def user2():
         'email': 'johnsmith1234@outlook.com',
         'password': 'ilovesmith123!',
         'full_name': None,
-        'headline': None,
+        'description': None,
         'job_title': None,
         'fun_fact': None,
         'preferences': None,

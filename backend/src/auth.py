@@ -151,7 +151,7 @@ def auth_login(email, password):
     return response
 
 
-def auth_register(username, email, password, full_name, job_title, fun_fact, headline, preferences):
+def auth_register(username, email, password, full_name, job_title, fun_fact, description, preferences):
     if db.users.find_one({'email': email}) is not None:
         raise InputError('Email is already being used')
     elif db.users.find_one({'username': username}) is not None:
@@ -163,7 +163,7 @@ def auth_register(username, email, password, full_name, job_title, fun_fact, hea
         'full_name': full_name,
         'job_title': job_title,
         'fun_fact': fun_fact,
-        'description': headline,
+        'description': description,
         'profile_pic': None,
         'password': hash(password),
         'registered_events': [],

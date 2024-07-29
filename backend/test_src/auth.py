@@ -11,13 +11,13 @@ def auth_login(email, password):
     return parse_response(response)
 
 
-def auth_register(username, email, password, full_name, headline, job_title, fun_fact, preferences):
+def auth_register(username, email, password, full_name, description, job_title, fun_fact, preferences):
     body = {
         'email': email,
         'password': password,
         'username': username,
         'full_name': full_name,
-        'headline': headline,
+        'description': description,
         'job_title': job_title,
         'fun_fact': fun_fact,
         'preferences': preferences
@@ -41,13 +41,13 @@ def auth_login_raw(email, password):
     return response
 
 
-def auth_register_raw(username, email, password, full_name, headline, job_title, fun_fact, preferences):
+def auth_register_raw(username, email, password, full_name, description, job_title, fun_fact, preferences):
     body = {
         'email': email,
         'password': password,
         'username': username,
         'full_name': full_name,
-        'headline': headline,
+        'description': description,
         'job_title': job_title,
         'fun_fact': fun_fact,
         'preferences': preferences
