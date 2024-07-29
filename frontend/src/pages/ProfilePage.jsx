@@ -5,6 +5,7 @@ import theme from '../styles/Theme';
 import ProfileCard from '../components/profileComponents/ProfileCard';
 import AccountInfoCard from '../components/profileComponents/AccountInfoCard';
 import SettingsCard from '../components/profileComponents/SettingsCard';
+import PreferencesCard from '../components/profileComponents/PreferencesCard';
 import PasswordCard from '../components/profileComponents/PasswordCard';
 import EditButtons from '../components/profileComponents/EditButtons';
 
@@ -12,6 +13,7 @@ function ProfilePage() {
     // useStates
     const [isEditing, setIsEditing] = useState(false);
     const [isEditingPW, setIsEditingPW] = useState(false);
+    const [isEditingPref, setIsEditingPref] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [profile, setProfile] = useState({
         description: "",
@@ -65,6 +67,10 @@ function ProfilePage() {
             confirm_new_pw: '',
         });
     };
+
+    const handleEditPreferencesClick = () => {
+        setIsEditingPref(!isEditingPref);
+    }
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -186,6 +192,10 @@ function ProfilePage() {
                                 handleSwitchChange={handleSwitchChange}
                                 handleNotifConfirm={handleNotifConfirm}
                                 handleNotifCancel={handleNotifCancel}
+                            />
+                            <PreferencesCard
+                                isEditingPref={isEditingPref}
+                                handleEditPreferencesClick={handleEditPreferencesClick}
                             />
                             <PasswordCard
                                 isEditingPW={isEditingPW}
