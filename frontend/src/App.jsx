@@ -14,7 +14,6 @@ import AdminUsersPage from "./pages/AdminUsersPage"
 import AdminEventsPage from "./pages/AdminEventsPage"
 import MyEventsPage from "./pages/MyEventsPage";
 import SessionTimeOutPopup from './components/SessionTimeOutPopup';
-import useSessionValidation from "./helper/userSessionValidation";
 
 const AppContent = () => {
     const location = useLocation();

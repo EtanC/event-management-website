@@ -4,12 +4,11 @@ import CalendarSidebar from '../components/CalendarSideBar';
 import ViewRegisteredEventPopUp from '../components/calendarMainComponents/ViewRegisteredEventPopUp';
 import CalendarContainer from '../components/calendarMainComponents/CalendarContainer';
 import sortEventRanking from '../helper/sortEventRanking';
-import fetchRegisteredEvents from '../helper/fetchRegisteredEvents';
+import { fetchRegisteredEvents } from '../helper/fetchRegisteredEvents';
 import '../styles/UserCalendar.css';
 import theme from '../styles/Theme';
 import { ThemeProvider } from '@mui/material/styles';
 import MyEventsViewComponent from '../components/calendarMainComponents/MyEventsViewComponent'; // Create this component
-import { fetchUserEvents } from '../helper/handleEventData';
 
 const MyEventsPage = () => {
     const [events, setEvents] = useState([]);
