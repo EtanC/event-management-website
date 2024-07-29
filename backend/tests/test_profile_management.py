@@ -22,6 +22,7 @@ def user1():
     }
 
 
+@pytest.fixture
 def user2():
     return {
         'username': 'John',

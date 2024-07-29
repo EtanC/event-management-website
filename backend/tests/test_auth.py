@@ -43,19 +43,22 @@ def test_auth_login_sets_cookie(user1):
 
 
 def test_auth_error(user1):
-    auth_register(user1['username'], user1['email'], user1['password'])
+    auth_register(user1['username'], user1['email'],
+                  user1['password'], None, None, None, None, None)
     # Registering with the same email gives an error
     with pytest.raises(InputError):
-        auth_register('randomUsername', user1['email'], user1['password'])
+        auth_register(
+            'randomUsername', user1['email'], user1['password'], None, None, None, None, None)
 
     # registering with same username gives an error
     with pytest.raises(InputError):
         auth_register(user1['username'],
-                      'randomEmail@outlook.com', user1['password'])
+                      'randomEmail@outlook.com', user1['password'], None, None, None, None, None)
 
     # Logging in with the wrong email gives an error
     with pytest.raises(InputError):
-        auth_login("wrong email", user1['password'])
+        auth_login("wrong email", user1['password'],
+                   None, None, None, None, None)
 
 
 def test_auth_register_token_contents(user1):
