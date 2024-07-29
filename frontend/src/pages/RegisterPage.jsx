@@ -32,9 +32,10 @@ const RegisterPage = () => {
         event.preventDefault();
         setIsLoading(true);
 
+        console.log(username, email, password, full_name, occupation, fun_fact, headline, preference)
         // Call handleRegister here or perform other form validation
         // Note: no preferences yeta
-        await handleRegister(username, email, password, full_name, occupation, fun_fact, headline, setErrorMessage, setIsLoading, navigate, setTokenExpires)
+        await handleRegister(username, email, password, full_name, occupation, fun_fact, headline, preference, setErrorMessage, setIsLoading, navigate, setTokenExpires)
     }
 
     const handleNext = (event) => {

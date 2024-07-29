@@ -18,10 +18,10 @@ export const handleLogin = async (email, password, navigate, setErrorMessage, se
     }
 };
 
-export const handleRegister = async (username, email, password, full_name, occupation, fun_fact, headline, setErrorMessage, setIsLoading, navigate, setTokenExpires) => {
+export const handleRegister = async (username, email, password, full_name, occupation, fun_fact, headline, preference, setErrorMessage, setIsLoading, navigate, setTokenExpires) => {
     setIsLoading(true);
     try {
-        const response = await axios.post('http://127.0.0.1:5000/auth/register', { username, email, password, full_name, occupation, fun_fact, headline }, { withCredentials: true });
+        const response = await axios.post('http://127.0.0.1:5000/auth/register', { username, email, password, full_name, occupation, fun_fact, headline, preference }, { withCredentials: true });
         setTokenExpires(new Date(response.data['session_end_time']))
         await manageSessionAndNavigate(navigate);
     } catch (error) {
