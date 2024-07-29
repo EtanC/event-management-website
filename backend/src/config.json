@@ -7,5 +7,7 @@
     "APP_PASSWORD": "junp aluu zwky ofus",
     "APP_EMAIL": "project41pls@gmail.com",
     "RANDOM_IMAGES_START_INDEX": 0,
-    "RANDOM_IMAGES_END_INDEX": 6
+    "RANDOM_IMAGES_END_INDEX": 6,
+    "SECRET_KEY": "BUTTERFLY",
+    "RESET_PASS_TOKEN_MAX_AGE": 300
 }

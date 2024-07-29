@@ -99,3 +99,37 @@ auth_register_spec = {
         }
     }
 }
+
+auth_forgot_password_spec = {
+    'tags': ['Auth'],
+    'parameters': [
+        {
+            'name': 'email',
+            'in': 'body',
+            'type': 'string',
+            'required': True,
+        },
+    ],
+    'responses': {
+        200: {
+            'description': 'Successfully sent email',
+        },
+    }
+}
+
+auth_reset_password_spec = {
+    'tags': ['Auth'],
+    'parameters': [
+        {
+            'name': 'email',
+            'in': 'body',
+            'type': 'string',
+            'required': True,
+        },
+    ],
+    'responses': {
+        200: {
+            'description': 'Successfully reset password',
+        },
+    }
+}
