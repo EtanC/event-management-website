@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Select, MenuItem, Typography } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Select, MenuItem } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { formatDate } from '../../helper/helpers';
@@ -31,18 +31,8 @@ const AdminTable = ({ columns, data, handleDelete, handleEdit, handleRoleChange,
                                     )}
                                 </TableCell>
                             ))}
-                            {showActions && (
-                                <TableCell style={{ width: '100px' }}>
-                                    <IconButton onClick={() => handleDelete(item)}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                    <IconButton onClick={() => handleEdit(item)}>
-                                        <EditIcon />
-                                    </IconButton>
-                                </TableCell>
-                            )}
                             {showDropdown && (
-                                <TableCell style={{ width: '150px' }}>
+                                <TableCell style={{ width: '100px' }}>
                                     <Select
                                         value={item.role}
                                         onChange={(event) => handleRoleChange(event, item.username)}
@@ -51,6 +41,18 @@ const AdminTable = ({ columns, data, handleDelete, handleEdit, handleRoleChange,
                                         <MenuItem value='user'>User</MenuItem>
                                         <MenuItem value='admin'>Admin</MenuItem>
                                     </Select>
+                                </TableCell>
+                            )}
+                            {showActions && (
+                                <TableCell style={{ width: '80px' }}>
+                                    <IconButton onClick={() => handleDelete(item)}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                    {'crawled' in item && (
+                                        <IconButton onClick={() => handleEdit(item)}>
+                                            <EditIcon />
+                                        </IconButton>
+                                    )}
                                 </TableCell>
                             )}
                         </TableRow>

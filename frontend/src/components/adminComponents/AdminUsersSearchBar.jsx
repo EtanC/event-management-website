@@ -26,7 +26,7 @@ const AdminUsersSearchBar = ({ labelOne, email, setEmail }) => (
             padding: '20px',
             borderRadius: '15px',
             zIndex: 2,
-            maxWidth: '400px',
+            maxWidth: '800px',
         }}>
         <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', maxWidth: '800px', gap: '10px' }}>
             <TextField

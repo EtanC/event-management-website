@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Box, Container, Link as MuiLink } from '@mui/material';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { Link } from 'react-router-dom';
+import { Typography, Box, Container, Button } from '@mui/material';
 import AdminEventsSearchBar from '../components/adminComponents/AdminEventsSearchBar';
 import AdminTable from '../components/adminComponents/AdminTable';
-import DeleteEventAlertPopup from '../components/calendarMainComponents/DeleteEventAlertPopup';
-import EventModal from '../components/calendarMainComponents/EventModal';
+import ActionConfirmationPopup from '../components/ActionConfirmationPopup';
+import CreateEventPopUp from '../components/CreateEventPopUp';
 import { fetchEventsData } from '../helper/handleEventData';
 import {
     handleDeleteClick,
@@ -14,13 +12,13 @@ import {
     handleEditClick,
     handleEditClose,
 } from '../helper/handleEditDeleteEvent';
+import handleCrawlEvents from '../helper/handleCrawlEvents';
 
 const AdminEventsPage = () => {
     const [events, setEvents] = useState([]);
     const [eventName, setEventName] = useState('');
     const [location, setLocation] = useState('');
     const [locations, setLocations] = useState([]);
-    const [date, setDate] = useState('');
     const [filteredData, setFilteredData] = useState([]);
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -68,23 +66,19 @@ const AdminEventsPage = () => {
 
     return (
         <>
-            <DeleteEventAlertPopup
+            <ActionConfirmationPopup
                 open={deleteDialogOpen}
                 onClose={() => handleDeleteCancel(setDeleteDialogOpen, setEventToDelete)}
                 onConfirm={() => handleDeleteConfirm(eventToDelete, setDeleteDialogOpen, setEventToDelete, adminFetchEvents)}
                 title={'Confirm Delete'}
                 content={'Are you sure you want to delete this event? This action cannot be undone.'}
+                primaryButtonText={'Delete'}
             />
-            <EventModal open={openEditEvent} handleClose={() => handleEditClose(setOpenEditEvent, adminFetchEvents)} headerText={'Edit Event'} event={eventToEdit} />
+
+            <CreateEventPopUp open={openEditEvent} handleClose={() => handleEditClose(setOpenEditEvent, adminFetchEvents)} headerText={'Edit Event'} event={eventToEdit} />
             <Container maxWidth="lg" sx={{ minHeight: '85vh' }}>
-                <Box sx={styles.flexBox}>
-                    <Typography variant="h4">
-                        <MuiLink component={Link} to="/admin" sx={{ textDecoration: 'none', color: 'gray' }}>
-                            Admin
-                        </MuiLink>
-                    </Typography>
-                    <ArrowForwardIosIcon sx={{ marginTop: '10px', marginLeft: '15px', marginRight: '15px' }} />
-                    <Typography variant="h4"> Events</Typography>
+                <Box display="flex" justifyContent="center" mb={3}>
+                    <Button variant='contained' onClick={handleCrawlEvents} sx={{ maxWidth: '200px' }}>Crawl New Events</Button>
                 </Box>
                 <AdminEventsSearchBar
                     labelOne='Event Name'
@@ -120,13 +114,6 @@ const AdminEventsPage = () => {
             </Container>
         </>
     );
-};
-
-const styles = {
-    flexBox: {
-        display: 'flex',
-        marginBottom: 5
-    }
 };
 
 export default AdminEventsPage;

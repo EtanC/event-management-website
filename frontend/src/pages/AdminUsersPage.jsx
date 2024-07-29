@@ -1,21 +1,23 @@
 import { useState, useEffect } from 'react';
-import { Typography, Box, Container, Link as MuiLink } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Typography, Box, Container } from '@mui/material';
 import AdminUsersSearchBar from '../components/adminComponents/AdminUsersSearchBar';
 import AdminTable from '../components/adminComponents/AdminTable';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import ActionConfirmationPopup from '../components/ActionConfirmationPopup';
 import { fetchAllUsers, toggleAdminStatus } from '../helper/handleUsers';
 
 const AdminUsersPage = () => {
     const [email, setEmail] = useState('');
     const [filteredData, setFilteredData] = useState([]);
     const [userData, setUserData] = useState([]);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [popupOpen, setPopupOpen] = useState(false);
+    const [action, setAction] = useState(''); // 'makeAdmin' or 'revokeAdmin'
 
     useEffect(() => {
         const getUsers = async () => {
             try {
                 const response = await fetchAllUsers();
-                console.log(response)
+                console.log(response);
                 const users = response.users.map(user => ({
                     _id: user._id,
                     username: user.username,
@@ -44,12 +46,19 @@ const AdminUsersPage = () => {
         setFilteredData(result);
     }, [email, userData]);
 
-    const handleRoleChange = async (event, username) => {
+    const handleRoleChange = (event, username) => {
         const newRole = event.target.value;
-        const action = newRole === 'admin' ? 'invite' : 'remove';
+        setSelectedUser({ username, newRole });
+        setAction(newRole === 'admin' ? 'makeAdmin' : 'revokeAdmin');
+        setPopupOpen(true);
+    };
+
+    const handleConfirm = async () => {
+        const { username, newRole } = selectedUser;
+        const actionType = newRole === 'admin' ? 'invite' : 'remove';
 
         try {
-            await toggleAdminStatus(action, username);
+            await toggleAdminStatus(actionType, username);
             setUserData(prevData =>
                 prevData.map(user =>
                     user.username === username ? { ...user, role: newRole } : user
@@ -58,8 +67,15 @@ const AdminUsersPage = () => {
         } catch (error) {
             console.error(`Failed to change role for user ${username}:`, error);
         }
+
+        setPopupOpen(false);
+        setSelectedUser(null);
     };
 
+    const handleClose = () => {
+        setPopupOpen(false);
+        setSelectedUser(null);
+    };
 
     const columns = [
         { field: 'username', headerName: 'Username', width: '20vw' },
@@ -70,15 +86,6 @@ const AdminUsersPage = () => {
     return (
         <>
             <Container maxWidth="lg" sx={{ minHeight: '85vh' }}>
-                <Box sx={styles.flexBox}>
-                    <Typography variant="h4">
-                        <MuiLink component={Link} to="/admin" sx={{ textDecoration: 'none', color: 'gray' }}>
-                            Admin
-                        </MuiLink>
-                    </Typography>
-                    <ArrowForwardIosIcon sx={{ marginTop: '10px', marginLeft: '15px', marginRight: '15px' }} />
-                    <Typography variant="h4"> Users</Typography>
-                </Box>
                 <AdminUsersSearchBar
                     labelOne='Email'
                     email={email}
@@ -94,11 +101,22 @@ const AdminUsersPage = () => {
                     <AdminTable
                         columns={columns}
                         data={filteredData}
+                        handleDelete={(item) => console.log(`Delete user: ${item._id}`)}
                         handleRoleChange={handleRoleChange}
-                        showActions={false}
+                        showActions={true}
                         showDropdown={true}
                     />
                 )}
+                <ActionConfirmationPopup
+                    open={popupOpen}
+                    onClose={handleClose}
+                    onConfirm={handleConfirm}
+                    title={action === 'makeAdmin' ? 'Make User an Admin' : 'Revoke Admin Privileges'}
+                    content={action === 'makeAdmin' ?
+                        'Are you sure you want to make this user an admin?' :
+                        'Are you sure you want to revoke admin privileges from this user?'}
+                    primaryButtonText={action === 'makeAdmin' ? 'Make Admin' : 'Revoke Admin'}
+                />
             </Container>
         </>
     );

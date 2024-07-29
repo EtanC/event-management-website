@@ -8,6 +8,7 @@ export const handleDeleteCancel = (setDeleteDialogOpen, setEventToDelete) => {
 export const handleEditClick = (event, setEventToEdit, setOpenEditEvent) => {
     setEventToEdit(event);
     setOpenEditEvent(true);
+    console.log(event)
 };
 
 export const handleAddManagerClick = (event, setEventToEdit, setOpenAddManager) => {

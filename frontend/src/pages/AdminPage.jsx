@@ -1,37 +1,36 @@
-import { Typography, Box, Container, Button, Grid } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Typography, Box, Container, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import AdminEventsPage from './AdminEventsPage';
+import AdminUsersPage from './AdminUsersPage';
 
 const AdminPage = () => {
-    const navigate = useNavigate();
+    const [view, setView] = useState('users'); // Default view set to 'users'
+
+    const handleViewChange = (event, newView) => {
+        if (newView !== null) {
+            setView(newView);
+        }
+    };
 
     return (
         <>
             <Box sx={{ minHeight: '100vh' }}>
                 <Container maxWidth="lg">
-                    <Typography variant="h4" sx={{ marginBottom: '40px' }}>Admin</Typography>
-                    <Typography variant="b2" sx={{ marginBottom: '40px' }}>You're the goat</Typography>
-                    <Grid container spacing={3} justifyContent="center">
-                        <Grid item>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                sx={{ textTransform: 'none', padding: '20px 40px', fontSize: '16px' }}
-                                onClick={() => navigate('/admin/users')}
-                            >
-                                Manage Users
-                            </Button>
-                        </Grid>
-                        <Grid item>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                sx={{ textTransform: 'none', padding: '20px 40px', fontSize: '16px' }}
-                                onClick={() => navigate('/admin/events')}
-                            >
-                                Manage Events
-                            </Button>
-                        </Grid>
-                    </Grid>
+                    <Typography variant="h4" sx={{ marginBottom: '20px' }}>Admin</Typography>
+                    <ToggleButtonGroup
+                        value={view}
+                        exclusive
+                        onChange={handleViewChange}
+                        sx={{ width: '100%', marginBottom: '20px' }}
+                    >
+                        <ToggleButton value="users" sx={{ flex: 1 }}>
+                            Manage Users
+                        </ToggleButton>
+                        <ToggleButton value="events" sx={{ flex: 1 }}>
+                            Manage Events
+                        </ToggleButton>
+                    </ToggleButtonGroup>
+                    {view === 'users' ? <AdminUsersPage /> : <AdminEventsPage />}
                 </Container>
             </Box>
         </>
