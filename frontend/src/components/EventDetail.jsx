@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable react/prop-types */
+import { useState, useEffect } from 'react';
 import { Box, Card, CardContent, Typography, Button, Snackbar } from '@mui/material';
 import { CalendarToday, Edit } from '@mui/icons-material';
 import handleRegisterEvent from '../helper/handleRegisterEvent';
@@ -6,7 +7,6 @@ import { formatDate, getUserId } from '../helper/helpers'
 import ViewRegisteredEventPopUp from '../components/calendarMainComponents/ViewRegisteredEventPopUp';
 import fetchRegisteredEvents from '../helper/fetchRegisteredEvents';
 import Alert from '@mui/material/Alert';
-import { useNavigate } from 'react-router-dom';
 
 const EventDetail = ({ event, setEvent}) => {
     const [userCanEdit, setUserCanEdit] = useState(false);
@@ -23,7 +23,7 @@ const EventDetail = ({ event, setEvent}) => {
                 const isManager = event.authorized_users && event.authorized_users.includes(userId);
                 setUserCanEdit(isOwner || isManager);
             } catch (error) {
-                console.error('Error checking user permissions:', error);
+                setAlert(error)
             }
         };
 
@@ -32,11 +32,6 @@ const EventDetail = ({ event, setEvent}) => {
                 (fetchedEvents) => {
                     const isEventRegistered = fetchedEvents.some(registeredEvent => registeredEvent._id === event._id);
                     setIsRegistered(isEventRegistered);
-                },
-                (error) => {
-                    if (error) {
-                        setAlert({ open: true, message: error, severity: 'error' });
-                    }
                 },
                 () => {} // No need to set loading state here
             );

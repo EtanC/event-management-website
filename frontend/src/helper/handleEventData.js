@@ -137,8 +137,7 @@ export const handleAddEventManager = async (eventId, email) => {
 
 export const increaseEventViewCount = async (event_id) => {
     try {
-        const response = await axios.post(`http://127.0.0.1:5000/event/view_count/${event_id}`);
-        console.log('worked?' + response)
+        await axios.post(`http://127.0.0.1:5000/event/view_count/${event_id}`);
     } catch (error) {
         console.error("Failed to increment view count:", error);
     }

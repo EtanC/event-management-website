@@ -23,7 +23,6 @@ export const getUserId = () => {
         const user_id = jwtDecode(token).user_id
         return user_id
     } catch (error) {
-        console.error("Invalid Token");
         throw (error);
     }
 }

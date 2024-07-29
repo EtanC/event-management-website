@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Box, Container } from '@mui/material';
 import HomePageEventCardSection from '../components/HomePageEventCardSection';
@@ -5,14 +6,28 @@ import NewEventButton from '../components/NewEventButton'
 import defaultImage from '../Image/default-image.jpg';
 import theme from '../styles/Theme';
 import { ThemeProvider } from '@mui/material/styles';
+import { increaseEventViewCount } from '../helper/handleEventData';
 
 function HomePage() {
     const navigate = useNavigate();
 
-    const handleImageClick = () => {
-        navigate('/event/0');
-    };
+    // clicking on the big image will take you to a random event
+    const handleImageClick = async () => {
+        try {
+            const response = await axios.get('http://127.0.0.1:5000/events/get/all');
+            const eventData = response.data.events || response.data; // Adjust according to the response structure
 
+            if (eventData.length > 0) {
+                const randomEvent = eventData[Math.floor(Math.random() * eventData.length)];
+                await increaseEventViewCount(randomEvent._id); // increase view count when clicked
+                navigate(`/event/${randomEvent._id}`, { state: { event: randomEvent } });
+            } else {
+                console.error('No events available to navigate to');
+            }
+        } catch (err) {
+            console.log('Failed to fetch events: ' + err.message);
+        }
+    };
     return (
         <>
             <ThemeProvider theme={theme}></ThemeProvider>
@@ -23,6 +38,12 @@ function HomePage() {
                         sx={{
                             position: 'relative',
                             cursor: 'pointer',
+                            '&:hover .hover-text': {
+                                opacity: 1,
+                            },
+                            '&:hover .hover-overlay': {
+                                opacity: 0.5,
+                            },
                         }}
                         onClick={handleImageClick}
                     >
@@ -37,6 +58,22 @@ function HomePage() {
                                 marginBottom: '50px'
                             }}
                         />
+                        <Box
+                            className="hover-text"
+                            sx={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                color: 'white',
+                                padding: '10px 20px',
+                                borderRadius: '5px',
+                                opacity: 0,
+                                transition: 'opacity 0.3s ease',
+                            }}
+                        >
+                            Want to check out a random event? 
+                        </Box>
                     </Box>
 
                     <HomePageEventCardSection />
