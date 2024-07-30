@@ -205,15 +205,9 @@ def auth_forgot_password(email):
   # if it does exist generate a url that the user can use to generate their password
   user = db.users.find_one({'email': email})
   if user:
-    reset_password_url = url_for(
-      'auth_reset_password_route',
-      token=generate_reset_password_token(user),
-      user_id=user['_id'],
-      _external=True,
-      )
     subject = "Event Hub Password Reset"
-    body = body = f"""
-To reset your Event Hub account password please click on the following link: {reset_password_url}.
+    body = f"""
+To reset your Event Hub account password please click on the following link: http://127.0.0.1:5173/reset-password?token={generate_reset_password_token(user)}&user_id={user['_id']}
 """
     send_email(subject, body, user['email'])
     return {"message": "email sent"}

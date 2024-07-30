@@ -13,6 +13,8 @@ import AdminPage from "./pages/AdminPage"
 import AdminUsersPage from "./pages/AdminUsersPage"
 import AdminEventsPage from "./pages/AdminEventsPage"
 import MyEventsPage from "./pages/MyEventsPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import SessionTimeOutPopup from './components/SessionTimeOutPopup';
 import useSessionValidation from "./helper/userSessionValidation";
 
@@ -42,6 +44,8 @@ const AppContent = () => {
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/event/:id" element={<EventDetailPage />} />
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/admin/users" element={<AdminUsersPage />} />
