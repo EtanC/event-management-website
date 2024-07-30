@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Box, IconButton } from '@mui/material';
+import { Box, IconButton, Typography } from '@mui/material';
 import { ArrowBack, ArrowForward } from '@mui/icons-material';
 import { fetchUserPreferences } from '../helper/handleEventData';
 import EventCard from './EventCard';
@@ -39,6 +39,14 @@ const UserPreferenceEvent = ({ events, handleCardClick, selectedEvent }) => {
             width: '100%',
             boxSizing: 'border-box'
         }}>
+            <Typography 
+                variant="h4" 
+                component="h2" 
+                gutterBottom 
+                sx={{marginBottom: '50px'}}
+            >
+                Recommended Events
+            </Typography>
             <Box display="flex" alignItems="center">
                 <IconButton onClick={() => scroll('left')}>
                     <ArrowBack />
@@ -65,7 +73,7 @@ const UserPreferenceEvent = ({ events, handleCardClick, selectedEvent }) => {
                             key={index} 
                             event={event}
                             handleCardClick={() => handleCardClick(event, index, 'userPreference')} 
-    isSelected={selectedEvent?.id === event._id && selectedEvent?.index === index && selectedEvent?.section === 'userPreference'}
+                            isSelected={selectedEvent?.id === event._id && selectedEvent?.index === index && selectedEvent?.section === 'userPreference'}
                         />
                     ))}
                 </Box>

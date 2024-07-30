@@ -8,6 +8,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import fetchEventsData from '../helper/fetchEventData';
 import { increaseEventViewCount, fetchUserPreferences } from '../helper/handleEventData';
 import UserPreferenceEvent from './UserPreferenceEvents';
+import { useProfile } from './ProfileProvider';
 
 function HomePageEventCardSection() {
     const navigate = useNavigate();
@@ -25,6 +26,8 @@ function HomePageEventCardSection() {
     const [tags, setTags] = useState([]);
     const [sortBy, setSortBy] = useState('alphabetical'); // default sort alphabetical
     const [filteredEvents, setFilteredEvents] = useState([]);
+    const { isAuthenticated } = useProfile();
+
 
     // // Debounce makes it so that we aren't spamming API calls everytime the search changes
     // // Has a 200 ms delay for search
@@ -86,10 +89,10 @@ function HomePageEventCardSection() {
     
     // monitor changes in user preference and the overall events
     useEffect(() => {
-        if (events.length > 0) {
+        if (isAuthenticated && events.length > 0) {
             fetchUserPreferencesAndFilterEvents(events);
         }
-    }, [events]);
+    }, [isAuthenticated, events]);
 
     useEffect(() => {
         setPage(1)
@@ -187,15 +190,7 @@ function HomePageEventCardSection() {
                 </Box>
             ) : (
                 <Box sx={{ padding: 4 }}>
-                    <Typography 
-                        variant="h4" 
-                        component="h2" 
-                        gutterBottom 
-                        sx={{marginBottom: '50px'}}
-                    >
-                        Recommended Events
-                    </Typography>
-                    {!isLoading && !error && events.length > 0 && (
+                    {!isLoading && !error && events.length > 0 && isAuthenticated && (
                         <UserPreferenceEvent 
                             events={filteredEvents} 
                             handleCardClick={handleCardClick} 
@@ -217,7 +212,7 @@ function HomePageEventCardSection() {
                                 key={index} 
                                 event={event} 
                                 handleCardClick={() => handleCardClick(event, index, 'home')} 
-            isSelected={selectedEvent?.id === event._id && selectedEvent?.index === index && selectedEvent?.section === 'home'}
+                                isSelected={selectedEvent?.id === event._id && selectedEvent?.index === index && selectedEvent?.section === 'home'}
                             />
                         ))}
                     </Grid>
