@@ -64,7 +64,7 @@ profile_update_details_spec = {
                     '$ref': '#/definitions/full_name',
                 },
                 'description': {
-                    '$ref': '#/definitions/desciption',
+                    '$ref': '#/definitions/description',
                 },
                 'fun_fact': {
                     '$ref': '#/definitions/fun_fact',
@@ -117,7 +117,21 @@ profile_update_password_spec = {
     ],
     'parameters': [
         {
-            '$ref': '#/definitions/parameters/update_password'
+            'name': 'Body',
+            'in': 'body',
+            'type': 'object',
+            'required': 'true',
+            'properties': {
+                'old_password': {
+                    '$ref': '#/definitions/password',
+                },
+                'new_password': {
+                    '$ref': '#/definitions/password',
+                },
+                're_password': {
+                    '$ref': '#/definitions/password',
+                },
+            }
         },
     ],
     'responses': {

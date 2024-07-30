@@ -114,6 +114,10 @@ def events_get_all():
         'events': list(map(stringify_id, db.events.find({})))
     }
 
+def events_get_tagged(tags):
+    return {
+        'events': list(map(stringify_id, db.events.find({"tags": { '$all': tags }})))
+    }
 
 def events_clear():
     clear('events')
