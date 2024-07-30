@@ -45,7 +45,7 @@ const ViewRegisteredEventPopUp = ({ selectedEvent, handleClosePopUp, refreshEven
                     {selectedEvent && (
                         <Box>
                             <Typography id="event-modal-description" variant="body1" component="div" sx={{ marginBottom: '16px' }}>
-                                <HtmlTagRender htmlString={selectedEvent.details} />
+                                <HtmlTagRender htmlString={selectedEvent.ai_description} />
                             </Typography>
                             <Typography variant="subtitle1">
                                 Start Date: {moment(selectedEvent.start_date).format('MMMM Do YYYY')}

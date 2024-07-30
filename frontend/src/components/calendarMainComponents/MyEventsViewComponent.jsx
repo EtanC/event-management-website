@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     Box, Container, Card, Typography, Grid, CircularProgress,
 } from '@mui/material';
@@ -21,6 +21,7 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
     const [openAddManager, setOpenAddManager] = useState(false);
     const [eventToEdit, setEventToEdit] = useState(null);
     const [eventToDelete, setEventToDelete] = useState(null);
+    const [eventToAddManager, setEventToAddManager] = useState(null);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [isEditEvent, setIsEditEvent] = useState(false);
 
@@ -68,6 +69,10 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
         setIsEditEvent(isCreatedEvent);
     };
 
+    ///////////////////////////
+    //      below 4 are for the EditCreatedEventPopup functionality 
+    ///////////////////////////
+
     const handleClosePopUp = () => {
         setSelectedEvent(null);
     };
@@ -75,6 +80,18 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
     const handleEditEvent = () => {
         setEventToEdit(selectedEvent);
         setOpenEditEvent(true);
+        setSelectedEvent(null);
+    };
+
+    const handleDeleteEventClick = () => {
+        setEventToDelete(selectedEvent);
+        setDeleteDialogOpen(true);
+        setSelectedEvent(null);
+    };
+
+    const handleManagerEvent = () => {
+        setEventToAddManager(selectedEvent);
+        setOpenAddManager(true);
         setSelectedEvent(null);
     };
 
@@ -92,6 +109,10 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
         fetchEvents();
     };
 
+    ///////////////////////////
+    //      These are for eventcard functionality 
+    ///////////////////////////
+
     const handleDeleteCancel = () => {
         setDeleteDialogOpen(false);
         setEventToDelete(null);
@@ -99,25 +120,23 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
 
     const handleEditClose = () => {
         setOpenEditEvent(false);
-        fetchEvents();
     };
 
     const handleAddManagerClose = () => {
         setOpenAddManager(false);
-        fetchEvents();
     };
 
-    const handleEditClick = (event) => {
+    const openEditDialog = (event) => {
         setEventToEdit(event);
         setOpenEditEvent(true);
     };
 
-    const handleManagerClick = (event) => {
-        setEventToEdit(event);
+    const openAddManagerDialog = (event) => {
+        setEventToAddManager(event);
         setOpenAddManager(true);
     };
 
-    const handleDeleteClick = (event) => {
+    const openDeleteDialog = (event) => {
         setEventToDelete(event);
         setDeleteDialogOpen(true);
     }
@@ -144,9 +163,9 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
                             handleCardClick={() => handleCardClick(event, isCreatedEvents)}
                             isCreatedEvent={isCreatedEvents}
                             isManagedEvent={isManagedEvents}
-                            onEditEvent={() => handleEditClick(event)}
-                            onAddEventManager={() => handleManagerClick(event)}
-                            onDeleteEvent={() => handleDeleteClick(event)}
+                            onEditEvent={() => openEditDialog(event)}
+                            onAddEventManager={() => openAddManagerDialog(event)}
+                            onDeleteEvent={() => openDeleteDialog(event)}
                         />
                     ))}
                 </Grid>
@@ -165,13 +184,14 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
                 primaryButtonText={'Delete'}
             />
             <CreateEventPopUp open={openEditEvent} handleClose={handleEditClose} headerText={'Edit Event'} event={eventToEdit} />
-            <EventManagerModal open={openAddManager} handleClose={handleAddManagerClose} event={eventToEdit} />
+            <EventManagerModal open={openAddManager} handleClose={handleAddManagerClose} event={eventToAddManager} />
             {isEditEvent ? (
                 <EditCreatedEventPopUp
                     selectedEvent={selectedEvent}
                     handleClosePopUp={handleClosePopUp}
                     handleEditEvent={handleEditEvent}
-                    handleDeleteEvent={handleDeleteClick}
+                    handleDeleteEvent={handleDeleteEventClick}
+                    handleManagerEvent={handleManagerEvent}
                 />
             ) : (
                 <ViewRegisteredEventPopUp

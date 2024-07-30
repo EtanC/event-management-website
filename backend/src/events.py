@@ -34,7 +34,7 @@ def stringify_id(x):
     return x
 
 
-def events_get_page(page_number, name, location, date):
+def events_get_page(page_number, name, location, date, tags, sort_by):
     page_number = int(page_number)
     PAGE_SIZE = 12
 
@@ -49,18 +49,41 @@ def events_get_page(page_number, name, location, date):
             match_stage["converted_start_date"] = {"$gt": date_obj}
         except ValueError:
             return jsonify({"error": "Invalid date format."}), 400
+    if tags:
+        match_stage["tags"] = {"$all": tags}
+
+    # alphabetical sort and view count sort
+    sort_stage = {"name": 1}  # default to sorting name
+    if sort_by:
+        if sort_by == 'alphabetical':
+            sort_stage = {"name": 1}
+        elif sort_by == 'reverse':
+            sort_stage = {"name": -1}
+        elif sort_by == 'view_count':
+            sort_stage = {"view_count": -1}
+
+    # Ensure the fields to sort by are present
+    projection_stage = {
+        "name": 1,
+        "location": 1,
+        "start_date": 1,
+        "view_count": 1,
+        "tags": 1
+    }
+
     # Create events date format isn't consistent with the rest of the webcrawlers
     pipeline = [
         {"$addFields": {
             "converted_start_date": {
                 "$cond": {
-                    "if": {"$regexMatch": {"input": "$start_date", "regex": "^\d{4}-\d{2}-\d{2}$"}},
+                    "if": {"$regexMatch": {"input": "$start_date", "regex": "^\\d{4}-\\d{2}-\\d{2}$"}},
                     "then": {"$dateFromString": {"dateString": "$start_date", "format": "%Y-%m-%d"}},
                     "else": {"$dateFromString": {"dateString": "$start_date", "format": "%b %d, %Y"}}
                 }
             }
         }},
         {"$match": match_stage},
+        {"$sort": sort_stage},
         {"$facet": {
             "totalCount": [{"$count": "count"}],
             "events": [
@@ -72,12 +95,17 @@ def events_get_page(page_number, name, location, date):
 
     result = list(db.events.aggregate(pipeline))
 
-    total_count = result[0]['totalCount'][0]['count'] if result[0]['totalCount'] else 0
+    # Handle the case where totalCount or events might not be present
+    if result and 'totalCount' in result[0] and result[0]['totalCount']:
+        total_count = result[0]['totalCount'][0]['count']
+    else:
+        total_count = 0
     page_count = (total_count + PAGE_SIZE - 1) // PAGE_SIZE
 
-    events = result[0]['events']
+    events = result[0]['events'] if result and 'events' in result[0] else []
     events = list(map(stringify_id, events))
 
+    # Debugging logs
     return {
         'events': events,
         'page_count': page_count
@@ -87,6 +115,12 @@ def events_get_page(page_number, name, location, date):
 def events_get_all():
     return {
         'events': list(map(stringify_id, db.events.find({})))
+    }
+
+
+def events_get_tagged(tags):
+    return {
+        'events': list(map(stringify_id, db.events.find({"tags": {'$all': tags}})))
     }
 
 
@@ -246,6 +280,8 @@ def event_create(token, event):
     event['image'] = random.randint(
         config['RANDOM_IMAGES_START_INDEX'], config['RANDOM_IMAGES_END_INDEX'])
     event['crawled'] = False
+    event['tag'] = []
+    event['view_count'] = 0
     result = db.events.insert_one(event)
     db['users'].update_one(
         {'_id': ObjectId(user_id)},
@@ -266,8 +302,7 @@ def is_admin(user_id):
     return db.users.find_one({"_id": ObjectId(user_id)}).get('isAdmin')
 
 
-def user_is_authorized(user_id, event_id):
-    event = get_event(event_id)
+def user_is_authorized(user_id, event):
     if user_id in event['authorized_users'] or user_id == event['creator']:
         return True
     if is_admin(user_id):
@@ -280,7 +315,7 @@ def event_update(token, event_id, new_event):
     event = get_event(event_id)
     if event['crawled']:
         raise InputError('Cannot edit an event crawled from another source')
-    if not user_is_authorized(user_id, event_id):
+    if not user_is_authorized(user_id, event):
         raise AccessError('User not authorized to update event')
     if event is None:
         raise InputError('No event in database with specified event_id')
@@ -302,16 +337,38 @@ def event_update(token, event_id, new_event):
     return {}
 
 
-def user_is_creator_or_admin_priviledges(user_id, event_id):
-    creator = db['events'].find_one({'_id': ObjectId(event_id)})['creator']
-    return user_id == creator or is_admin(user_id)
+def event_view_count(event_id):
+    try:
+        if not ObjectId.is_valid(event_id):
+            raise InputError('Invalid event_id format')
+        event = get_event(event_id)
+        if event is None:
+            raise InputError('No event in database with specified event_id')
+
+        db.events.update_one(
+            {"_id": ObjectId(event_id)},
+            {"$inc": {"view_count": 1}}
+        )
+        return jsonify({"message": "View count incremented successfully"}), 200
+    except InputError as e:
+        return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+def user_is_creator(user_id, event):
+    return user_id == event['creator']
 
 
 def event_delete(token, event_id):
     user_id = decode_token(token)
-    if not user_is_creator_or_admin_priviledges(user_id, event_id):
-        raise AccessError('User not authorized to delete event')
     event = get_event(event_id)
+    if event['crawled']:
+        if not is_admin(user_id):
+            raise InputError('Only admins permitted to delete crawled events')
+    else:
+        if not user_is_creator(user_id, event) and not is_admin(user_id):
+            raise AccessError('User not authorized to delete event')
     if event is None:
         raise InputError('No event in database with specified event_id')
     db.events.delete_one({'_id': ObjectId(event_id)})
@@ -324,10 +381,11 @@ def is_crawled_event(event_id):
 
 
 def event_authorize(token, event_id, to_be_added_email):
-    if is_crawled_event(event_id):
+    event = get_event(event_id)
+    if event['crawled']:
         raise InputError('Cannot manage an event crawled from another source')
     user_id = decode_token(token)
-    if not user_is_creator_or_admin_priviledges(user_id, event_id):
+    if not user_is_creator(user_id, event) and not is_admin(user_id):
         raise AccessError(
             'User is not authorized to allow other people to manage event')
     # Add user to authorized list

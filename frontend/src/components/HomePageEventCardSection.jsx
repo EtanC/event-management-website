@@ -1,12 +1,12 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import filterEvents from '../helper/filterEvent';
 import SearchBar from './SearchBar';
 import EventCard from './EventCard';
 import { Box, CircularProgress, Typography, Grid, IconButton, Button } from '@mui/material';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import fetchEventsData from '../helper/fetchEventData';
+import { increaseEventViewCount } from '../helper/handleEventData';
 
 
 function HomePageEventCardSection() {
@@ -19,45 +19,46 @@ function HomePageEventCardSection() {
     const [error, setError] = useState(null);
     const [locations, setLocations] = useState([]);
     const [page, setPage] = useState(1);
-    const [totalFilteredEvents, setTotalFilteredEvents] = useState(0);
     const [pageCount, setPageCount] = useState(0);
     const [isSticky, setIsSticky] = useState(false); // for filter bar to not disappear from sight
     const [selectedEvent, setSelectedEvent] = useState(null);
-    // Debounce makes it so that we aren't spamming API calls everytime the search changes
-    // Has a 200 ms delay for search
-    function useDebounce(callback, delay) {
-      const [timeoutId, setTimeoutId] = useState();
-  
-      useEffect(() => {
-          return () => {
-              clearTimeout(timeoutId);
-          };
-      }, [timeoutId]);
-  
-      function debouncedCallback(...args) {
-          clearTimeout(timeoutId);
-          setTimeoutId(setTimeout(() => {
-              callback(...args);
-          }, delay));
-      }
-  
-      return debouncedCallback;
-    }
+    const [tags, setTags] = useState([]);
+    const [sortBy, setSortBy] = useState('alphabetical'); // default sort alphabetical
 
-    const debouncedFetchEventsData = useDebounce(fetchEventsData, 200);
+    // // Debounce makes it so that we aren't spamming API calls everytime the search changes
+    // // Has a 200 ms delay for search
+    // function useDebounce(callback, delay) {
+    //     const [timeoutId, setTimeoutId] = useState();
+    
+    //     useEffect(() => {
+    //         return () => {
+    //             clearTimeout(timeoutId);
+    //         };
+    //     }, [timeoutId]);
+    
+    //     function debouncedCallback(...args) {
+    //         clearTimeout(timeoutId);
+    //         setTimeoutId(setTimeout(() => {
+    //             callback(...args);
+    //         }, delay));
+    //     }
+    
+    //     return debouncedCallback;
+    // }
 
-    useEffect(() => {
-      setIsLoading(true)
-      debouncedFetchEventsData(setEvents, setLocations, setError, setIsLoading, page, setPageCount, eventType, location, date);
-    }, [eventType, location, date]); 
+    // const debouncedFetchEventsData = useDebounce(fetchEventsData, 200);
 
-    useEffect(() => {
-      fetchEventsData(setEvents, setLocations, setError, setIsLoading, page, setPageCount, eventType, location, date)
-    }, [page])
+    // useEffect(() => {
+    //     debouncedFetchEventsData(setEvents, setLocations, setError, setIsLoading, page, setPageCount, eventType, location, date, tags, sortBy);
+    // }, [eventType, location, date, tags, sortBy, debouncedFetchEventsData, page]); 
 
     useEffect(() => {
-      setPage(1)
-    }, [eventType, location, date])
+        fetchEventsData(setEvents, setLocations, setError, setIsLoading, page, setPageCount, eventType, location, date, tags, sortBy)
+    }, [date, eventType, location, page, sortBy, tags])
+
+    useEffect(() => {
+        setPage(1)
+    }, [eventType, location, date, tags, sortBy])
     
     // this is to track where the filter bar is, when hit the nav bar then it stays
     useEffect(() => {
@@ -80,6 +81,8 @@ function HomePageEventCardSection() {
     // cool animation for clicking open event card
     const handleCardClick = (event) => {
         setSelectedEvent(event);
+        // increase view count for the event everytime it is opened
+        increaseEventViewCount(event._id);
         setTimeout(() => {
             navigate(`/event/${event._id}`, { state: { event } });
         }, 500);
@@ -106,8 +109,31 @@ function HomePageEventCardSection() {
                 locations={locations}
                 date={date}
                 setDate={setDate}
+                tags={tags}
+                setTags={setTags}   
                 isSticky={isSticky}
             />
+            {/* Buttons Containing toggle buttons for additional search options */}
+            <Box display="flex" justifyContent="center" alignItems="center" mt={2} gap={1}>
+                <Button 
+                    variant={sortBy === 'alphabetical' ? 'contained' : 'outlined'}
+                    onClick={() => setSortBy('alphabetical')}
+                >
+                    Alphabetical
+                </Button>
+                <Button 
+                    variant={sortBy === 'reverse' ? 'contained' : 'outlined'}
+                    onClick={() => setSortBy('reverse')}
+                >
+                    Reverse Alphabetical
+                </Button>
+                <Button 
+                    variant={sortBy === 'view_count' ? 'contained' : 'outlined'}
+                    onClick={() => setSortBy('view_count')}
+                >
+                    View Count
+                </Button>
+            </Box>
             {isLoading ? (
                 <Box display="flex" justifyContent="center" alignItems="top" height="100vh">
                     <CircularProgress />

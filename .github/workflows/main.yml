@@ -26,6 +26,11 @@ jobs:
         run: echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
 
       - run: python -m backend.src.server test & coverage run -m pytest
+        env:
+          APP_EMAIL: ${{ secrets.APP_EMAIL }}
+          APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
+          MONGODB_CONNECTION_STRING: ${{ secrets.MONGODB_CONNECTION_STRING }}
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
       - run: coverage html
       - uses: actions/upload-artifact@v4
         with:

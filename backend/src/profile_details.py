@@ -37,7 +37,8 @@ def get_profile_details(token):
         'fun_fact': user.get('fun_fact', ''),
         'profile_pic': encoded_image,
         'is_admin': user.get('isAdmin', ''),
-        'receive_notifications': user.get('receive_notifications', '')
+        'receive_notifications': user.get('receive_notifications', ''),
+        'preferences': user.get('preferences', ''),
     }
 
 # mayeb won't deal with profile pics first, but might have to use GridFS to store on mongoDB
@@ -121,14 +122,7 @@ def update_profile_password(token, old_password, new_password, re_password):
 def update_preferences(token, new_preferences):
     # preferences set as a list of topics the user may be interested in
     # perhaps a later improvement could be adding some form of rankings amongst preferences for order in which events show up
-    try:
-        token = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
-    except jwt.ExpiredSignatureError:
-        raise AccessError('Token has expired')
-    except jwt.InvalidTokenError:
-        raise AccessError('Invalid token')
-
-    user_id = token['user_id']
+    user_id = decode_token(token)
 
     filter = {'_id': ObjectId(user_id)}
 
@@ -145,14 +139,7 @@ def update_preferences(token, new_preferences):
 
 def get_user_preferences(token):
     #  split from profile details for now, will see if it needs to be integrated together later
-    try:
-        token = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
-    except jwt.ExpiredSignatureError:
-        raise AccessError('Token has expired')
-    except jwt.InvalidTokenError:
-        raise AccessError('Invalid token')
-
-    user_id = token['user_id']
+    user_id = decode_token(token)
 
     # Check token validity
     user = db.users.find_one({"_id": ObjectId(user_id)})

@@ -85,6 +85,27 @@ definitions = {
         },
         'is_admin': {
             'type': 'boolean'
+        },
+        'description': {
+            'type': 'string'
+        },
+        'full_name': {
+            'type': 'string'
+        },
+        'job_title': {
+            'type': 'string'
+        },
+        'fun_fact': {
+            'type': 'string'
+        },
+        'password': {
+            'type': 'string'
+        },
+        'token': {
+            'type': 'string'
+        },
+        'profile_pic': {
+            'type': 'object'
         }
     },
     "securityDefinitions": {
