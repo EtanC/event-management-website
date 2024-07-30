@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Typography, Box, Alert, Grid, Divider } from '@mui/material';
 import background from '../Image/LHSBackground.png';
@@ -7,17 +7,27 @@ import Logo from '../components/CompanyLogo';
 import { handleLogin } from '../helper/handleAuth';
 import LoginWithSocial from '../components/LoginWithSocialButtons';
 import { useProfile } from '../components/ProfileProvider';
+import config from '../config'
+
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-
+  const { isAuthenticated } = useProfile();
+  const navigate = useNavigate();
+  useEffect(() => {
+    // Navigate to home page if user is authenticated
+    if (isAuthenticated) {
+      navigate('/')
+    }
+  }, []);
   const onSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://127.0.0.1:5000/auth/forgot_password', { 'email': email });
+      const response = await axios.post(`${config.apiBaseUrl}/auth/forgot_password`, { 'email': email });
       if (response.data.message === "email sent") {
         setSuccessMessage('Password reset request confirmed!')
+        setErrorMessage('')
     }
     } catch (error) {
         setErrorMessage(error.response ? error.response.data.description : error.message);

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { TextField, Button, Typography, Box, Alert, Grid, Divider } from '@mui/material';
 import background from '../Image/LHSBackground.png';
@@ -7,23 +7,33 @@ import Logo from '../components/CompanyLogo';
 import { handleLogin } from '../helper/handleAuth';
 import LoginWithSocial from '../components/LoginWithSocialButtons';
 import { useProfile } from '../components/ProfileProvider';
+import config from '../config'
+
 const ResetPasswordPage = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-
+  const { isAuthenticated } = useProfile();
+  const navigate = useNavigate();
+  useEffect(() => {
+    // Navigate to home page if user is authenticated
+    if (isAuthenticated) {
+      navigate('/')
+    }
+  }, []);
   const onSubmit = async (event) => {
     event.preventDefault();
     const queryParams = new URLSearchParams(window.location.search)
     const token = queryParams.get('token')
     const user_id = queryParams.get('user_id')
     try {
-      const response = await axios.post('http://127.0.0.1:5000/auth/reset_password', { token, user_id, password });
+      const response = await axios.post(`${config.apiBaseUrl}/auth/reset_password`, { token, user_id, password });
       if (response.data.message === "Password reset") {
         setPassword('')
         setConfirmPassword('')
         setSuccessMessage("Password Reset Successfully")
+        setErrorMessage('')
       }
       else {
         console.log(response.data)
