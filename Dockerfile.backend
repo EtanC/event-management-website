@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.9 as backend
 
 WORKDIR /app
 
@@ -6,7 +6,8 @@ COPY ./backend/requirements.txt ./backend/
 
 RUN pip3 install -r ./backend/requirements.txt
 
-COPY ./backend ./backend
+COPY ./backend/src ./backend/src
+COPY ./backend/swagger_doc ./backend/swagger_doc
 
 COPY ./easychair_scraper ./easychair_scraper
 

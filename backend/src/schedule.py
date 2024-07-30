@@ -11,7 +11,7 @@ import time
 # should run in background
 
 def check():
-    print('Checking for notifications...')
+    print('Checking for notifications...', flush=True)
     check_notifications()
 
 schedule.every().day.at('10:00').do(check)

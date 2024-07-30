@@ -1,7 +1,9 @@
 version: '3.8'
 services:
   backend:
-    build: ./
+    build:
+      context: ./
+      dockerfile: Dockerfile.backend
     ports:
       - "5000:5000"
   frontend:
@@ -10,3 +12,7 @@ services:
       - "3000:3000"
     environment:
       - REACT_APP_BACKEND_URL=http://localhost:5000 # this defines the URL the frontend makes requests to
+  scheduler:
+    build:
+      context: ./
+      dockerfile: Dockerfile.scheduler
