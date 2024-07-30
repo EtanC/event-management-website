@@ -1,9 +1,10 @@
 import axios from 'axios';
+import config from '../config';
 
 export const fetchRegisteredEvents = async (setEvents, setError, setIsLoading) => {
     setIsLoading(true);
     try {
-        const response = await axios.get('http://127.0.0.1:5000/user/events', { withCredentials: true });
+        const response = await axios.get(`${config.apiBaseUrl}/user/events`, { withCredentials: true });
         setEvents(response.data.events);
         setError(null);
     } catch (err) {
@@ -15,7 +16,7 @@ export const fetchRegisteredEvents = async (setEvents, setError, setIsLoading) =
 
 export const fetchRegisteredEventsSimple = async () => {
     try {
-        const response = await axios.get('http://127.0.0.1:5000/user/events', { withCredentials: true });
+        const response = await axios.get(`${config.apiBaseUrl}/user/events`, { withCredentials: true });
         return response.data.events; // Return the events directly
     } catch (err) {
         throw new Error('Failed to fetch events');
