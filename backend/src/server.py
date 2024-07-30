@@ -119,7 +119,6 @@ def event_create_route():
     if not token:
         raise AccessError('Authorization token is missing')
     body = request.get_json()
-    print(body)
     event = {
         'deadline': body['deadline'],
         'details': body['details'],
