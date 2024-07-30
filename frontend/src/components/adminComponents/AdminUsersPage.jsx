@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Typography, Box, Container } from '@mui/material';
-import AdminUsersSearchBar from '../components/adminComponents/AdminUsersSearchBar';
-import AdminTable from '../components/adminComponents/AdminTable';
-import ActionConfirmationPopup from '../components/ActionConfirmationPopup';
-import { fetchAllUsers, toggleAdminStatus } from '../helper/handleUsers';
+import AdminUsersSearchBar from './AdminUsersSearchBar';
+import AdminTable from './AdminTable';
+import ActionConfirmationPopup from '../ActionConfirmationPopup';
+import { fetchAllUsers, toggleAdminStatus, deleteUser } from '../../helper/handleUsers';
 
 const AdminUsersPage = () => {
     const [email, setEmail] = useState('');
@@ -11,6 +11,7 @@ const AdminUsersPage = () => {
     const [userData, setUserData] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [popupOpen, setPopupOpen] = useState(false);
+    const [deletePopupOpen, setDeletePopupOpen] = useState(false);
     const [action, setAction] = useState(''); // 'makeAdmin' or 'revokeAdmin'
 
     useEffect(() => {
@@ -53,7 +54,7 @@ const AdminUsersPage = () => {
         setPopupOpen(true);
     };
 
-    const handleConfirm = async () => {
+    const handleAdminChangeConfirm = async () => {
         const { username, newRole } = selectedUser;
         const actionType = newRole === 'admin' ? 'invite' : 'remove';
 
@@ -74,6 +75,26 @@ const AdminUsersPage = () => {
 
     const handleClose = () => {
         setPopupOpen(false);
+        setSelectedUser(null);
+    };
+
+    const handleDeleteUser = async (user_id) => {
+        try {
+            await deleteUser(user_id);
+            setUserData(prevData => prevData.filter(user => user._id !== user_id));
+        } catch (error) {
+            console.error('Failed to delete user:', error);
+        }
+        setDeletePopupOpen(false);
+    };
+
+    const handleOpenDeletePopup = (user) => {
+        setSelectedUser(user);
+        setDeletePopupOpen(true);
+    };
+
+    const handleDeleteClose = () => {
+        setDeletePopupOpen(false);
         setSelectedUser(null);
     };
 
@@ -101,7 +122,7 @@ const AdminUsersPage = () => {
                     <AdminTable
                         columns={columns}
                         data={filteredData}
-                        handleDelete={(item) => console.log(`Delete user: ${item._id}`)}
+                        handleDelete={(item) => handleOpenDeletePopup(item)}
                         handleRoleChange={handleRoleChange}
                         showActions={true}
                         showDropdown={true}
@@ -110,23 +131,24 @@ const AdminUsersPage = () => {
                 <ActionConfirmationPopup
                     open={popupOpen}
                     onClose={handleClose}
-                    onConfirm={handleConfirm}
+                    onConfirm={handleAdminChangeConfirm}
                     title={action === 'makeAdmin' ? 'Make User an Admin' : 'Revoke Admin Privileges'}
                     content={action === 'makeAdmin' ?
                         'Are you sure you want to make this user an admin?' :
                         'Are you sure you want to revoke admin privileges from this user?'}
                     primaryButtonText={action === 'makeAdmin' ? 'Make Admin' : 'Revoke Admin'}
                 />
+                <ActionConfirmationPopup
+                    open={deletePopupOpen}
+                    onClose={handleDeleteClose}
+                    onConfirm={() => handleDeleteUser(selectedUser._id)}
+                    title={'Delete User'}
+                    content={'Are you sure you want to delete this user? This action cannot be undone.'}
+                    primaryButtonText={'Delete'}
+                />
             </Container>
         </>
     );
-};
-
-const styles = {
-    flexBox: {
-        display: 'flex',
-        marginBottom: 5
-    }
 };
 
 export default AdminUsersPage;

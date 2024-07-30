@@ -15,8 +15,8 @@ const AdminTable = ({ columns, data, handleDelete, handleEdit, handleRoleChange,
                                 {column.headerName}
                             </TableCell>
                         ))}
-                        {showActions && <TableCell style={{ width: '100px' }}>Action</TableCell>}
                         {showDropdown && <TableCell style={{ width: '150px' }}>Role</TableCell>}
+                        {showActions && <TableCell style={{ width: '100px' }}>Action</TableCell>}
                     </TableRow>
                 </TableHead>
                 <TableBody>

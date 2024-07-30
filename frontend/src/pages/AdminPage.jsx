@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Typography, Box, Container, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import AdminEventsPage from './AdminEventsPage';
-import AdminUsersPage from './AdminUsersPage';
+import AdminEventsPage from '../components/adminComponents/AdminEventsPage';
+import AdminUsersPage from '../components/adminComponents/AdminUsersPage';
 
 const AdminPage = () => {
     const [view, setView] = useState('users'); // Default view set to 'users'

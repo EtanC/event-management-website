@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, Box, Container, Button } from '@mui/material';
-import AdminEventsSearchBar from '../components/adminComponents/AdminEventsSearchBar';
-import AdminTable from '../components/adminComponents/AdminTable';
-import ActionConfirmationPopup from '../components/ActionConfirmationPopup';
-import CreateEventPopUp from '../components/CreateEventPopUp';
-import { fetchEventsData } from '../helper/handleEventData';
+import AdminEventsSearchBar from './AdminEventsSearchBar';
+import AdminTable from './AdminTable';
+import ActionConfirmationPopup from '../ActionConfirmationPopup';
+import CreateEventPopUp from '../CreateEventPopUp';
+import { fetchEventsData } from '../../helper/handleEventData';
 import {
     handleDeleteClick,
     handleDeleteCancel,
     handleDeleteConfirm,
     handleEditClick,
     handleEditClose,
-} from '../helper/handleEditDeleteEvent';
-import handleCrawlEvents from '../helper/handleCrawlEvents';
+} from '../../helper/handleEditDeleteEvent';
+import handleCrawlEvents from '../../helper/handleCrawlEvents';
 
 const AdminEventsPage = () => {
     const [events, setEvents] = useState([]);
