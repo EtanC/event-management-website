@@ -1,116 +1,78 @@
-import { useState, useEffect } from 'react';
-import { Box, CircularProgress, IconButton } from '@mui/material';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Box, IconButton } from '@mui/material';
 import { ArrowBack, ArrowForward } from '@mui/icons-material';
 import { fetchUserPreferences } from '../helper/handleEventData';
-import { useRef } from 'react';
+import EventCard from './EventCard';
 
-const UserPreferenceEvent = ({ allEvents, eventType, location, date, tags }) => {
+const UserPreferenceEvent = ({ events, handleCardClick, selectedEvent }) => {
     const [filteredEvents, setFilteredEvents] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [isNearLeft, setIsNearLeft] = useState(false);
-    const [isNearRight, setIsNearRight] = useState(false);
-    const scrollIntervalRef = useRef(null);
+    const containerRef = useRef(null);
+
+    const getUserPreferencesAndFilterEvents = useCallback(async () => {
+        try {
+            const userPreferences = await fetchUserPreferences();
+            const filtered = events.filter(event => 
+                event.tags.some(tag => userPreferences.includes(tag))
+            );
+            setFilteredEvents(filtered);
+        } catch (error) {
+            console.error(`Failed to fetch user preferences or filter events: ${error.message}`);
+            setFilteredEvents([]);
+        }
+    }, [events]);
+
 
     useEffect(() => {
-        const getUserPreferences = async () => {
-            try {
-                const userTags = await fetchUserPreferences();
-                const filtered = allEvents.filter(event => 
-                    event.tags.some(tag => userTags.includes(tag)) &&
-                    (!eventType || event.type === eventType) &&
-                    (!location || event.location === location) &&
-                    (!date || event.date === date) &&
-                    (tags.length === 0 || tags.some(tag => event.tags.includes(tag)))
-                );
-                setFilteredEvents(filtered);
-                setLoading(false);
-            } catch (error) {
-                console.error(`Tag fetching failed ${error.message}`);
-                setLoading(false);
-            }
-        };
-        getUserPreferences();
-    }, [allEvents, eventType, location, date, tags]);
+        getUserPreferencesAndFilterEvents();
+    }, [getUserPreferencesAndFilterEvents]);
 
     const scroll = (direction) => {
-        const container = document.getElementById('carouselContainer');
+        const container = containerRef.current;
         const scrollAmount = direction === 'left' ? -200 : 200;
         container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     };
 
-    const startAutoScroll = (direction) => {
-        if (scrollIntervalRef.current) return; // Prevent multiple intervals
-        scrollIntervalRef.current = setInterval(() => {
-            scroll(direction);
-        }, 100);
-    };
-
-    const stopAutoScroll = () => {
-        clearInterval(scrollIntervalRef.current);
-        scrollIntervalRef.current = null;
-    };
-
-    const handleMouseMove = (e) => {
-        const container = document.getElementById('carouselContainer');
-        const { left, right } = container.getBoundingClientRect();
-        const buffer = 50; // Distance from edge to start auto-scrolling
-        if (e.clientX < left + buffer) {
-            setIsNearLeft(true);
-            setIsNearRight(false);
-            startAutoScroll('left');
-        } else if (e.clientX > right - buffer) {
-            setIsNearRight(true);
-            setIsNearLeft(false);
-            startAutoScroll('right');
-        } else {
-            setIsNearLeft(false);
-            setIsNearRight(false);
-            stopAutoScroll();
-        }
-    };
-
-    useEffect(() => {
-        window.addEventListener('mousemove', handleMouseMove);
-        return () => {
-            window.removeEventListener('mousemove', handleMouseMove);
-            stopAutoScroll(); // Cleanup interval on unmount
-        };
-    }, []);
-    
     return (
-        <Box sx={{ position: 'relative', marginBottom: '20px' }}>
-            {loading ? (
-                <Box display="flex" justifyContent="center" alignItems="center" height="100%">
-                    <CircularProgress />
+        <Box sx={{ 
+            position: 'relative', 
+            marginBottom: '20px',
+            width: '100%',
+            boxSizing: 'border-box'
+        }}>
+            <Box display="flex" alignItems="center">
+                <IconButton onClick={() => scroll('left')}>
+                    <ArrowBack />
+                </IconButton>
+                <Box
+                    id="carouselContainer"
+                    ref={containerRef}
+                    sx={{
+                        display: 'flex',
+                        overflowX: 'auto',
+                        scrollBehavior: 'smooth',
+                        width: 'calc(100% - 96px)',
+                        '&::-webkit-scrollbar': {
+                            display: 'none',
+                        },
+                        '-ms-overflow-style': 'none',
+                        'scrollbar-width': 'none',
+                        gap: '16px',
+                        padding: '16px'
+                    }}
+                >
+                    {filteredEvents.map((event, index) => (
+                        <EventCard 
+                            key={index} 
+                            event={event}
+                            handleCardClick={() => handleCardClick(event, index, 'userPreference')} 
+    isSelected={selectedEvent?.id === event._id && selectedEvent?.index === index && selectedEvent?.section === 'userPreference'}
+                        />
+                    ))}
                 </Box>
-            ) : (
-                <Box display="flex" alignItems="center">
-                    <IconButton onClick={() => scroll('left')}>
-                        <ArrowBack />
-                    </IconButton>
-                    <Box
-                        id="carouselContainer"
-                        sx={{
-                            display: 'flex',
-                            overflowX: 'auto',
-                            scrollBehavior: 'smooth',
-                            width: 'calc(100% - 96px)', // Adjusting for button widths
-                        }}
-                    >
-                        {filteredEvents.map((event, index) => (
-                            <EventCard 
-                                key={index} 
-                                event={event}
-                                handleCardClick={handleCardClick} 
-                                isSelected={selectedEvent===event}
-                            />
-                        ))}
-                    </Box>
-                    <IconButton onClick={() => scroll('right')}>
-                        <ArrowForward />
-                    </IconButton>
-                </Box>
-            )}
+                <IconButton onClick={() => scroll('right')}>
+                    <ArrowForward />
+                </IconButton>
+            </Box>
         </Box>
     );
 };
