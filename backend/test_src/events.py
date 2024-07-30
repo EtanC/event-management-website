@@ -20,7 +20,8 @@ def event_update(token, event_id, new_event):
         'details_link': new_event['details_link'],
         'name': new_event['name'],
         'location': new_event['location'],
-        'start_date': new_event['start_date']
+        'start_date': new_event['start_date'],
+        'tags': new_event['tags']
     }
     cookies = make_cookies(token)
     response = requests.put(f'{backend_url}/event/update/{event_id}', json=body, cookies=cookies)
