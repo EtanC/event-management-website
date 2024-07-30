@@ -6,6 +6,7 @@ import defaultImage from '../Image/eventInfo-background.jpeg';
 import theme from '../styles/Theme';
 import { ThemeProvider } from '@mui/material/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Chip } from '@mui/material';
 
 import {
     Accordion,
@@ -86,7 +87,7 @@ function EventDetailPage() {
                                     </Box>
                                 ) : (
                                     <div>
-                                        {Array.isArray(event.ai_description) && <Accordion defaultExpanded>
+                                        {event.ai_description && <Accordion defaultExpanded>
                                             <AccordionSummary
                                                 expandIcon={<ExpandMoreIcon />}
                                             >
@@ -94,7 +95,7 @@ function EventDetailPage() {
                                             </AccordionSummary>
                                             <AccordionDetails>
                                                 <Typography>
-                                                    {event.ai_description[0]['summary_text']}
+                                                    {event.ai_description}
                                                 </Typography>
                                             </AccordionDetails>
                                         </Accordion>}
@@ -113,6 +114,19 @@ function EventDetailPage() {
                                         <Box display="flex" alignItems="center">
                                             <LocationOn sx={{ marginRight: '8px' }} />
                                             <Typography variant="body1">{event.location}</Typography>
+                                        </Box>
+                                    </CardContent>
+                                </Card>
+                                <Card sx={{ marginBottom: '20px' }}>
+                                    <CardContent>
+                                        <Typography variant="h6" component="h2" gutterBottom>
+                                            Tags
+                                        </Typography>
+                                        <Box display="flex" alignItems="center" flexWrap="wrap" gap={1}>
+                                        {/* shoudn't happen but just incase some events don't have tags yet, assign it as unspecified on the*/}
+                                            {(event.tags && event.tags.length > 0 ? event.tags : ['Unspecified']).map((tag, index) => (
+                                                <Chip key={index} label={tag} />
+                                            ))}
                                         </Box>
                                     </CardContent>
                                 </Card>

@@ -23,7 +23,6 @@ export const getUserId = () => {
         const user_id = jwtDecode(token).user_id
         return user_id
     } catch (error) {
-        console.error("Invalid Token");
         throw (error);
     }
 }
@@ -37,5 +36,16 @@ export const handleSnackbar = (setSnackbarMessage, setSnackbarOpen) => (message)
 export const handleImageUpload = (setNewProfilePic) => (event) => {
     const file = event.target.files[0];
     setNewProfilePic(file);
+};
+
+// Register Helpers
+export const validatePassword = (password) => {
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    return password.length >= minLength && hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar;
 };
 

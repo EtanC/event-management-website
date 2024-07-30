@@ -1,14 +1,15 @@
 from pymongo import MongoClient
 import gridfs
+import os
+from dotenv import load_dotenv
 
 from backend.src.config import config
 # install pymongo
 # python3 -m pip install "pymongo[srv]"
 
 # to run: python3 -m backend.src.database
-client = MongoClient(
-    'mongodb+srv://comp3900:wowilovecompsci123@comp3900-database.dkmw7l9.mongodb.net/?retryWrites=true&w=majority&appName=COMP3900-Database')
-
+load_dotenv()
+client = MongoClient(os.getenv("MONGODB_CONNECTION_STRING"))
 
 class Database:
     def __init__(self, test):
