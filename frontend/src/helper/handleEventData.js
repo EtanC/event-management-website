@@ -18,6 +18,7 @@ export const fetchEventsData = async (setEvents, setLocations, setError, setIsLo
 };
 
 export const handleCreateEvent = async (eventData) => {
+    console.log(eventData)
     try {
         const response = await axios.post(`${config.apiBaseUrl}/event/create`,
             {

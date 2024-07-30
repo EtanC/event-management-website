@@ -17,10 +17,10 @@ const preferencesList = [
     "Software Engineering"
 ];
 
-const PreferencesSelect = ({ value, onChange }) => (
+const PreferencesSelect = ({ value = [], onChange }) => (
     <Select
         multiple
-        value={value}
+        value={Array.isArray(value) ? value : []}
         onChange={(e) => onChange(e.target.value)}
         input={<OutlinedInput label="Preferences" />}
         renderValue={(selected) => (
