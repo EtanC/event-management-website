@@ -7,6 +7,7 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import fetchEventsData from '../helper/fetchEventData';
 import { increaseEventViewCount } from '../helper/handleEventData';
+import UserPreferenceEvent from './UserPreferenceEvents';
 
 
 function HomePageEventCardSection() {
@@ -152,6 +153,26 @@ function HomePageEventCardSection() {
                 </Box>
             ) : (
                 <Box sx={{ padding: 4 }}>
+                    <Typography 
+                        variant="h4" 
+                        component="h2" 
+                        gutterBottom 
+                        sx={{marginBottom: '50px'}}
+                    >
+                        Recommended Events
+                    </Typography>
+                    {!isLoading && !error && events.length > 0 && (
+                        <UserPreferenceEvent allEvents={events} eventType={eventType} location={location} date={date} tags={tags} />
+                    )}
+
+                    <Typography
+                        variant="h4" 
+                        component="h2" 
+                        gutterBottom 
+                        sx={{ marginTop: '50px', marginBottom: '50px' }}
+                    >
+                        All Events
+                    </Typography>
                     <Grid container spacing={2}>
                         {events.map((event, index) => (
                             <EventCard 

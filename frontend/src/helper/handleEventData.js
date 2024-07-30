@@ -17,6 +17,18 @@ export const fetchEventsData = async (setEvents, setLocations, setError, setIsLo
     }
 };
 
+export const fetchUserPreferences = async () => {
+    try {
+        const response = await axios.get(`${config.apiBaseUrl}/events/get/tagged`, {
+            withCredentials: true,
+        });
+        const userTags = response.data; 
+        return userTags;
+    } catch (error) {
+        console.error(`Tag fetching failed ${error.message}`);
+    }
+}
+
 export const handleCreateEvent = async (eventData) => {
     try {
         const response = await axios.post(`${config.apiBaseUrl}/event/create`,
