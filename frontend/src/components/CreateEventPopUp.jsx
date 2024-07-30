@@ -70,7 +70,6 @@ const CreateEventPopUp = ({ open, handleClose, headerText, event, refreshEvents 
                 details_link: event.details_link || '',
                 details: event.details || '',
                 tags: event.tags || [],
-                image: event.image || null
             });
         }
     }, [event]);
@@ -104,7 +103,6 @@ const CreateEventPopUp = ({ open, handleClose, headerText, event, refreshEvents 
                     details_link: '',
                     details: '',
                     tags: [],
-                    image: null
                 });
             }
         } catch (error) {
