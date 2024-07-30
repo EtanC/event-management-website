@@ -1,8 +1,9 @@
 import axios from 'axios';
+import config from '../config';
 
 export const fetchProfileData = async (setProfile) => {
     try {
-        const response = await axios.get('http://127.0.0.1:5000/profile/get', {
+        const response = await axios.get(`${config.apiBaseUrl}/profile/get`, {
             withCredentials: true
         });
         const profileData = response.data;
@@ -25,7 +26,7 @@ export const updateProfileDetails = async (updatedProfileData) => {
             formData.append('profile_pic', profile_pic);
         }
 
-        const response = await axios.post('http://127.0.0.1:5000/profile/update/details', formData, {
+        const response = await axios.post(`${config.apiBaseUrl}/profile/update/details`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             },
@@ -40,7 +41,7 @@ export const updateProfileDetails = async (updatedProfileData) => {
 export const updateProfilePassword = async (password, setErrorMessage) => {
     const { old_pw, new_pw, confirm_new_pw } = password
     try {
-        const response = await axios.post('http://127.0.0.1:5000/profile/update/password', {
+        const response = await axios.post(`${config.apiBaseUrl}/profile/update/password`, {
             old_password: old_pw,
             new_password: new_pw,
             re_password: confirm_new_pw,
@@ -57,7 +58,7 @@ export const updateProfilePassword = async (password, setErrorMessage) => {
 
 export const updateProfilePreferences = async (newPreferences) => {
     try {
-        const response = await axios.put('http://127.0.0.1:5000/profile/update/preferences', {
+        const response = await axios.put(`${config.apiBaseUrl}/profile/update/preferences`, {
             new_preferences: newPreferences
         }, {
             withCredentials: true
@@ -72,7 +73,7 @@ export const updateProfilePreferences = async (newPreferences) => {
 
 export const toggleNotifications = async () => {
     try {
-        const response = await axios.put('http://127.0.0.1:5000/user/toggle_notifications', {}, { withCredentials: true });
+        const response = await axios.put(`${config.apiBaseUrl}/user/toggle_notifications`, {}, { withCredentials: true });
         return response.data;
     } catch (error) {
         console.error('Error toggling notifications:', error);

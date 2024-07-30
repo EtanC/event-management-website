@@ -1,4 +1,5 @@
 import axios from 'axios';
+import config from '../config';
 
 
 const fetchEventsData = async (setEvents, setLocations, setError, setIsLoading, page, setPageCount, eventType, location, date, tags, sortBy) => {
@@ -16,7 +17,7 @@ const fetchEventsData = async (setEvents, setLocations, setError, setIsLoading, 
 
     
         const queryString = queryParams.toString();
-        const url = `http://127.0.0.1:5000/events/get_page/${page}?${queryString}`;
+        const url = `${config.apiBaseUrl}/events/get_page/${page}?${queryString}`;
 
         const response = await axios.get(url);
         const eventData = response.data.events;

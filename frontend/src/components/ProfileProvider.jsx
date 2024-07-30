@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import useLocalStorageTokenExpires from '../hooks/useLocalStorageTokenExpires'
+import config from '../config';
 
 const ProfileContext = createContext();
 
@@ -16,7 +17,7 @@ export const ProfileProvider = ({ children }) => {
     const fetchProfileData = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('http://127.0.0.1:5000/profile/get', { withCredentials: true });
+            const response = await axios.get(`${config.apiBaseUrl}/profile/get`, { withCredentials: true });
             setProfileData(response.data);
         } catch (err) {
             console.error(`Failed to fetch profile: ${err.message}`);
