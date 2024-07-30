@@ -349,10 +349,12 @@ def user_is_creator(user_id, event):
 def event_delete(token, event_id):
     user_id = decode_token(token)
     event = get_event(event_id)
-    if event['crawled'] and not is_admin(user_id):
-        raise InputError('Only admins permitted to delete crawled events')
-    if not user_is_creator(user_id, event) and not is_admin(user_id):
-        raise AccessError('User not authorized to delete event')
+    if event['crawled']:
+        if not is_admin(user_id):
+            raise InputError('Only admins permitted to delete crawled events')
+    else:
+        if not user_is_creator(user_id, event) and not is_admin(user_id):
+            raise AccessError('User not authorized to delete event')
     if event is None:
         raise InputError('No event in database with specified event_id')
     db.events.delete_one({'_id': ObjectId(event_id)})
