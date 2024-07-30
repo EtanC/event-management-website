@@ -9,7 +9,7 @@ const Logo = ({ navigate }) => (
         sx={{ position: 'absolute',
             top: {
                 xs: '20px',
-                md: '100px'
+                md: '50px'
             },
             right: {
                 xs: '20px',

@@ -64,7 +64,7 @@ profile_update_details_spec = {
                     '$ref': '#/definitions/full_name',
                 },
                 'description': {
-                    '$ref': '#/definitions/desciption',
+                    '$ref': '#/definitions/description',
                 },
                 'fun_fact': {
                     '$ref': '#/definitions/fun_fact',
@@ -117,7 +117,21 @@ profile_update_password_spec = {
     ],
     'parameters': [
         {
-            '$ref': '#/definitions/parameters/update_password'
+            'name': 'Body',
+            'in': 'body',
+            'type': 'object',
+            'required': 'true',
+            'properties': {
+                'old_password': {
+                    '$ref': '#/definitions/password',
+                },
+                'new_password': {
+                    '$ref': '#/definitions/password',
+                },
+                're_password': {
+                    '$ref': '#/definitions/password',
+                },
+            }
         },
     ],
     'responses': {
@@ -134,6 +148,53 @@ profile_update_password_spec = {
         },
         400: {
             'description': 'Incorrect old password or passwords don\'t match'
+        }
+    }
+}
+
+profile_update_preferences_spec = {
+    'tags': ['Profile'],
+    'parameters': [
+        {
+            '$ref': '#/definitions/parameters/update_preferences'
+        },
+    ],
+    'definitions': definitions_profile,
+    'responses': {
+        200: {
+            'description': 'Successful Preferences Change',
+            'schema': {
+                'type': 'object',
+                'properties': {}
+            },
+        },
+        403: {
+            'description': 'Invalid Token'
+        },
+        400: {
+            'description': "Invalid preferences input"
+        }
+    }
+}
+
+profile_get_preferences_spec = {
+    'tags': ['Profile'],
+    'parameters': [],
+    'definitions': definitions_profile,
+    'responses': {
+        200: {
+            'description': 'Successful Preferences Get',
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'preferences': {
+                        '$ref': '#/definitions/data/new_preferences',
+                    }
+                }
+            },
+        },
+        403: {
+            'description': 'Invalid Token'
         }
     }
 }

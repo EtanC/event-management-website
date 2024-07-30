@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Box, Button } from '@mui/material';
 import SearchBar from './calendarSideBarComponents/CalendarSearchBar';
 import RankingCheckBox from './calendarSideBarComponents/RankingCheckBox';
-import EventTypeCheckBox from './calendarSideBarComponents/EventTypeCheckBox';
 import CreateEventPopUp from './CreateEventPopUp'
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
@@ -58,8 +57,6 @@ const CalendarSidebar = ({ events, onSearchResultClick, onRankingChange, refresh
                     selectedRankings={selectedRankings}
                     handleRankingChange={handleRankingChange}
                 />
-
-                <EventTypeCheckBox />
             </Box>
         </>
     );

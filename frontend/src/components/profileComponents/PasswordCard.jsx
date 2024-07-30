@@ -16,69 +16,67 @@ const PasswordCard = ({ isEditingPW, password, errorMessage, handlePWChange, han
                 )}
             </Box>
             <Box className='flexbox'>
-                <Box sx={{ display: 'flex', flexDirection: 'column', width: '80%', justifyContent: 'center', alignItems: 'center' }}>
-                    {isEditingPW ? (
-                        <>
-                            <TextField
-                                name="old_pw"
-                                label="Old Password"
-                                type="password"
-                                value={password.old_pw}
-                                onChange={handlePWChange}
-                                fullWidth
-                                required
-                                InputProps={{ sx: { borderRadius: '40px', mb: 2} }}
-                            />
-                            <TextField
-                                name="new_pw"
-                                label="New Password"
-                                type="password"
-                                value={password.new_pw}
-                                onChange={handlePWChange}
-                                fullWidth
-                                required
-                                InputProps={{ sx: { borderRadius: '40px', mb: 2 } }}
-                            />
-                            <TextField
-                                name="confirm_new_pw"
-                                label="Confirm New Password"
-                                type="password"
-                                value={password.confirm_new_pw}
-                                onChange={handlePWChange}
-                                fullWidth
-                                required
-                                InputProps={{ sx: { borderRadius: '40px', mb: 2 } }}
-                            />
-                            {errorMessage && <Alert severity="error" sx={{ marginBottom: '20px' }}>{errorMessage}</Alert>}
-                            <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'row', gap: '20px', width: '100%' }}>
-                                <Button
-                                    variant="outlined" color="primary"
-                                    className='button-common button-responsive'
-                                    onClick={handleEditPWClick}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    variant="contained" color="primary"
-                                    className='button-common button-responsive'
-                                    onClick={updatePassword}
-                                >
-                                    Save Password
-                                </Button>
-                            </Box>
-                        </>
-                    ) : (
-                        <>
+                {isEditingPW ? (
+                    <>
+                        <TextField
+                            name="old_pw"
+                            label="Old Password"
+                            type="password"
+                            value={password.old_pw}
+                            onChange={handlePWChange}
+                            fullWidth
+                            required
+                            InputProps={{ sx: { borderRadius: '40px', mb: 2 } }}
+                        />
+                        <TextField
+                            name="new_pw"
+                            label="New Password"
+                            type="password"
+                            value={password.new_pw}
+                            onChange={handlePWChange}
+                            fullWidth
+                            required
+                            InputProps={{ sx: { borderRadius: '40px', mb: 2 } }}
+                        />
+                        <TextField
+                            name="confirm_new_pw"
+                            label="Confirm New Password"
+                            type="password"
+                            value={password.confirm_new_pw}
+                            onChange={handlePWChange}
+                            fullWidth
+                            required
+                            InputProps={{ sx: { borderRadius: '40px', mb: 2 } }}
+                        />
+                        {errorMessage && <Alert severity="error" sx={{ marginBottom: '20px' }}>{errorMessage}</Alert>}
+                        <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'row', gap: '20px', width: '100%' }}>
                             <Button
-                                variant="contained" color="primary"
-                                className='button-common button-edit button-responsive'
+                                variant="outlined" color="primary"
+                                className='button-common button-responsive'
                                 onClick={handleEditPWClick}
                             >
-                                Change Password
+                                Cancel
                             </Button>
-                        </>
-                    )}
-                </Box>
+                            <Button
+                                variant="contained" color="primary"
+                                className='button-common button-responsive'
+                                onClick={updatePassword}
+                            >
+                                Save Password
+                            </Button>
+                        </Box>
+                    </>
+                ) : (
+                    <>
+                        <Button
+                            variant="contained" color="primary"
+                            className='button-common button-edit button-responsive'
+                            onClick={handleEditPWClick}
+                        >
+                            Change Password
+                        </Button>
+                    </>
+                )}
             </Box>
         </CardContent>
     </Card>

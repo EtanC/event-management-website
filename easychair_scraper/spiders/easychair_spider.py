@@ -1,4 +1,5 @@
 import scrapy
+from backend.src.database import client
 
 class EasychairSpider(scrapy.Spider):
     name = "easychair"
@@ -6,6 +7,9 @@ class EasychairSpider(scrapy.Spider):
     start_urls = [
         'https://easychair.org/cfp/topic.cgi?tid=670',
     ]
+
+    def __init__(self, database_name):
+        self.db = client[database_name]
 
     def parse(self, response):
         rows = response.css('tr.yellow')

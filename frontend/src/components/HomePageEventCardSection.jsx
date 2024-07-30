@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchEventsData } from '../helper/handleEventData';
-import filterEvents from '../helper/filterEvent';
 import SearchBar from './SearchBar';
 import EventCard from './EventCard';
 import { Box, CircularProgress, Typography, Grid, IconButton, Button } from '@mui/material';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import fetchEventsData from '../helper/fetchEventData';
+import { increaseEventViewCount } from '../helper/handleEventData';
 
-const ITEMS_PER_PAGE = 12; // customise this
 
 function HomePageEventCardSection() {
     const navigate = useNavigate();
@@ -16,32 +15,51 @@ function HomePageEventCardSection() {
     const [location, setLocation] = useState('');
     const [date, setDate] = useState('');
     const [events, setEvents] = useState([]);
-    const [filteredEvents, setFilteredEvents] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [locations, setLocations] = useState([]);
     const [page, setPage] = useState(1);
-    const [totalFilteredEvents, setTotalFilteredEvents] = useState(0);
     const [pageCount, setPageCount] = useState(0);
     const [isSticky, setIsSticky] = useState(false); // for filter bar to not disappear from sight
     const [selectedEvent, setSelectedEvent] = useState(null);
+    const [tags, setTags] = useState([]);
+    const [sortBy, setSortBy] = useState('alphabetical'); // default sort alphabetical
+
+    // // Debounce makes it so that we aren't spamming API calls everytime the search changes
+    // // Has a 200 ms delay for search
+    // function useDebounce(callback, delay) {
+    //     const [timeoutId, setTimeoutId] = useState();
+    
+    //     useEffect(() => {
+    //         return () => {
+    //             clearTimeout(timeoutId);
+    //         };
+    //     }, [timeoutId]);
+    
+    //     function debouncedCallback(...args) {
+    //         clearTimeout(timeoutId);
+    //         setTimeoutId(setTimeout(() => {
+    //             callback(...args);
+    //         }, delay));
+    //     }
+    
+    //     return debouncedCallback;
+    // }
+
+    // const debouncedFetchEventsData = useDebounce(fetchEventsData, 200);
+
+    // useEffect(() => {
+    //     debouncedFetchEventsData(setEvents, setLocations, setError, setIsLoading, page, setPageCount, eventType, location, date, tags, sortBy);
+    // }, [eventType, location, date, tags, sortBy, debouncedFetchEventsData, page]); 
 
     useEffect(() => {
-        fetchEventsData(setEvents, setLocations, setError, setIsLoading);
-    }, []);
+        fetchEventsData(setEvents, setLocations, setError, setIsLoading, page, setPageCount, eventType, location, date, tags, sortBy)
+    }, [date, eventType, location, page, sortBy, tags])
 
     useEffect(() => {
-        const result = filterEvents(events, eventType, location, date);
-        setTotalFilteredEvents(result.length);
-        setPageCount(Math.ceil(result.length / ITEMS_PER_PAGE));
-        setFilteredEvents(result);
-    }, [eventType, location, date, events]);
-
-    // this hook make sure user gets transported to page 1 when any search happens
-    useEffect(() => {
-        setPage(1);
-    }, [eventType, location, date]); 
-
+        setPage(1)
+    }, [eventType, location, date, tags, sortBy])
+    
     // this is to track where the filter bar is, when hit the nav bar then it stays
     useEffect(() => {
         const handleScroll = () => {
@@ -63,6 +81,8 @@ function HomePageEventCardSection() {
     // cool animation for clicking open event card
     const handleCardClick = (event) => {
         setSelectedEvent(event);
+        // increase view count for the event everytime it is opened
+        increaseEventViewCount(event._id);
         setTimeout(() => {
             navigate(`/event/${event._id}`, { state: { event } });
         }, 500);
@@ -74,32 +94,6 @@ function HomePageEventCardSection() {
 
     const handlePreviousPage = () => {
         setPage(prev => Math.max(prev - 1, 1));
-    };
-
-    // function to make sure theres only 5 buttons for pagination at a time
-    const renderPaginationButtons = () => {
-        const paginationButtons = [];
-        const startPage = Math.max(1, page - 2);
-        const endPage = Math.min(pageCount, startPage + 4);
-
-        for (let i = startPage; i <= endPage; i++) {
-            paginationButtons.push(
-                <Button
-                    key={i}
-                    variant={page === i ? "contained" : "outlined"}
-                    onClick={() => setPage(i)}
-                    sx={{
-                        border: 'none',
-                        minWidth: '30px', 
-                        padding: '0 8px', 
-                    }}
-                >
-                    {i}
-                </Button>
-            );
-        }
-
-        return paginationButtons;
     };
 
     return (
@@ -115,8 +109,43 @@ function HomePageEventCardSection() {
                 locations={locations}
                 date={date}
                 setDate={setDate}
+                tags={tags}
+                setTags={setTags}   
                 isSticky={isSticky}
             />
+            {/* Buttons Containing toggle buttons for additional search options */}
+            <Box display="flex" justifyContent="center" alignItems="center" mt={2} gap={1}>
+                <Button 
+                    variant={sortBy === 'alphabetical' ? 'contained' : 'outlined'}
+                    onClick={() => setSortBy('alphabetical')}
+                    sx={{ height: '45px', fontSize: {
+                        xs: '10px',
+                        sm: '12px'
+                    } }}
+                >
+                    Alphabetical
+                </Button>
+                <Button 
+                    variant={sortBy === 'reverse' ? 'contained' : 'outlined'}
+                    onClick={() => setSortBy('reverse')}
+                    sx={{ height: '45px', fontSize: {
+                        xs: '10px',
+                        sm: '12px'
+                    } }}
+                >
+                    Reverse Alphabetical
+                </Button>
+                <Button 
+                    variant={sortBy === 'view_count' ? 'contained' : 'outlined'}
+                    onClick={() => setSortBy('view_count')}
+                    sx={{ height: '45px', fontSize: {
+                        xs: '10px',
+                        sm: '12px'
+                    } }}
+                >
+                    View Count
+                </Button>
+            </Box>
             {isLoading ? (
                 <Box display="flex" justifyContent="center" alignItems="top" height="100vh">
                     <CircularProgress />
@@ -127,7 +156,7 @@ function HomePageEventCardSection() {
                         {error}
                     </Typography>
                 </Box>
-            ) : totalFilteredEvents === 0 ? (
+            ) : events.length === 0 ? (
                 <Box display="flex" justifyContent="center" alignItems="center" height="30vh">
                     <Typography variant="h6" color="textSecondary">
                         No search results
@@ -136,7 +165,7 @@ function HomePageEventCardSection() {
             ) : (
                 <Box sx={{ padding: 4 }}>
                     <Grid container spacing={2}>
-                        {filteredEvents.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE).map((event, index) => (
+                        {events.map((event, index) => (
                             <EventCard 
                                 key={index} 
                                 event={event} 
@@ -148,17 +177,29 @@ function HomePageEventCardSection() {
                 </Box>
             )}
             <Box display="flex" justifyContent="center" mt={2}>
-                {page > 1 && (
-                    <IconButton onClick={handlePreviousPage}>
-                        <KeyboardArrowLeftIcon />
-                    </IconButton>
-                )}
-                {renderPaginationButtons()}
-                {page < pageCount && (
-                    <IconButton onClick={handleNextPage}>
-                        <KeyboardArrowRightIcon />
-                    </IconButton>
-                )}
+              <div style={{display: 'flex', width: '100%',justifyContent: 'center'}}>
+                  {page != 1 && <IconButton onClick={handlePreviousPage}>
+                      <KeyboardArrowLeftIcon/>
+                  </IconButton>}
+                  {page > 2 && <Button onClick={() => setPage(page - 2)}>
+                      {page - 2}
+                  </Button>}
+                  {page > 1 && <Button onClick={() => setPage(page - 1)}>
+                      {page - 1}
+                  </Button>}
+                  <Button variant="contained">
+                      {page}
+                  </Button>
+                  {(page + 1 <= pageCount) && <Button onClick={() => setPage(page + 1)}>
+                      {page + 1}
+                  </Button>}
+                  {(page + 2 <= pageCount) && <Button onClick={() => setPage(page + 2)}>
+                      {page + 2}
+                  </Button>}
+                  {(page + 1 <= pageCount) && <IconButton onClick={handleNextPage}>
+                      <KeyboardArrowRightIcon/>
+                  </IconButton>}
+              </div>
             </Box>
             <style> {/*style for filter bar so it doesnt disappear from sight */}
 {`

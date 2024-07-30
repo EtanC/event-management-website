@@ -13,18 +13,18 @@ from flask import make_response
 
 def decode_token(token):
     try:
-        data = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
+        data = jwt.decode(token, os.getenv('AUTH_SECRET'), algorithms=['HS256'])
+        if db.active_sessions.find_one({'_id': ObjectId(data['session_id'])}) is None:
+            raise AccessError('Expired token')
+        if db.users.find_one({'_id': ObjectId(data['user_id'])}) is None:
+            raise AccessError('Invalid user')
+        return data['user_id']
     except (jwt.InvalidSignatureError, jwt.DecodeError) as e:
         raise AccessError('Invalid token')
-    if db.active_sessions.find_one({'_id': ObjectId(data['session_id'])}) is None:
-        raise AccessError('Expired token')
-    if db.users.find_one({'_id': ObjectId(data['user_id'])}) is None:
-        raise AccessError('Invalid user')
-    return data['user_id']
 
 
 def encode_jwt(data):
-    return jwt.encode(data, config['SECRET'], algorithm='HS256')
+    return jwt.encode(data, os.getenv('AUTH_SECRET'), algorithm='HS256')
 
 
 def hash(string):
@@ -151,7 +151,7 @@ def auth_login(email, password):
     return response
 
 
-def auth_register(username, email, password):
+def auth_register(username, email, password, full_name, job_title, fun_fact, description, preferences):
     if db.users.find_one({'email': email}) is not None:
         raise InputError('Email is already being used')
     elif db.users.find_one({'username': username}) is not None:
@@ -160,13 +160,14 @@ def auth_register(username, email, password):
         'username': username,
         'email': email,
         'profile_pic_id': None,
-        'full_name': None,
-        'job_title': None,
-        'fun_fact': None,
-        'description': None,
+        'full_name': full_name,
+        'job_title': job_title,
+        'fun_fact': fun_fact,
+        'description': description,
         'profile_pic': None,
         'password': hash(password),
         'registered_events': [],
+        'preferences': preferences,
         'managed_events': [],
         'owned_events': [],
         'isAdmin': False,
@@ -192,7 +193,7 @@ def auth_register(username, email, password):
 
 
 def auth_logout(token):
-    data = jwt.decode(token, config['SECRET'], algorithms=['HS256'])
+    data = jwt.decode(token, os.getenv('AUTH_SECRET'), algorithms=['HS256'])
     db.active_sessions.delete_one({'_id': ObjectId(data['session_id'])})
 
     response = make_response({'message': 'Logout successful'})
