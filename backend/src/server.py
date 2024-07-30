@@ -94,10 +94,9 @@ def events_get_all_route():
 @app.get('/events/get/tagged')
 @swag_from(events_get_tagged_spec)
 def events_get_tagged_route():
-    token = request.cookies.get('token')
-    if not token:
-        raise AccessError('Authorization token is missing')
-    return events_get_tagged(token)
+    tags = request.args.get('tags', '')
+    tags_list = tags.split(',')
+    return events_get_tagged(tags_list)
 
 @app.delete('/events/clear')
 @swag_from(events_clear_spec)

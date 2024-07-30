@@ -14,7 +14,6 @@ from bson import ObjectId
 import random
 from openai import OpenAI
 from bs4 import BeautifulSoup
-from backend.src.profile_details import get_user_preferences
 
 load_dotenv()
 OPENAI_API_KEY = os.getenv("AI_TOKEN")
@@ -115,41 +114,9 @@ def events_get_all():
         'events': list(map(stringify_id, db.events.find({})))
     }
 
-# redundant anyways, we should get rid of this. NOT USED
-def events_get_tagged(token):
-    # Fetch user preferences based on the token
-    preferences_response = get_user_preferences(token)
-    tags = preferences_response.get('preferences', [])
-
-    print("user")
-    print(tags)
-
-    # Ensure the fields to return
-    projection_stage = {
-        "name": 1,
-        "location": 1,
-        "start_date": 1,
-        "view_count": 1,
-        "tags": 1
-    }
-
-    # Match stage for tags
-    match_stage = {"tags": {"$all": tags}}
-
-    # Create events date format isn't consistent with the rest of the webcrawlers
-    pipeline = [
-        {"$match": match_stage},
-        {"$project": projection_stage},
-    ]
-
-    # Perform the aggregation
-    result = list(db.events.aggregate(pipeline))
-    
-    # Stringify the IDs
-    events = list(map(stringify_id, result))
-
+def events_get_tagged(tags):
     return {
-        'events': events
+        'events': list(map(stringify_id, db.events.find({"tags": { '$all': tags }})))
     }
 
 def events_clear():
