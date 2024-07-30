@@ -218,7 +218,7 @@ def auth_reset_password(token, user_id, password):
   if isinstance(user, int):
     return {"num": user}
   db.users.update_one({"_id": ObjectId(user_id)}, {"$set": {"password": hash(password)}})
-  return {}
+  return {"message": "Password reset"}
 
 def validate_reset_password_token(token, user_id):
   user = db.users.find_one({"_id": ObjectId(user_id)})

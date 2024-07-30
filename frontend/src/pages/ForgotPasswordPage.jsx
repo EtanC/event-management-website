@@ -10,13 +10,14 @@ import { useProfile } from '../components/ProfileProvider';
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const onSubmit = async (event) => {
     event.preventDefault();
     try {
       const response = await axios.post('http://127.0.0.1:5000/auth/forgot_password', { 'email': email });
       if (response.data.message === "email sent") {
-        console.log("Email sent successfully!");
+        setSuccessMessage('Password reset request confirmed!')
     }
     } catch (error) {
         setErrorMessage(error.response ? error.response.data.description : error.message);
@@ -80,6 +81,7 @@ const ForgotPasswordPage = () => {
                                 }}
                             />
                             {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+                            {successMessage && <Alert severity="success">{successMessage}</Alert>}
                             <Button type="submit" variant="contained" color="primary" fullWidth sx={{ fontWeight: 'bold', borderRadius: '20px' }}>
                                 Send Email
                             </Button>

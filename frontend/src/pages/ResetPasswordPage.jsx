@@ -11,6 +11,7 @@ const ResetPasswordPage = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const onSubmit = async (event) => {
     event.preventDefault();
@@ -20,7 +21,9 @@ const ResetPasswordPage = () => {
     try {
       const response = await axios.post('http://127.0.0.1:5000/auth/reset_password', { token, user_id, password });
       if (response.data.message === "Password reset") {
-        console.log("Password reset successfully");
+        setPassword('')
+        setConfirmPassword('')
+        setSuccessMessage("Password Reset Successfully")
       }
       else {
         console.log(response.data)
@@ -112,6 +115,7 @@ const ResetPasswordPage = () => {
                                     disabled={!validatePassword(password)} // Disable until password is valid
                                 />
                             {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+                            {successMessage && <Alert severity="success">{successMessage}</Alert>}
                             <Button type="submit" variant="contained" color="primary" fullWidth sx={{ fontWeight: 'bold', borderRadius: '20px' }}>
                                 Reset Password 
                             </Button>
