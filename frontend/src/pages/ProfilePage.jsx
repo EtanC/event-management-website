@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Container, Box, Grid, Snackbar, ThemeProvider, Alert } from '@mui/material';
-import { fetchProfileData, updateProfileDetails, updateProfilePassword, toggleNotifications } from '../helper/handleProfileData';
+import { fetchProfileData, updateProfileDetails, updateProfilePassword, updateProfilePreferences, toggleNotifications } from '../helper/handleProfileData';
 import theme from '../styles/Theme';
 import ProfileCard from '../components/profileComponents/ProfileCard';
 import AccountInfoCard from '../components/profileComponents/AccountInfoCard';
 import SettingsCard from '../components/profileComponents/SettingsCard';
+import PreferencesCard from '../components/profileComponents/PreferencesCard';
 import PasswordCard from '../components/profileComponents/PasswordCard';
 import EditButtons from '../components/profileComponents/EditButtons';
 
@@ -12,6 +13,7 @@ function ProfilePage() {
     // useStates
     const [isEditing, setIsEditing] = useState(false);
     const [isEditingPW, setIsEditingPW] = useState(false);
+    const [isEditingPref, setIsEditingPref] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [profile, setProfile] = useState({
         description: "",
@@ -22,6 +24,7 @@ function ProfilePage() {
         pw: "",
         profile_pic: null,
         receive_notifications: null,
+        preferences: [],
     });
     const [newProfile, setNewProfile] = useState({
         description: '',
@@ -34,6 +37,7 @@ function ProfilePage() {
         new_pw: '',
         confirm_new_pw: '',
     });
+    const [updatedPreferences, setUpdatedPreferences] = useState([])
     const [new_profile_pic, setNewProfilePic] = useState(null);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -50,6 +54,7 @@ function ProfilePage() {
     // get default state for email notifications
     useEffect(() => {
         setNotificationsEnabled(profile.receive_notifications)
+        setUpdatedPreferences(profile.preferences)
     }, [profile])
 
     const handleEditClick = () => {
@@ -65,6 +70,11 @@ function ProfilePage() {
             confirm_new_pw: '',
         });
     };
+
+    const handleEditPreferencesClick = () => {
+        setIsEditingPref(!isEditingPref);
+        if (isEditingPref) setUpdatedPreferences(profile.preferences);
+    }
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -95,6 +105,7 @@ function ProfilePage() {
             job_title: newProfile.job_title !== "" ? newProfile.job_title : profile.job_title,
             fun_fact: newProfile.fun_fact !== "" ? newProfile.fun_fact : profile.fun_fact,
             profile_pic: new_profile_pic,
+
         };
         try {
             const result = await updateProfileDetails(updatedProfile);
@@ -127,6 +138,19 @@ function ProfilePage() {
         }
     };
 
+    const updatePreferences = async () => {
+        try {
+            const result = await updateProfilePreferences(updatedPreferences);
+            if (result === 200) {
+                showSnackbar('Preferences successfully updated.');
+                await fetchProfileData(setProfile);
+            }
+            setIsEditingPref(false);
+        } catch (err) {
+            console.error(`Failed to update preferences: ${err.message}`);
+        }
+    };
+
     const handleSnackbarClose = () => {
         setSnackbarOpen(false);
     };
@@ -146,7 +170,6 @@ function ProfilePage() {
     const handleNotifConfirm = async () => {
         try {
             await toggleNotifications();
-            console.log(profile)
             setNotificationsEnabled(!notificationsEnabled);
             setConfirmOpen(false);
         } catch (error) {
@@ -160,7 +183,7 @@ function ProfilePage() {
 
     return (
         <ThemeProvider theme={theme}>
-            <Box sx={{ minHeight: '90vh' }}>
+            <Box sx={{ minHeight: '90vh', backgroundColor: '#f5f5f5', paddingBottom: '100px' }}>
                 <Container maxWidth="md" sx={{ mt: 2 }}>
                     <Grid container spacing={4} sx={{ mb: 5 }}>
                         <Grid item xs={6}>
@@ -178,6 +201,11 @@ function ProfilePage() {
                                 newProfile={newProfile}
                                 handleChange={handleChange}
                             />
+                            <EditButtons
+                                isEditing={isEditing}
+                                handleEditClick={handleEditClick}
+                                updateProfile={updateProfile}
+                            />
                         </Grid>
                         <Grid item xs={6}>
                             <SettingsCard
@@ -186,6 +214,14 @@ function ProfilePage() {
                                 handleSwitchChange={handleSwitchChange}
                                 handleNotifConfirm={handleNotifConfirm}
                                 handleNotifCancel={handleNotifCancel}
+                            />
+                            <PreferencesCard
+                                profile={profile}
+                                isEditingPref={isEditingPref}
+                                handleEditPreferencesClick={handleEditPreferencesClick}
+                                updatedPreferences={updatedPreferences}
+                                setUpdatedPreferences={setUpdatedPreferences}
+                                updatePreferences={updatePreferences}
                             />
                             <PasswordCard
                                 isEditingPW={isEditingPW}
@@ -197,11 +233,6 @@ function ProfilePage() {
                             />
                         </Grid>
                     </Grid>
-                    <EditButtons
-                        isEditing={isEditing}
-                        handleEditClick={handleEditClick}
-                        updateProfile={updateProfile}
-                    />
                 </Container>
             </Box>
             <Snackbar

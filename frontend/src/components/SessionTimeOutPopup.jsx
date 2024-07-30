@@ -45,7 +45,7 @@ const SessionTimeOutPopup = ({ open, handleClose }) => {
                 <Box sx={{ ...modalStyle, position: 'relative', maxHeight: '80vh', display: 'flex', flexDirection: 'column' }}>
                     <Box sx={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px' }}>
                         <Typography id="logout-modal-title" variant="h5">
-                            Your access is restricted! 
+                            Your Session Timed Out!
                         </Typography>
                         <IconButton onClick={handleClose}>
                             <img src={cross} alt="Close" style={{ width: '24px', height: '24px' }} />
@@ -53,7 +53,7 @@ const SessionTimeOutPopup = ({ open, handleClose }) => {
                     </Box>
                     <Box sx={{ overflowY: 'auto', padding: '10px' }}>
                         <Typography id="logout-modal-description" variant="body1" component="div" sx={{ marginBottom: '16px' }}>
-                            Please log in to access member-exclusive features or sign up now to enjoy full benefits and exclusive content.
+                            Please login again to continue your exclusive access
                         </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>

@@ -162,3 +162,36 @@ user_get_all_spec = {
         }
     }
 }
+
+user_delete_spec = {
+    'tags': ['User'],
+    'security': [
+        {
+            "bearerAuth": []
+        }
+    ],
+    'parameters': [
+        {
+            'name': 'Body',
+            'in': 'body',
+            'type': 'object',
+            'required': 'true',
+            'properties': {
+                'user_id': {
+                    '$ref': '#definitions/user_id',
+                }
+            }
+        }
+    ],
+    'responses': {
+        200: {
+            'description': 'Successfully deleted user',
+        },
+        403: {
+            'description': 'User is not an admin OR Invalid token OR Expired token OR Invalid user'
+        },
+        500: {
+            'description': 'Failed to delete user'
+        }
+    }
+}

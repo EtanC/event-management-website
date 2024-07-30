@@ -36,7 +36,8 @@ def get_profile_details(token):
         'job_title': user.get('job_title', ''),
         'fun_fact': user.get('fun_fact', ''),
         'profile_pic': encoded_image,
-        'receive_notifications': user.get('receive_notifications', '')
+        'receive_notifications': user.get('receive_notifications', ''),
+        'preferences': user.get('preferences', ''),
     }
 
 # mayeb won't deal with profile pics first, but might have to use GridFS to store on mongoDB
@@ -82,6 +83,8 @@ def update_profile_password(token, old_password, new_password, re_password):
     filter = {'_id': ObjectId(user_id)}
 
     user = db.users.find_one({"_id": ObjectId(user_id)})
+    if not user:
+        raise AccessError('User not found')
     changed_values = {"$set": {}}
 
     if old_password is not None:
@@ -111,6 +114,37 @@ def update_profile_password(token, old_password, new_password, re_password):
     result = db.users.update_one(filter, changed_values)
     if result.matched_count == 0:
         raise AccessError('User ID not found on database')
-
     response = make_response({'message': 'Successful Password Change'})
     return response
+
+
+def update_preferences(token, new_preferences):
+    # preferences set as a list of topics the user may be interested in
+    # perhaps a later improvement could be adding some form of rankings amongst preferences for order in which events show up
+    user_id = decode_token(token)
+
+    filter = {'_id': ObjectId(user_id)}
+
+    changed_values = {"$set": 	{
+        'preferences': new_preferences
+    }}
+
+    result = db.users.update_one(filter, changed_values)
+    if result.matched_count == 0:
+        raise AccessError('User ID not found on database')
+    response = make_response({'message': 'Successful Preferences Change'})
+    return response
+
+
+def get_user_preferences(token):
+    #  split from profile details for now, will see if it needs to be integrated together later
+    user_id = decode_token(token)
+
+    # Check token validity
+    user = db.users.find_one({"_id": ObjectId(user_id)})
+    if not user:
+        raise AccessError('User not found')
+
+    return {
+        'preferences': user.get('preferences', [])
+    }
