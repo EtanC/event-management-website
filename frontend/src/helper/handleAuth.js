@@ -38,7 +38,6 @@ export const handleLogout = async (navigate, setTokenExpires) => {
         const response = await axios.post(`${config.apiBaseUrl}/auth/logout`, {}, { withCredentials: true });
         if (response.status == 200) {
             const expires = new Date()
-            console.log(expires)
             setTokenExpires(expires)
         }
         navigate('/');
