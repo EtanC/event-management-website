@@ -14,6 +14,19 @@ export const ProfileProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(tokenExpires ? new Date().getTime() < tokenExpires.getTime() : false);
     const [sessionExpired, setSessionExpired] = useState(false);
 
+    const [loggedOut, setLoggedOut] = useState(false);
+
+    const logout = () => {
+        setIsAuthenticated(false);
+        setLoggedOut(true);
+    };
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            setLoggedOut(false); // Reset loggedOut state when user logs in
+        }
+    }, [isAuthenticated]);
+
     const fetchProfileData = async () => {
         setLoading(true);
         try {
@@ -68,7 +81,7 @@ export const ProfileProvider = ({ children }) => {
     }, [isAuthenticated, tokenExpires]);
 
     return (
-        <ProfileContext.Provider value={{ profileData, loading, isAuthenticated, setProfileData, tokenExpires, setTokenExpires, sessionExpired, setSessionExpired }}>
+        <ProfileContext.Provider value={{ profileData, loading, isAuthenticated, setProfileData, tokenExpires, setTokenExpires, sessionExpired, setSessionExpired, loggedOut, setLoggedOut, logout }}>
             {children}
         </ProfileContext.Provider>
     );
