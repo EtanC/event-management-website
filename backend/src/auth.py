@@ -14,13 +14,13 @@ from flask import make_response
 def decode_token(token):
     try:
         data = jwt.decode(token, os.getenv('AUTH_SECRET'), algorithms=['HS256'])
+        if db.active_sessions.find_one({'_id': ObjectId(data['session_id'])}) is None:
+            raise AccessError('Expired token')
+        if db.users.find_one({'_id': ObjectId(data['user_id'])}) is None:
+            raise AccessError('Invalid user')
+        return data['user_id']
     except (jwt.InvalidSignatureError, jwt.DecodeError) as e:
         raise AccessError('Invalid token')
-    if db.active_sessions.find_one({'_id': ObjectId(data['session_id'])}) is None:
-        raise AccessError('Expired token')
-    if db.users.find_one({'_id': ObjectId(data['user_id'])}) is None:
-        raise AccessError('Invalid user')
-    return data['user_id']
 
 
 def encode_jwt(data):
