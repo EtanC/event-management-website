@@ -20,7 +20,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 const AppContent = () => {
     const location = useLocation();
-    const showNavBar = !['/login', '/register'].includes(location.pathname);
+    const showNavBar = !['/login', '/register', '/forgot-password', '/reset-password'].includes(location.pathname);
     const { sessionExpired, setSessionExpired } = useProfile();
     const [isPopupOpen, setIsPopupOpen] = useState(false);
 
@@ -37,24 +37,24 @@ const AppContent = () => {
 
     return (
         <>
-        {showNavBar && <NavBar />}
-        <div className="content">
-            <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/event" element={<EventDetailPage />} />
-                <Route path="/profile" element={<ProtectedRoute element={<ProfilePage />} />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-                <Route path="/reset-password" element={<ResetPasswordPage />} />
-                <Route path="/event/:id" element={<EventDetailPage />} />
-                <Route path="/admin" element={<ProtectedRoute element={<AdminPage />} />} />
-                <Route path="/admin/users" element={<ProtectedRoute element={<AdminUsersPage />} />} />
-                <Route path="/admin/events" element={<ProtectedRoute element={<AdminEventsPage />} />} />
-                <Route path="/my-events" element={<ProtectedRoute element={<MyEventsPage />} />} />
-            </Routes>
-            <SessionTimeOutPopup open={isPopupOpen} handleClose={handleClosePopup} />
-        </div>
+            {showNavBar && <NavBar />}
+            <div className="content">
+                <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/event" element={<EventDetailPage />} />
+                    <Route path="/profile" element={<ProtectedRoute element={<ProfilePage />} />} />
+                    <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                    <Route path="/reset-password" element={<ResetPasswordPage />} />
+                    <Route path="/event/:id" element={<EventDetailPage />} />
+                    <Route path="/admin" element={<ProtectedRoute element={<AdminPage />} />} />
+                    <Route path="/admin/users" element={<ProtectedRoute element={<AdminUsersPage />} />} />
+                    <Route path="/admin/events" element={<ProtectedRoute element={<AdminEventsPage />} />} />
+                    <Route path="/my-events" element={<ProtectedRoute element={<MyEventsPage />} />} />
+                </Routes>
+                <SessionTimeOutPopup open={isPopupOpen} handleClose={handleClosePopup} />
+            </div>
         </>
     );
 };
