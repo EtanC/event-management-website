@@ -32,6 +32,7 @@
 
 .button-responsive {
     width: 100% !important;
+    max-width: 300px;
 }
 /* Styles for preferences bubbles */
 .preference-bubble {

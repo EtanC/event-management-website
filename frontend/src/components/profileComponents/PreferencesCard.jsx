@@ -56,7 +56,7 @@ const PreferencesCard = ({ profile, updatedPreferences, isEditingPref, handleEdi
                             </Box>
                             <Button
                                 variant="contained" color="primary"
-                                className='button-common button-edit'
+                                className='button-common button-edit button-responsive'
                                 onClick={handleEditPreferencesClick}
                             >
                                 Update Preferences
