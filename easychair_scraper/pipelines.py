@@ -32,6 +32,8 @@ class EasychairScraperPipeline(object):
         item['crawled'] = True
         item['creator'] = ''
         item['authorized_users'] = []
+        item['tags'] = []
+        item['view_count'] = 0
         self.db.events.insert_one(dict(item))
         logging.debug("Event added to MongoDB database!", extra={'spider': spider})
         

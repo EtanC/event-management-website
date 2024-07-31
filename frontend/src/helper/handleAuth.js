@@ -11,7 +11,6 @@ export const handleLogin = async (email, password, navigate, setErrorMessage, se
     try {
         const response = await axios.post(`${config.apiBaseUrl}/auth/login`, { email, password }, { withCredentials: true });
         setTokenExpires(new Date(response.data['session_end_time']))
-        console.log(response.data['session_end_time'])
         await manageSessionAndNavigate(navigate);
     } catch (error) {
         setErrorMessage(error.response ? error.response.data.description : error.message);
@@ -38,7 +37,6 @@ export const handleLogout = async (navigate, setTokenExpires) => {
         const response = await axios.post(`${config.apiBaseUrl}/auth/logout`, {}, { withCredentials: true });
         if (response.status == 200) {
             const expires = new Date()
-            console.log(expires)
             setTokenExpires(expires)
         }
         navigate('/');
