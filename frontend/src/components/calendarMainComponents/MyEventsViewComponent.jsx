@@ -188,7 +188,7 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
                 content={'Are you sure you want to delete this event? This action cannot be undone.'}
                 primaryButtonText={'Delete'}
             />
-            <CreateEventPopUp open={openEditEvent} handleClose={handleEditClose} headerText={'Edit Event'} event={eventToEdit} />
+            <CreateEventPopUp open={openEditEvent} handleClose={handleEditClose} headerText={'Edit Event'} event={eventToEdit} refreshEvents={refreshEvents} />
             <EventManagerModal open={openAddManager} handleClose={handleAddManagerClose} event={eventToAddManager} />
             {isEditEvent ? (
                 <EditCreatedEventPopUp

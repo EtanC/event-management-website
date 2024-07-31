@@ -142,13 +142,6 @@ const CreateEventPopUp = ({ open, handleClose, headerText, event, refreshEvents 
         }));
     };
 
-    const handleTagsChange = (tags) => {
-        setEventData(prevState => ({
-            ...prevState,
-            tags: tags
-        }));
-    };
-
     return (
         <>
             <Modal
