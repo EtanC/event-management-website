@@ -7,8 +7,8 @@ import { formatDate, getUserId } from '../helper/helpers'
 import ViewRegisteredEventPopUp from '../components/calendarMainComponents/ViewRegisteredEventPopUp';
 import { fetchRegisteredEventsSimple } from '../helper/fetchRegisteredEvents';
 import Alert from '@mui/material/Alert';
-import SessionTimeOutPopup from './SessionTimeOutPopup';
 import { useProfile } from './ProfileProvider';
+import { useNavigate } from 'react-router-dom';
 
 const EventDetail = ({ event, setEvent}) => {
     const [isLoading, setIsLoading] = useState(false);
