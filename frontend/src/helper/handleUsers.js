@@ -1,9 +1,9 @@
 import axios from 'axios';
+import config from '../config';
 
 export const fetchAllUsers = async () => {
     try {
-        console.log('Fetching all users...');
-        const response = await axios.get('http://127.0.0.1:5000/user/get/all', { withCredentials: true });
+        const response = await axios.get(`${config.apiBaseUrl}/user/get/all`, { withCredentials: true });
         return response.data;
     } catch (error) {
         console.error('Error fetching all users:', error);
@@ -16,8 +16,8 @@ export const toggleAdminStatus = async (action, username) => {
     try {
         // Determine the URL based on the action
         const url = action === 'invite'
-            ? 'http://127.0.0.1:5000/admin/invite_admin'
-            : 'http://127.0.0.1:5000/admin/remove_admin';
+            ? `${config.apiBaseUrl}/admin/invite_admin`
+            : `${config.apiBaseUrl}/admin/remove_admin`;
         const response = await axios.post(url, { username }, { withCredentials: true });
         return response.data;
     } catch (error) {
@@ -28,7 +28,7 @@ export const toggleAdminStatus = async (action, username) => {
 
 export const deleteUser = async (userId) => {
     try {
-        const response = await axios.delete('http://127.0.0.1:5000/user/delete', {
+        const response = await axios.delete(`${config.apiBaseUrl}/user/delete`, {
             data: { user_id: userId },
             withCredentials: true,
         });

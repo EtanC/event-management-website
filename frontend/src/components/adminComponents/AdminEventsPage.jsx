@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Typography, Box, Container, Button } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Typography, Box, Container, Button, CircularProgress } from '@mui/material';
 import AdminEventsSearchBar from './AdminEventsSearchBar';
 import AdminTable from './AdminTable';
 import ActionConfirmationPopup from '../ActionConfirmationPopup';
@@ -13,6 +13,8 @@ import {
     handleEditClose,
 } from '../../helper/handleEditDeleteEvent';
 import handleCrawlEvents from '../../helper/handleCrawlEvents';
+import handleAiDesc from '../../helper/handleAiDesc';
+import ConfirmationPopup from '../openAIButtonPopUp/ConfirmationPopUp';
 
 const AdminEventsPage = () => {
     const [events, setEvents] = useState([]);
@@ -22,6 +24,10 @@ const AdminEventsPage = () => {
     const [filteredData, setFilteredData] = useState([]);
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [isCrawling, setIsCrawling] = useState(false);
+    const [loadingAiDescriptions, setLoadingAiDescriptions] = useState(false);
+    const [aiDescPopupOpen, setAiDescPopupOpen] = useState(false);
+    const [errorPopupOpen, setErrorPopupOpen] = useState(false);
 
     // delete and edit actions
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -39,6 +45,14 @@ const AdminEventsPage = () => {
             setError('Failed to load events. Please try again later.');
             setIsLoading(false);
             setEvents([]);
+        }
+    };
+
+    const handleAIDescription = async () => {
+        try {
+            await handleAiDesc(setLoadingAiDescriptions);
+        } catch (error) {
+            console.error('Failed to generate AI description:', error);
         }
     };
 
@@ -76,9 +90,42 @@ const AdminEventsPage = () => {
             />
 
             <CreateEventPopUp open={openEditEvent} handleClose={() => handleEditClose(setOpenEditEvent, adminFetchEvents)} headerText={'Edit Event'} event={eventToEdit} />
+            {/* Pop ups for the ai button */}
+            <ConfirmationPopup
+                open={aiDescPopupOpen}
+                onClose={() => setAiDescPopupOpen(false)}
+                onConfirm={() => {
+                    handleAiDesc(setLoadingAiDescriptions, setErrorPopupOpen); // Call the AI description handler with state setters
+                }}
+                title={'AI Description'}
+                content={'Each run will cost money. Are you sure you want to proceed?'}
+                confirmText={'Yes, proceed'}
+            />
+            <ConfirmationPopup
+                open={errorPopupOpen}
+                onClose={() => setErrorPopupOpen(false)}
+                title={'Error'}
+                content={"Funds allocated to Chatgpt is dry, please contact website creators"}
+                confirmText={'OK'}
+                onConfirm={() => setErrorPopupOpen(false)}
+            />
             <Container maxWidth="lg" sx={{ minHeight: '85vh' }}>
-                <Box display="flex" justifyContent="center" mb={3}>
-                    <Button variant='contained' onClick={handleCrawlEvents} sx={{ maxWidth: '200px' }}>Crawl New Events</Button>
+                <Box display="flex" justifyContent="center" mb={3} gap={2}>
+                    <Button 
+                        variant='contained' 
+                        onClick={() => handleCrawlEvents(setIsLoading, setIsCrawling)} 
+                        sx={{ maxWidth: '200px', width: '200px' }}
+                    >
+                        Crawl New Events
+                    </Button>
+                    <Button 
+                        variant='contained' 
+                        onClick={() => setAiDescPopupOpen(true)}
+                        sx={{ maxWidth: '200px', width: '200px' }} 
+                        disabled={loadingAiDescriptions}
+                    >
+                        {loadingAiDescriptions ? <CircularProgress size={24} /> : "AI Description"}
+                    </Button>
                 </Box>
                 <AdminEventsSearchBar
                     labelOne='Event Name'
@@ -89,11 +136,16 @@ const AdminEventsPage = () => {
                     setLocation={setLocation}
                     locations={locations}
                 />
-                {isLoading ? (
+                {isLoading || isCrawling ? (
                     <Box display="flex" justifyContent="center" alignItems="center" height="70vh">
-                        <Typography variant="h6" color="textSecondary">
-                            Loading...
-                        </Typography>
+                        <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="70vh">
+                            <CircularProgress />
+                            {isCrawling && (
+                                <Typography variant="h6" color="textSecondary" sx={{ mt: 2 }}>
+                                    Crawling events, will be a few minutes...
+                                </Typography>
+                            )}
+                        </Box>
                     </Box>
                 ) : filteredData.length === 0 ? (
                     <Box display="flex" justifyContent="center" alignItems="center" height="70vh">

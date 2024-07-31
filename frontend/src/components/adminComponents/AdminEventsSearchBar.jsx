@@ -25,9 +25,8 @@ const AdminEventsSearchBar = ({ labelOne, labelTwo, eventType, setEventType, loc
             padding: '20px',
             borderRadius: '15px',
             zIndex: 2,
-            maxWidth: '800px',
         }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', maxWidth: '800px', gap: '10px' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', gap: '10px' }}>
             <TextField
                 label={labelOne}
                 value={eventType}

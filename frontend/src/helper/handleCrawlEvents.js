@@ -1,10 +1,16 @@
 import axios from 'axios';
+import config from '../config'
 
-const handleCrawlEvents = async () => {
+const handleCrawlEvents = async (setIsLoading, setIsCrawling) => {
     try {
-        const response = await axios.post('http://127.0.0.1:5000/events/crawl');
+        setIsLoading(true);
+        setIsCrawling(true);
+        await axios.post(`${config.apiBaseUrl}/events/crawl`);
     } catch (error) {
         console.error('Error crawling events', error);
+    } finally {
+        setIsCrawling(false);
+        setIsLoading(false);
     }
 };
 

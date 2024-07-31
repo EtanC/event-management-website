@@ -18,7 +18,6 @@ const AdminUsersPage = () => {
         const getUsers = async () => {
             try {
                 const response = await fetchAllUsers();
-                console.log(response);
                 const users = response.users.map(user => ({
                     _id: user._id,
                     username: user.username,

@@ -26,9 +26,8 @@ const AdminUsersSearchBar = ({ labelOne, email, setEmail }) => (
             padding: '20px',
             borderRadius: '15px',
             zIndex: 2,
-            maxWidth: '800px',
         }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', maxWidth: '800px', gap: '10px' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', gap: '10px' }}>
             <TextField
                 label={labelOne}
                 value={email}
@@ -36,7 +35,11 @@ const AdminUsersSearchBar = ({ labelOne, email, setEmail }) => (
                 fullWidth
                 variant="outlined"
                 InputProps={{
-                    endAdornment: <InputAdornment><SearchIcon /></InputAdornment>,
+                    endAdornment: (
+                        <InputAdornment position="end">
+                            <SearchIcon />
+                        </InputAdornment>
+                    ),
                 }}
                 sx={{ flex: 1, ...inputStyles }}
             />
