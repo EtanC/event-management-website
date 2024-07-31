@@ -34,6 +34,7 @@ export const fetchUserPreferences = async () => {
 };
 
 export const handleCreateEvent = async (eventData) => {
+    console.log(eventData)
     try {
         const response = await axios.post(`${config.apiBaseUrl}/event/create`,
             {
@@ -42,7 +43,8 @@ export const handleCreateEvent = async (eventData) => {
                 'details_link': eventData.details_link,
                 'name': eventData.name,
                 'location': eventData.location,
-                'start_date': eventData.start_date
+                'start_date': eventData.start_date,
+                'tags': eventData.tags
             },
             {
                 withCredentials: true,

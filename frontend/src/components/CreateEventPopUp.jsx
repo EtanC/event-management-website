@@ -11,7 +11,7 @@ import {
     Alert,
     Snackbar,
 } from '@mui/material';
-import Tags from './Tags.jsx';
+import PreferencesSelect from './PreferencesSelectBox.jsx';
 import { handleCreateEvent, handleEditEvent } from '../helper/handleEventData.js';
 
 
@@ -59,7 +59,6 @@ const CreateEventPopUp = ({ open, handleClose, headerText, event, refreshEvents 
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('')
-
     useEffect(() => {
         if (event) {
             setEventData({
@@ -117,6 +116,13 @@ const CreateEventPopUp = ({ open, handleClose, headerText, event, refreshEvents 
     };
 
     const handleChange = (e) => {
+        if (Array.isArray(e)) {
+            setEventData(prevState => ({
+                ...prevState,
+                tags: e
+            }));
+            return;
+        }
         const { name, value } = e.target;
         // max character limit on event name
         if (name === 'name' && value.length > MAX_NAME_LENGTH) return;
@@ -127,6 +133,7 @@ const CreateEventPopUp = ({ open, handleClose, headerText, event, refreshEvents 
         }));
     };
 
+
     const handleDateChange = (field) => (event) => {
         const inputDate = event.target.value;
         setEventData(prevState => ({
@@ -134,6 +141,7 @@ const CreateEventPopUp = ({ open, handleClose, headerText, event, refreshEvents 
             [field]: inputDate,
         }));
     };
+
     const handleTagsChange = (tags) => {
         setEventData(prevState => ({
             ...prevState,
@@ -228,17 +236,20 @@ const CreateEventPopUp = ({ open, handleClose, headerText, event, refreshEvents 
                                     onChange={handleChange}
                                     InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                 />
-                                <Tags tags={eventData.tags} setTags={handleTagsChange} />
-                            </Grid>
-                        </Grid>
+                                <PreferencesSelect
+                                    value={eventData.tags}
+                                    onChange={handleChange}
+                                />
+                            </Grid >
+                        </Grid >
                         {errorMessage && <Alert severity='error' sx={{ marginBottom: '20px' }}>{errorMessage}</Alert>}
                         <Box sx={styles.buttonsContainer}>
                             <Button variant="outlined" color="primary" sx={styles.button} onClick={handleClose}>Cancel</Button>
                             <Button variant="contained" color="primary" sx={styles.button} onClick={handleSave}>Save Event</Button>
                         </Box>
-                    </Card>
-                </Fade>
-            </Modal>
+                    </Card >
+                </Fade >
+            </Modal >
             <Snackbar open={snackbarOpen} autoHideDuration={6000}>
                 <Alert onClose={handleSnackbarClose} severity={'success'}>
                     {snackbarMessage}
