@@ -1,5 +1,6 @@
 import os
 
+from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 import requests
 from backend.src.error import AccessError, InputError
 from backend.src.database import db
@@ -8,8 +9,7 @@ import hashlib
 from backend.src.config import config
 import jwt
 from bson.objectid import ObjectId
-from flask import make_response
-
+from flask import make_response, url_for
 
 def decode_token(token):
     try:
@@ -199,3 +199,47 @@ def auth_logout(token):
     response = make_response({'message': 'Logout successful'})
     response.delete_cookie('token')
     return response
+
+def auth_forgot_password(email):
+  from backend.src.user import send_email
+  # given an email check if it is in the database if it isn't return 
+  # if it does exist generate a url that the user can use to generate their password
+  user = db.users.find_one({'email': email})
+  if user:
+    subject = "Event Hub Password Reset"
+    body = f"""
+To reset your Event Hub account password please click on the following link: http://127.0.0.1:5173/reset-password?token={generate_reset_password_token(user)}&user_id={user['_id']}
+"""
+    send_email(subject, body, user['email'])
+    return {"message": "email sent"}
+  return {}
+
+def auth_reset_password(token, user_id, password):
+  user = validate_reset_password_token(token, user_id)
+  if isinstance(user, int):
+    return {"num": user}
+  db.users.update_one({"_id": ObjectId(user_id)}, {"$set": {"password": hash(password)}})
+  return {"message": "Password reset"}
+
+def validate_reset_password_token(token, user_id):
+  user = db.users.find_one({"_id": ObjectId(user_id)})
+  
+  if user is None:
+    return 1
+
+  serializer = URLSafeTimedSerializer(config["SECRET_KEY"])
+  try:
+    token_user_email = serializer.loads(
+      token,
+      max_age=config["RESET_PASS_TOKEN_MAX_AGE"],
+      salt=user["password"]
+    )
+  except (BadSignature, SignatureExpired):
+    return 2
+  if token_user_email != user["email"]:
+    return 3
+  return user
+
+def generate_reset_password_token(user):
+  serializer = URLSafeTimedSerializer(config["SECRET_KEY"])
+  return serializer.dumps(user["email"], salt=user["password"])

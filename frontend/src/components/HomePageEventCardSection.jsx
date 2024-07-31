@@ -6,8 +6,9 @@ import { Box, CircularProgress, Typography, Grid, IconButton, Button } from '@mu
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import fetchEventsData from '../helper/fetchEventData';
-import { increaseEventViewCount } from '../helper/handleEventData';
-
+import { increaseEventViewCount, fetchUserPreferences } from '../helper/handleEventData';
+import UserPreferenceEvent from './UserPreferenceEvents';
+import { useProfile } from './ProfileProvider';
 
 function HomePageEventCardSection() {
     const navigate = useNavigate();
@@ -24,6 +25,9 @@ function HomePageEventCardSection() {
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [tags, setTags] = useState([]);
     const [sortBy, setSortBy] = useState('alphabetical'); // default sort alphabetical
+    const [filteredEvents, setFilteredEvents] = useState([]);
+    const { isAuthenticated } = useProfile();
+
 
     // // Debounce makes it so that we aren't spamming API calls everytime the search changes
     // // Has a 200 ms delay for search
@@ -52,9 +56,43 @@ function HomePageEventCardSection() {
     //     debouncedFetchEventsData(setEvents, setLocations, setError, setIsLoading, page, setPageCount, eventType, location, date, tags, sortBy);
     // }, [eventType, location, date, tags, sortBy, debouncedFetchEventsData, page]); 
 
+    // user preferences, get preference and then filter event
+    const fetchUserPreferencesAndFilterEvents = async (events) => {
+        try {
+            if (!Array.isArray(events) || events.length === 0) {
+                setFilteredEvents([]);
+                return;
+            }
+    
+            const userPreferences = await fetchUserPreferences();
+    
+            if (!Array.isArray(userPreferences)) {
+                console.error('Failed to fetch user preferences: Invalid response');
+                setFilteredEvents([]);
+                return;
+            }
+    
+            const filtered = events.filter(event => 
+                Array.isArray(event.tags) && event.tags.some(tag => userPreferences.includes(tag))
+            );
+    
+            setFilteredEvents(filtered);
+        } catch (error) {
+            console.error(`Failed to fetch user preferences or filter events: ${error.message}`);
+            setFilteredEvents([]);
+        }
+    };
+
     useEffect(() => {
-        fetchEventsData(setEvents, setLocations, setError, setIsLoading, page, setPageCount, eventType, location, date, tags, sortBy)
-    }, [date, eventType, location, page, sortBy, tags])
+        fetchEventsData(setEvents, setLocations, setError, setIsLoading, page, setPageCount, eventType, location, date, tags, sortBy);
+    }, [date, eventType, location, page, sortBy, tags]);
+    
+    // monitor changes in user preference and the overall events
+    useEffect(() => {
+        if (isAuthenticated && events.length > 0) {
+            fetchUserPreferencesAndFilterEvents(events);
+        }
+    }, [isAuthenticated, events]);
 
     useEffect(() => {
         setPage(1)
@@ -79,8 +117,8 @@ function HomePageEventCardSection() {
     }, []);
     
     // cool animation for clicking open event card
-    const handleCardClick = (event) => {
-        setSelectedEvent(event);
+    const handleCardClick = (event, index, section) => {
+        setSelectedEvent({ id: event._id, index, section }); // so that no two events are "the same"
         // increase view count for the event everytime it is opened
         increaseEventViewCount(event._id);
         setTimeout(() => {
@@ -152,13 +190,29 @@ function HomePageEventCardSection() {
                 </Box>
             ) : (
                 <Box sx={{ padding: 4 }}>
+                    {!isLoading && !error && events.length > 0 && isAuthenticated && (
+                        <UserPreferenceEvent 
+                            events={filteredEvents} 
+                            handleCardClick={handleCardClick} 
+                            selectedEvent={selectedEvent}
+                        />
+                    )}
+
+                    <Typography
+                        variant="h4" 
+                        component="h2" 
+                        gutterBottom 
+                        sx={{ marginTop: '50px', marginBottom: '50px' }}
+                    >
+                        All Events
+                    </Typography>
                     <Grid container spacing={2}>
                         {events.map((event, index) => (
                             <EventCard 
                                 key={index} 
                                 event={event} 
-                                handleCardClick={handleCardClick} 
-                                isSelected={selectedEvent === event}
+                                handleCardClick={() => handleCardClick(event, index, 'home')} 
+                                isSelected={selectedEvent?.id === event._id && selectedEvent?.index === index && selectedEvent?.section === 'home'}
                             />
                         ))}
                     </Grid>

@@ -1,6 +1,5 @@
 from backend.src.database import db
 from bson import ObjectId
-import jwt
 from backend.src.config import config
 from backend.src.error import AccessError, InputError
 from bson import ObjectId
