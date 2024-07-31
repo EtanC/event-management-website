@@ -142,7 +142,8 @@ def event_update_route(event_id):
         'details_link': body['details_link'],
         'name': body['name'],
         'location': body['location'],
-        'start_date': body['start_date']
+        'start_date': body['start_date'],
+        'tags': body['tags']
     }
     return event_update(token, event_id, event)
 
