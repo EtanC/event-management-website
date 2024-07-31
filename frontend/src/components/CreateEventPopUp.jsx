@@ -11,8 +11,6 @@ import {
     Alert,
     Snackbar,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import Tags from './Tags.jsx';
 import { handleCreateEvent, handleEditEvent } from '../helper/handleEventData.js';
 
@@ -48,11 +46,6 @@ const styles = {
     },
 };
 
-const VisuallyHiddenInput = styled('input')({
-    height: 1,
-    width: 1,
-});
-
 const CreateEventPopUp = ({ open, handleClose, headerText, event, refreshEvents }) => {
     const [eventData, setEventData] = useState({
         name: '',
@@ -62,7 +55,6 @@ const CreateEventPopUp = ({ open, handleClose, headerText, event, refreshEvents 
         details_link: '',
         details: '',
         tags: [],
-        image: null
     });
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -78,7 +70,6 @@ const CreateEventPopUp = ({ open, handleClose, headerText, event, refreshEvents 
                 details_link: event.details_link || '',
                 details: event.details || '',
                 tags: event.tags || [],
-                image: event.image || null
             });
         }
     }, [event]);
@@ -112,7 +103,6 @@ const CreateEventPopUp = ({ open, handleClose, headerText, event, refreshEvents 
                     details_link: '',
                     details: '',
                     tags: [],
-                    image: null
                 });
             }
         } catch (error) {
@@ -148,13 +138,6 @@ const CreateEventPopUp = ({ open, handleClose, headerText, event, refreshEvents 
         setEventData(prevState => ({
             ...prevState,
             tags: tags
-        }));
-    };
-
-    const handleFileChange = (e) => {
-        setEventData(prevState => ({
-            ...prevState,
-            image: e.target.files[0]
         }));
     };
 
@@ -246,21 +229,6 @@ const CreateEventPopUp = ({ open, handleClose, headerText, event, refreshEvents 
                                     InputProps={{ sx: { borderRadius: '40px', mb: 2 }, }}
                                 />
                                 <Tags tags={eventData.tags} setTags={handleTagsChange} />
-                                <Box sx={{ display: 'flex', gap: '20px', alignItems: 'center', mb: '20px' }}>
-                                    <Button
-                                        component="label"
-                                        variant="contained"
-                                        tabIndex={-1}
-                                        startIcon={<CloudUploadIcon />}
-                                        sx={{ textTransform: 'none', borderRadius: '40px' }}
-                                    >
-                                        Upload Image
-                                        <VisuallyHiddenInput type="file" onChange={handleFileChange} />
-                                    </Button>
-                                    {eventData.image && (
-                                        <Typography>{eventData.image.name}</Typography>
-                                    )}
-                                </Box>
                             </Grid>
                         </Grid>
                         {errorMessage && <Alert severity='error' sx={{ marginBottom: '20px' }}>{errorMessage}</Alert>}

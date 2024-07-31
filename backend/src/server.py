@@ -88,10 +88,10 @@ def events_crawl_route():
 @swag_from(events_get_page_spec)
 def events_get_page_route(page_number):
     return jsonify(events_get_page(
-        page_number, 
-        request.args.get('name'), 
-        request.args.get('location'), 
-        request.args.get('date'), 
+        page_number,
+        request.args.get('name'),
+        request.args.get('location'),
+        request.args.get('date'),
         request.args.getlist('tags'),
         request.args.get('sort_by'),
     ))
@@ -102,12 +102,14 @@ def events_get_page_route(page_number):
 def events_get_all_route():
     return events_get_all()
 
+
 @app.get('/events/get/tagged')
 @swag_from(events_get_tagged_spec)
 def events_get_tagged_route():
     tags = request.args.get('tags', '')
     tags_list = tags.split(',')
     return events_get_tagged(tags_list)
+
 
 @app.delete('/events/clear')
 @swag_from(events_clear_spec)
@@ -337,6 +339,7 @@ def user_get_all_route():
         raise AccessError('Authorization token is missing')
     return json.dumps(user_get_all(token))
 
+
 @app.delete('/user/delete')
 @swag_from(user_delete_spec)
 def user_delete_route():
@@ -345,6 +348,7 @@ def user_delete_route():
         raise AccessError('Authorization token is missing')
     body = request.get_json()
     return json.dumps(user_delete(token, body['user_id']))
+
 
 @app.delete('/clear')
 @swag_from(clear_spec)

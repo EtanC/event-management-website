@@ -36,6 +36,7 @@ def get_profile_details(token):
         'job_title': user.get('job_title', ''),
         'fun_fact': user.get('fun_fact', ''),
         'profile_pic': encoded_image,
+        'is_admin': user.get('isAdmin', ''),
         'receive_notifications': user.get('receive_notifications', ''),
         'preferences': user.get('preferences', ''),
     }

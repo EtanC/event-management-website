@@ -10,8 +10,6 @@ import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage"
 import AdminPage from "./pages/AdminPage"
-import AdminUsersPage from "./pages/AdminUsersPage"
-import AdminEventsPage from "./pages/AdminEventsPage"
 import MyEventsPage from "./pages/MyEventsPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
@@ -49,8 +47,6 @@ const AppContent = () => {
                     <Route path="/reset-password" element={<ResetPasswordPage />} />
                     <Route path="/event/:id" element={<EventDetailPage />} />
                     <Route path="/admin" element={<ProtectedRoute element={<AdminPage />} />} />
-                    <Route path="/admin/users" element={<ProtectedRoute element={<AdminUsersPage />} />} />
-                    <Route path="/admin/events" element={<ProtectedRoute element={<AdminEventsPage />} />} />
                     <Route path="/my-events" element={<ProtectedRoute element={<MyEventsPage />} />} />
                 </Routes>
                 <SessionTimeOutPopup open={isPopupOpen} handleClose={handleClosePopup} />
