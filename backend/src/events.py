@@ -273,7 +273,6 @@ def event_create(token, event):
     event['creator'] = user_id
     event['image'] = random.randint(config['RANDOM_IMAGES_START_INDEX'], config['RANDOM_IMAGES_END_INDEX'])
     event['crawled'] = False
-    event['tags'] = []
     event['view_count'] = 0
     result = db.events.insert_one(event)
     db['users'].update_one(
