@@ -60,7 +60,7 @@ const ForgotPasswordPage = () => {
             {/* Right Side */}
             <Grid item xs={12} md={8} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 4, position: 'relative' }}>
                 <Box elevation={6} sx={{ padding: 4, width: '100%', maxWidth: 600 }}>
-                    <Logo />
+                    <Logo navigate={navigate}/>
                     <Typography variant="h4" align="center" gutterBottom sx={{ color: '#1E4830', fontWeight: 'bold' }}>
                         Forgot Password?
                     </Typography>

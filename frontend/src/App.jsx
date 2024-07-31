@@ -18,7 +18,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 const AppContent = () => {
     const location = useLocation();
-    const showNavBar = !['/login', '/register'].includes(location.pathname);
+    const showNavBar = !['/login', '/register', '/forgot-password', '/reset-password'].includes(location.pathname);
     const { sessionExpired, setSessionExpired, loggedOut } = useProfile();
     const [isPopupOpen, setIsPopupOpen] = useState(false);
 
