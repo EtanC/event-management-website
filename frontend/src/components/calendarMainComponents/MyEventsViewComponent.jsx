@@ -24,6 +24,7 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
     const [eventToAddManager, setEventToAddManager] = useState(null);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [isEditEvent, setIsEditEvent] = useState(false);
+    const [isManagedEvent, setIsManagedEvent] = useState(false);
 
     //  function to filter event based on side bar ranking
     const filterEvents = (events = []) => {
@@ -64,9 +65,13 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
         fetchEvents();
     }, [refreshEvents]);
 
-    const handleCardClick = (event, isCreatedEvent) => {
-        setSelectedEvent(event);
-        setIsEditEvent(isCreatedEvent);
+    const handleCardClick = (event, isCreatedEvent, isManagedEvent) => {
+        setSelectedEvent(event)
+        if (isCreatedEvent || isManagedEvent) setIsEditEvent(true);
+        else setIsEditEvent(false);
+
+        if (isManagedEvent) setIsManagedEvent(true);
+        else setIsManagedEvent(false);
     };
 
     ///////////////////////////
@@ -160,7 +165,7 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
                         <EventCard
                             key={event._id || index}
                             event={event}
-                            handleCardClick={() => handleCardClick(event, isCreatedEvents)}
+                            handleCardClick={() => handleCardClick(event, isCreatedEvents, isManagedEvents)}
                             isCreatedEvent={isCreatedEvents}
                             isManagedEvent={isManagedEvents}
                             onEditEvent={() => openEditDialog(event)}
@@ -192,6 +197,7 @@ function MyEventsViewComponent({ selectedRanking, refreshEvents }) {
                     handleEditEvent={handleEditEvent}
                     handleDeleteEvent={handleDeleteEventClick}
                     handleManagerEvent={handleManagerEvent}
+                    isManagedEvent={isManagedEvent}
                 />
             ) : (
                 <ViewRegisteredEventPopUp

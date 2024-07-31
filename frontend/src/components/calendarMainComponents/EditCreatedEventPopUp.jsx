@@ -5,8 +5,9 @@ import bin from '../../Image/bin.png';
 import edit from '../../Image/edit.png';
 import cross from '../../Image/close.png';
 import manager from '../../Image/manager.png'
+import { getUserId } from '../../helper/helpers'
 
-const EditCreatedEventPopUp = ({ selectedEvent, handleClosePopUp, handleEditEvent, handleDeleteEvent, handleManagerEvent }) => {
+const EditCreatedEventPopUp = ({ selectedEvent, handleClosePopUp, handleEditEvent, handleDeleteEvent, handleManagerEvent, isManagedEvent }) => {
     const modalStyle = {
         top: '50%',
         left: '50%',
@@ -41,12 +42,16 @@ const EditCreatedEventPopUp = ({ selectedEvent, handleClosePopUp, handleEditEven
                             <IconButton onClick={handleEditEvent}>
                                 <img src={edit} alt="Edit" style={{ width: '24px', height: '24px' }} />
                             </IconButton>
-                            <IconButton onClick={handleDeleteEvent}>
-                                <img src={bin} alt="Delete" style={{ width: '24px', height: '24px' }} />
-                            </IconButton>
-                            <IconButton onClick={handleManagerEvent}>
-                                <img src={manager} alt="Add Manager" style={{ width: '24px', height: '24px' }} />
-                            </IconButton>
+                            {!isManagedEvent && (
+                                <>
+                                    <IconButton onClick={handleDeleteEvent}>
+                                        <img src={bin} alt="Delete" style={{ width: '24px', height: '24px' }} />
+                                    </IconButton>
+                                    <IconButton onClick={handleManagerEvent}>
+                                        <img src={manager} alt="Add Manager" style={{ width: '24px', height: '24px' }} />
+                                    </IconButton>
+                                </>
+                            )}
                             <IconButton onClick={handleClosePopUp}>
                                 <img src={cross} alt="Close" style={{ width: '24px', height: '24px' }} />
                             </IconButton>
