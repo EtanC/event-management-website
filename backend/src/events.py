@@ -280,7 +280,6 @@ def event_create(token, event):
     event['image'] = random.randint(
         config['RANDOM_IMAGES_START_INDEX'], config['RANDOM_IMAGES_END_INDEX'])
     event['crawled'] = False
-    event['tags'] = []
     event['view_count'] = 0
     result = db.events.insert_one(event)
     db['users'].update_one(
@@ -328,7 +327,7 @@ def event_update(token, event_id, new_event):
             'location': new_event['location'],
             'start_date': new_event['start_date'],
             'deadline': new_event['deadline'],
-            # 'tags': new_event['tags'],
+            'tags': new_event['tags'],
             'details': new_event['details'],
             'details_link': new_event['details_link'],
             # 'image': new_event['image'],
