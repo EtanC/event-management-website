@@ -3,7 +3,7 @@ import { useState } from 'react';
 import UnauthorisedPopup from './unauthroisedPopups/UnauthorisedPopup';
 import AdminUnauthorisedPopup from './AdminUnauthorsedPopUp';
 
-const ProtectedRoute = ({ element }) => {
+const ProtectedRoute = ({ element, requireAdmin = false }) => {
     const { isAuthenticated, profileData } = useProfile();
     const [popupOpen, setPopupOpen] = useState(false);
 
@@ -15,7 +15,7 @@ const ProtectedRoute = ({ element }) => {
         );
     }
 
-    if (isAuthenticated && !profileData?.is_admin) {
+    if (requireAdmin && !profileData?.is_admin) {
         return (
             <>
                 <AdminUnauthorisedPopup open={isAuthenticated && !profileData?.is_admin} handleClose={() => setPopupOpen(false)} />
