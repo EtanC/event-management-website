@@ -5,7 +5,6 @@ import bin from '../../Image/bin.png';
 import edit from '../../Image/edit.png';
 import cross from '../../Image/close.png';
 import manager from '../../Image/manager.png'
-import { getUserId } from '../../helper/helpers'
 
 const EditCreatedEventPopUp = ({ selectedEvent, handleClosePopUp, handleEditEvent, handleDeleteEvent, handleManagerEvent, isManagedEvent }) => {
     const modalStyle = {

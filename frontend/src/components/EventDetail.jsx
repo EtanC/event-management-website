@@ -7,10 +7,9 @@ import { formatDate, getUserId } from '../helper/helpers'
 import ViewRegisteredEventPopUp from '../components/calendarMainComponents/ViewRegisteredEventPopUp';
 import { fetchRegisteredEventsSimple } from '../helper/fetchRegisteredEvents';
 import Alert from '@mui/material/Alert';
-import SessionTimeOutPopup from './SessionTimeOutPopup';
 import { useProfile } from './ProfileProvider';
 
-const EventDetail = ({ event, setEvent}) => {
+const EventDetail = ({ event, setEvent }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [userCanEdit, setUserCanEdit] = useState(false);
     const formattedDate = formatDate(event.start_date);
@@ -63,7 +62,7 @@ const EventDetail = ({ event, setEvent}) => {
             navigate('/login')
             return;
         }
-    
+
         setIsLoading(true);
         try {
             const result = await handleRegisterEvent(event._id);
@@ -117,14 +116,14 @@ const EventDetail = ({ event, setEvent}) => {
                             onClick={handleRegisterClick}
                             disabled={isRegistered || isLoading}  // Disable the button if already registered or loading
                         >
-                            {isRegistered 
-                            ? 'Already Registered' 
-                            : isLoading 
-                                ? 'Registering...' 
-                                : (isAuthenticated 
-                                    ? 'Register' 
-                                    : 'Sign Up To Register For Event!'
-                            )} {/* if not signed in */}
+                            {isRegistered
+                                ? 'Already Registered'
+                                : isLoading
+                                    ? 'Registering...'
+                                    : (isAuthenticated
+                                        ? 'Register'
+                                        : 'Sign Up To Register For Event!'
+                                    )} {/* if not signed in */}
                         </Button>
                         <Button
                             variant="outlined"
