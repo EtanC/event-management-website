@@ -17,9 +17,8 @@ const EventDetail = ({ event, setEvent}) => {
     const [openEditEvent, setOpenEditEvent] = useState(false);
     const [isRegistered, setIsRegistered] = useState(false);
     const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
-    const [sessionTimeoutOpen, setSessionTimeoutOpen] = useState(false);
     const { isAuthenticated } = useProfile(); // global management
-
+    const navigate = useNavigate();
     useEffect(() => {
         const checkUserEditPermission = () => {
             try {
@@ -61,7 +60,7 @@ const EventDetail = ({ event, setEvent}) => {
 
     const handleRegisterClick = async () => {
         if (!isAuthenticated) {
-            setSessionTimeoutOpen(true);
+            navigate('/login')
             return;
         }
     
@@ -82,10 +81,6 @@ const EventDetail = ({ event, setEvent}) => {
 
     return (
         <>
-            <SessionTimeOutPopup 
-                open={sessionTimeoutOpen} 
-                handleClose={() => setSessionTimeoutOpen(false)} 
-            />
             <ViewRegisteredEventPopUp open={openEditEvent} handleClose={handleEditClose} headerText={'Edit Event'} event={event} setEvent={setEvent} />
             <Box className="date-time-box" sx={{ position: 'absolute', top: '30%', left: '70%', transform: 'translate(-20%, -0%)', zIndex: 2 }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', width: '100%' }}>
