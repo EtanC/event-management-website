@@ -48,25 +48,18 @@ const AdminEventsPage = () => {
         }
     };
 
-    const handleAIDescription = async () => {
-        try {
-            await handleAiDesc(setLoadingAiDescriptions);
-        } catch (error) {
-            console.error('Failed to generate AI description:', error);
-        }
-    };
-
     const filterEvents = (eventName) => {
         return events.filter(event => {
-            const eventNameMatch = eventName === '' || event.name.toLowerCase().includes(eventName.toLowerCase());
-            return eventNameMatch;
+            const eventNameMatch = eventName === '' || (event.name && event.name.toLowerCase().includes(eventName.toLowerCase()));
+            const locationMatch = location === '' || (event.location && event.location.toLowerCase().includes(location.toLowerCase()));
+            return eventNameMatch && locationMatch;
         });
     };
 
     useEffect(() => {
-        const result = filterEvents(eventName);
+        const result = filterEvents(eventName, location);
         setFilteredData(result);
-    }, [eventName, events]);
+    }, [eventName, events, location]);
 
     useEffect(() => {
         adminFetchEvents();
