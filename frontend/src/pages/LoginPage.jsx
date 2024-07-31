@@ -117,7 +117,7 @@ const LoginPage = () => {
                                     Login
                                 </Button>
                                 <Button
-                                    to="/forgot-password"
+                                    onClick={() => navigate("/forgot-password")}
                                     variant="text"
                                     fullWidth
                                     sx={{

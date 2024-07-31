@@ -22,8 +22,10 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 
 def events_crawl():
     database_name = config['TESTDB_NAME'] if db.test else config['DATABASE_NAME']
-    subprocess.run([f"python3 -m scrapy crawl easychair -a database_name={database_name}"], shell=True)
-    subprocess.run([f"python3 -m scrapy crawl wikicfp -a database_name={database_name}"], shell=True)
+    subprocess.run(
+        [f"python3 -m scrapy crawl easychair -a database_name={database_name}"], shell=True)
+    subprocess.run(
+        [f"python3 -m scrapy crawl wikicfp -a database_name={database_name}"], shell=True)
     return {}
 
 
@@ -31,15 +33,16 @@ def stringify_id(x):
     x['_id'] = str(x['_id'])
     return x
 
+
 def events_get_page(page_number, name, location, date, tags, sort_by):
     page_number = int(page_number)
     PAGE_SIZE = 12
-    
+
     match_stage = {}
     if name:
-      match_stage['name'] = {"$regex": name, "$options": "i"}
+        match_stage['name'] = {"$regex": name, "$options": "i"}
     if location:
-      match_stage["location"] = location 
+        match_stage["location"] = location
     if date:
         try:
             date_obj = datetime.strptime(date, "%Y-%m-%d")
@@ -50,7 +53,7 @@ def events_get_page(page_number, name, location, date, tags, sort_by):
         match_stage["tags"] = {"$all": tags}
 
     # alphabetical sort and view count sort
-    sort_stage = {"name": 1} # default to sorting name
+    sort_stage = {"name": 1}  # default to sorting name
     if sort_by:
         if sort_by == 'alphabetical':
             sort_stage = {"name": 1}
@@ -68,14 +71,20 @@ def events_get_page(page_number, name, location, date, tags, sort_by):
         "tags": 1
     }
 
-    # Create events date format isn't consistent with the rest of the webcrawlers       
+    # Create events date format isn't consistent with the rest of the webcrawlers
     pipeline = [
         {"$addFields": {
             "converted_start_date": {
                 "$cond": {
                     "if": {"$regexMatch": {"input": "$start_date", "regex": "^\\d{4}-\\d{2}-\\d{2}$"}},
                     "then": {"$dateFromString": {"dateString": "$start_date", "format": "%Y-%m-%d"}},
-                    "else": {"$dateFromString": {"dateString": "$start_date", "format": "%b %d, %Y"}}
+                    "else": {
+                      "$cond": {
+                          "if": {"$regexMatch": {"input": "$start_date", "regex": "^\\w{3} \\d{2}, \\d{4}$"}},
+                          "then": {"$dateFromString": {"dateString": "$start_date", "format": "%b %d, %Y"}},
+                          "else": {"$dateFromString": {"dateString": "2000-01-01", "format": "%Y-%m-%d"}}
+                      }
+                    }
                 }
             }
         }},
@@ -89,16 +98,16 @@ def events_get_page(page_number, name, location, date, tags, sort_by):
             ]
         }}
     ]
-    
+
     result = list(db.events.aggregate(pipeline))
-    
+
     # Handle the case where totalCount or events might not be present
     if result and 'totalCount' in result[0] and result[0]['totalCount']:
         total_count = result[0]['totalCount'][0]['count']
     else:
         total_count = 0
     page_count = (total_count + PAGE_SIZE - 1) // PAGE_SIZE
-    
+
     events = result[0]['events'] if result and 'events' in result[0] else []
     events = list(map(stringify_id, events))
 
@@ -114,10 +123,12 @@ def events_get_all():
         'events': list(map(stringify_id, db.events.find({})))
     }
 
+
 def events_get_tagged(tags):
     return {
-        'events': list(map(stringify_id, db.events.find({"tags": { '$all': tags }})))
+        'events': list(map(stringify_id, db.events.find({"tags": {'$all': tags}})))
     }
+
 
 def events_clear():
     clear('events')
@@ -146,12 +157,13 @@ def events_clear():
 
 
 ####################################################
-####               AI SECTION
+# AI SECTION
 ####################################################
 def clean_html(html_content):
     # this sanitises input, get rid of all html tags so that its cheaper to run chatgpt
     soup = BeautifulSoup(html_content, 'html.parser')
     return soup.get_text(separator=" ")
+
 
 def generate_summary_and_tags(details):
     # Clean the input HTML content
@@ -193,7 +205,7 @@ def generate_summary_and_tags(details):
         "  Description: Events discussing architecture and application of high performance computing systems.\n\n"
         f"Event Details:\n{cleaned_details}"
     )
-    
+
     response = client.chat.completions.create(
         model="gpt-4o-mini",  # Use the appropriate model
         messages=[
@@ -201,14 +213,14 @@ def generate_summary_and_tags(details):
             {"role": "user", "content": prompt}
         ]
     )
-    
+
     # Access the response correctly
     output = response.choices[0].message.content
-    
+
     try:
         # Assume that the output is a properly formatted JSON string
         result = eval(output)
-        
+
         if isinstance(result, dict) and "summary" in result and "tags" in result:
             return result
         else:
@@ -271,9 +283,9 @@ def event_create(token, event):
     event['ranking'] = 0
     event['authorized_users'] = []
     event['creator'] = user_id
-    event['image'] = random.randint(config['RANDOM_IMAGES_START_INDEX'], config['RANDOM_IMAGES_END_INDEX'])
+    event['image'] = random.randint(
+        config['RANDOM_IMAGES_START_INDEX'], config['RANDOM_IMAGES_END_INDEX'])
     event['crawled'] = False
-    event['tag'] = []
     event['view_count'] = 0
     result = db.events.insert_one(event)
     db['users'].update_one(
@@ -290,8 +302,10 @@ def event_create(token, event):
 def get_event(event_id):
     return db.events.find_one({'_id': ObjectId(event_id)})
 
+
 def is_admin(user_id):
     return db.users.find_one({"_id": ObjectId(user_id)}).get('isAdmin')
+
 
 def user_is_authorized(user_id, event):
     if user_id in event['authorized_users'] or user_id == event['creator']:
@@ -319,13 +333,14 @@ def event_update(token, event_id, new_event):
             'location': new_event['location'],
             'start_date': new_event['start_date'],
             'deadline': new_event['deadline'],
-            # 'tags': new_event['tags'],
+            'tags': new_event['tags'],
             'details': new_event['details'],
             'details_link': new_event['details_link'],
             # 'image': new_event['image'],
         }}
     )
     return {}
+
 
 def event_view_count(event_id):
     try:
@@ -334,7 +349,7 @@ def event_view_count(event_id):
         event = get_event(event_id)
         if event is None:
             raise InputError('No event in database with specified event_id')
-        
+
         db.events.update_one(
             {"_id": ObjectId(event_id)},
             {"$inc": {"view_count": 1}}
@@ -363,6 +378,12 @@ def event_delete(token, event_id):
         raise InputError('No event in database with specified event_id')
     db.events.delete_one({'_id': ObjectId(event_id)})
     return {}
+
+
+def is_crawled_event(event_id):
+    event = db.events.find_one({'_id': ObjectId(event_id)})
+    return event['crawled']
+
 
 def event_authorize(token, event_id, to_be_added_email):
     event = get_event(event_id)

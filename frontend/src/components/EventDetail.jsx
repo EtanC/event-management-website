@@ -7,19 +7,18 @@ import { formatDate, getUserId } from '../helper/helpers'
 import ViewRegisteredEventPopUp from '../components/calendarMainComponents/ViewRegisteredEventPopUp';
 import { fetchRegisteredEventsSimple } from '../helper/fetchRegisteredEvents';
 import Alert from '@mui/material/Alert';
-import SessionTimeOutPopup from './SessionTimeOutPopup';
 import { useProfile } from './ProfileProvider';
+import { useNavigate } from 'react-router-dom';
 
-const EventDetail = ({ event, setEvent}) => {
+const EventDetail = ({ event, setEvent }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [userCanEdit, setUserCanEdit] = useState(false);
     const formattedDate = formatDate(event.start_date);
     const [openEditEvent, setOpenEditEvent] = useState(false);
     const [isRegistered, setIsRegistered] = useState(false);
     const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
-    const [sessionTimeoutOpen, setSessionTimeoutOpen] = useState(false);
     const { isAuthenticated } = useProfile(); // global management
-
+    const navigate = useNavigate();
     useEffect(() => {
         const checkUserEditPermission = () => {
             try {
@@ -61,10 +60,10 @@ const EventDetail = ({ event, setEvent}) => {
 
     const handleRegisterClick = async () => {
         if (!isAuthenticated) {
-            setSessionTimeoutOpen(true);
+            navigate('/login')
             return;
         }
-    
+
         setIsLoading(true);
         try {
             const result = await handleRegisterEvent(event._id);
@@ -82,10 +81,6 @@ const EventDetail = ({ event, setEvent}) => {
 
     return (
         <>
-            <SessionTimeOutPopup 
-                open={sessionTimeoutOpen} 
-                handleClose={() => setSessionTimeoutOpen(false)} 
-            />
             <ViewRegisteredEventPopUp open={openEditEvent} handleClose={handleEditClose} headerText={'Edit Event'} event={event} setEvent={setEvent} />
             <Box className="date-time-box" sx={{ display: {
                 xs: 'none',
@@ -125,14 +120,14 @@ const EventDetail = ({ event, setEvent}) => {
                             onClick={handleRegisterClick}
                             disabled={isRegistered || isLoading}  // Disable the button if already registered or loading
                         >
-                            {isRegistered 
-                            ? 'Already Registered' 
-                            : isLoading 
-                                ? 'Registering...' 
-                                : (isAuthenticated 
-                                    ? 'Register' 
-                                    : 'Sign Up To Register For Event!'
-                            )} {/* if not signed in */}
+                            {isRegistered
+                                ? 'Already Registered'
+                                : isLoading
+                                    ? 'Registering...'
+                                    : (isAuthenticated
+                                        ? 'Register'
+                                        : 'Sign Up To Register For Event!'
+                                    )} {/* if not signed in */}
                         </Button>
                         <Button
                             variant="outlined"

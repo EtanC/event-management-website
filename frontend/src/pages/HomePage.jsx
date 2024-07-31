@@ -7,6 +7,7 @@ import defaultImage from '../Image/default-image.jpg';
 import theme from '../styles/Theme';
 import { ThemeProvider } from '@mui/material/styles';
 import { increaseEventViewCount } from '../helper/handleEventData';
+import config from '../config';
 
 function HomePage() {
     const navigate = useNavigate();
@@ -14,7 +15,7 @@ function HomePage() {
     // clicking on the big image will take you to a random event
     const handleImageClick = async () => {
         try {
-            const response = await axios.get('http://127.0.0.1:5000/events/get/all');
+            const response = await axios.get(`${config.apiBaseUrl}/events/get/all`);
             const eventData = response.data.events || response.data; // Adjust according to the response structure
 
             if (eventData.length > 0) {

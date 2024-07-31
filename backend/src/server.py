@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, make_response
 from flasgger import Swagger, swag_from
-from backend.swagger_doc.auth import auth_login_spec, auth_register_spec, auth_logout_spec
+from backend.swagger_doc.auth import auth_login_spec, auth_register_spec, auth_logout_spec, auth_forgot_password_spec, auth_reset_password_spec
 from backend.swagger_doc.events import events_crawl_spec, events_clear_spec, events_get_all_spec, event_create_spec, event_update_spec, event_delete_spec, event_authorize_spec, events_ai_description_spec, events_get_page_spec, events_get_tagged_spec
 from backend.swagger_doc.profile import profile_get_spec, profile_update_details_spec, profile_update_password_spec, profile_update_preferences_spec, profile_get_preferences_spec
 from backend.swagger_doc.admin import admin_invite_spec, admin_remove_spec, is_admin_spec
@@ -10,7 +10,7 @@ from backend.swagger_doc.definitions import definitions
 from backend.src.error import AccessError, InputError
 import json
 from werkzeug.exceptions import HTTPException
-from backend.src.auth import auth_google_login, auth_login, auth_register, auth_logout
+from backend.src.auth import auth_google_login, auth_login, auth_register, auth_logout, auth_forgot_password, auth_reset_password
 from backend.src.events import events_crawl, events_clear, events_get_all, event_create, event_update, event_delete, event_authorize, events_ai_description, events_get_page, event_view_count, events_get_tagged
 from backend.src.profile_details import get_profile_details, update_profile_details, update_profile_password, update_preferences, get_user_preferences
 from backend.src.admin import is_admin, invite_admin, remove_admin
@@ -66,6 +66,17 @@ def auth_logout_route():
         raise AccessError('Authorization token is missing')
     return auth_logout(token)
 
+@app.post('/auth/forgot_password')
+@swag_from(auth_forgot_password_spec)
+def auth_forgot_password_route():
+  body = request.get_json()
+  return auth_forgot_password(body["email"])
+
+@app.post('/auth/reset_password')
+@swag_from(auth_reset_password_spec)
+def auth_reset_password_route():
+  body = request.get_json()
+  return auth_reset_password(body["token"], body["user_id"], body["password"])
 
 @app.post('/events/crawl')
 @swag_from(events_crawl_spec)
@@ -77,10 +88,10 @@ def events_crawl_route():
 @swag_from(events_get_page_spec)
 def events_get_page_route(page_number):
     return jsonify(events_get_page(
-        page_number, 
-        request.args.get('name'), 
-        request.args.get('location'), 
-        request.args.get('date'), 
+        page_number,
+        request.args.get('name'),
+        request.args.get('location'),
+        request.args.get('date'),
         request.args.getlist('tags'),
         request.args.get('sort_by'),
     ))
@@ -91,12 +102,14 @@ def events_get_page_route(page_number):
 def events_get_all_route():
     return events_get_all()
 
+
 @app.get('/events/get/tagged')
 @swag_from(events_get_tagged_spec)
 def events_get_tagged_route():
     tags = request.args.get('tags', '')
     tags_list = tags.split(',')
     return events_get_tagged(tags_list)
+
 
 @app.delete('/events/clear')
 @swag_from(events_clear_spec)
@@ -142,7 +155,8 @@ def event_update_route(event_id):
         'details_link': body['details_link'],
         'name': body['name'],
         'location': body['location'],
-        'start_date': body['start_date']
+        'start_date': body['start_date'],
+        'tags': body['tags']
     }
     return event_update(token, event_id, event)
 
@@ -325,6 +339,7 @@ def user_get_all_route():
         raise AccessError('Authorization token is missing')
     return json.dumps(user_get_all(token))
 
+
 @app.delete('/user/delete')
 @swag_from(user_delete_spec)
 def user_delete_route():
@@ -333,6 +348,7 @@ def user_delete_route():
         raise AccessError('Authorization token is missing')
     body = request.get_json()
     return json.dumps(user_delete(token, body['user_id']))
+
 
 @app.delete('/clear')
 @swag_from(clear_spec)

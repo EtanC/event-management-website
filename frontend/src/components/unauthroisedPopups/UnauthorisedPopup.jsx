@@ -1,11 +1,10 @@
-/* eslint-disable react/prop-types */
 import { Box, Typography, Modal, IconButton, Button } from '@mui/material';
-import cross from '../Image/close.png';
+import cross from '../../Image/close.png';
 import { ThemeProvider } from '@mui/material/styles';
-import theme from '../styles/Theme';
+import theme from '../../styles/Theme';
 import { useNavigate } from 'react-router-dom';
 
-const SessionTimeOutPopup = ({ open, handleClose }) => {
+const UnauthorizedPopup = ({ open, handleClose }) => {
     const navigate = useNavigate();
     const modalStyle = {
         top: '50%',
@@ -25,49 +24,44 @@ const SessionTimeOutPopup = ({ open, handleClose }) => {
     const handleLogin = () => {
         navigate('/login');
         handleClose();
-    }
+    };
 
     const handleContinue = () => {
         navigate('/');
         handleClose();
-    }
-
+    };
 
     return (
-        <>
-        <ThemeProvider theme={theme}></ThemeProvider>
+        <ThemeProvider theme={theme}>
             <Modal
                 open={open}
                 onClose={handleClose}
-                aria-labelledby="logout-modal-title"
-                aria-describedby="logout-modal-description"
+                aria-labelledby="unauthorized-modal-title"
+                aria-describedby="unauthorized-modal-description"
             >
                 <Box sx={{ ...modalStyle, position: 'relative', maxHeight: '80vh', display: 'flex', flexDirection: 'column' }}>
                     <Box sx={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px' }}>
-                        <Typography id="logout-modal-title" variant="h5">
-                            Your Session Timed Out!
+                        <Typography id="unauthorized-modal-title" variant="h5">
+                            Uh-uh
                         </Typography>
-                        <IconButton onClick={handleClose}>
-                            <img src={cross} alt="Close" style={{ width: '24px', height: '24px' }} />
-                        </IconButton>
                     </Box>
                     <Box sx={{ overflowY: 'auto', padding: '10px' }}>
-                        <Typography id="logout-modal-description" variant="body1" component="div" sx={{ marginBottom: '16px' }}>
-                            Please login again to continue your exclusive access
+                        <Typography id="unauthorized-modal-description" variant="body1" component="div" sx={{ marginBottom: '16px' }}>
+                            Please login to continue your access.
                         </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                        <Button variant="contained" color="secondary" onClick={handleContinue} sx={{ marginRight: '8px' }}>
-                            Continue Browsing
-                        </Button>
-                        <Button variant="contained" color="primary" onClick={handleLogin}>
+                        <Button variant="contained" color="secondary" onClick={handleLogin} sx={{ marginRight: '8px' }}>
                             Sign In
+                        </Button>
+                        <Button variant="contained" color="primary" onClick={handleContinue}>
+                            Go Back
                         </Button>
                     </Box>
                 </Box>
             </Modal>
-        </>
+        </ThemeProvider>
     );
 };
 
-export default SessionTimeOutPopup;
+export default UnauthorizedPopup;
