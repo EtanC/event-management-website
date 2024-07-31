@@ -114,7 +114,8 @@ export const handleEditEvent = async (event_id, eventData) => {
                 'details_link': eventData.details_link,
                 'name': eventData.name,
                 'location': eventData.location,
-                'start_date': eventData.start_date
+                'start_date': eventData.start_date,
+                'tags': eventData.tags
             },
             {
                 withCredentials: true
