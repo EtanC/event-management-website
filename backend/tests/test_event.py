@@ -15,7 +15,8 @@ def sample_event():
         'details_link': 'http://www.realeventpage.com',
         'name': 'A real event',
         'location': 'Lesotho, South Africa',
-        'start_date': 'Jun 30, 2024'
+        'start_date': 'Jun 30, 2024',
+        'tags': []
     }
     return event
 
@@ -93,7 +94,8 @@ def test_event(reset, sample_event, sample_user):
         'details_link': 'http://www.notrealeventpage.com',
         'name': 'A not so real event',
         'location': 'Benin, West Africa',
-        'start_date': 'Jul 1, 2024'
+        'start_date': 'Jul 1, 2024',
+        'tags': ['AI']
     }
     event_update(sample_user, event_id, updated_event)
     expected_event = {
@@ -174,7 +176,8 @@ def test_event_update(reset, sample_event, sample_user):
         'details_link': 'http://www.notrealeventpage.com',
         'name': 'A not so real event',
         'location': 'Benin, West Africa',
-        'start_date': 'Jul 1, 2024'
+        'start_date': 'Jul 1, 2024',
+        'tags': []
     }
     event_update(sample_user, event_id, updated_event)
     expected_event = {
@@ -205,7 +208,8 @@ def test_event_update_without_auth(reset, sample_event, sample_user):
         'details_link': 'http://www.notrealeventpage.com',
         'name': 'A not so real event',
         'location': 'Benin, West Africa',
-        'start_date': 'Jul 1, 2024'
+        'start_date': 'Jul 1, 2024',
+        'tags': []
     }
     with pytest.raises(AccessError):
         event_update(None, event_id, updated_event)
