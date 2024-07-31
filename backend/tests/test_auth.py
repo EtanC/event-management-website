@@ -33,6 +33,7 @@ def reset():
 def load_env_variables():
     load_dotenv()
 
+
 def test_auth_register_sets_cookie(user1):
     response = auth_register_raw(
         user1['username'], user1['email'], user1['password'], user1['full_name'], user1['description'], user1['job_title'], user1['fun_fact'], user1['preferences'])

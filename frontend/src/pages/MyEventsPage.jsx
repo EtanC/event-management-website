@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Container, ToggleButton, ToggleButtonGroup  } from '@mui/material';
+import { Box, Container, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import CalendarSidebar from '../components/CalendarSideBar';
 import ViewRegisteredEventPopUp from '../components/calendarMainComponents/ViewRegisteredEventPopUp';
 import CalendarContainer from '../components/calendarMainComponents/CalendarContainer';
@@ -30,7 +30,7 @@ const MyEventsPage = () => {
     const refreshEvents = () => {
         fetchRegisteredEvents((fetchedEvents) => {
             setEvents(fetchedEvents);
-            setFilteredEvents(fetchedEvents); 
+            setFilteredEvents(fetchedEvents);
             setIsLoading(false);
         }, setError, setIsLoading);
     };

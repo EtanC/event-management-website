@@ -374,6 +374,11 @@ def event_delete(token, event_id):
     return {}
 
 
+def is_crawled_event(event_id):
+    event = db.events.find_one({'_id': ObjectId(event_id)})
+    return event['crawled']
+
+
 def event_authorize(token, event_id, to_be_added_email):
     event = get_event(event_id)
     if event['crawled']:

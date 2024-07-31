@@ -10,7 +10,7 @@ import { AppBar, Box, Toolbar, IconButton, Typography, Button, MenuItem, Menu } 
 function NavBar() {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
-    const { profileData, loading, isAuthenticated, setProfileData, setTokenExpires } = useProfile();
+    const { profileData, loading, isAuthenticated, setProfileData, setTokenExpires, logout } = useProfile();
 
     const handleMenu = (event) => setAnchorEl(event.currentTarget);
 
@@ -50,6 +50,7 @@ function NavBar() {
     };
 
     const logOutButton = () => {
+        logout();
         setProfileData(null); // Clear profile data
         handleLogout(navigate, setTokenExpires);
         handleClose();
@@ -59,7 +60,7 @@ function NavBar() {
         <>
             <Box sx={{ flexGrow: 1 }}>
                 {/* class name for filterbar to recognise where nav bar is */}
-                <AppBar position="fixed" elevation={0}className="navbar" sx={{ padding: "10px 10px 25px", backgroundColor: 'white', borderBottom: '1px solid #e0e0e0', height: '80px' }}>
+                <AppBar position="fixed" elevation={0} className="navbar" sx={{ padding: "10px 10px 25px", backgroundColor: 'white', borderBottom: '1px solid #e0e0e0', height: '80px' }}>
                     <Toolbar>
                         <img
                             src={logo}
@@ -121,7 +122,7 @@ function NavBar() {
                         >
                             <MenuItem onClick={handleProfile}>Profile</MenuItem>
                             <MenuItem onClick={handleCalendar}>My Events</MenuItem>
-                            <MenuItem onClick={handleAdmin}>Admin</MenuItem>
+                            {profileData?.is_admin && <MenuItem onClick={handleAdmin}>Admin</MenuItem>}
                             <MenuItem onClick={logOutButton}>Log Out</MenuItem>
                         </Menu>
                     </Toolbar>

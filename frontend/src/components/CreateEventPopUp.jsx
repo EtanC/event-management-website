@@ -142,6 +142,13 @@ const CreateEventPopUp = ({ open, handleClose, headerText, event, refreshEvents 
         }));
     };
 
+    const handleTagsChange = (tags) => {
+        setEventData(prevState => ({
+            ...prevState,
+            tags: tags
+        }));
+    };
+
     return (
         <>
             <Modal
@@ -233,16 +240,16 @@ const CreateEventPopUp = ({ open, handleClose, headerText, event, refreshEvents 
                                     value={eventData.tags}
                                     onChange={handleChange}
                                 />
-                            </Grid>
-                        </Grid>
+                            </Grid >
+                        </Grid >
                         {errorMessage && <Alert severity='error' sx={{ marginBottom: '20px' }}>{errorMessage}</Alert>}
                         <Box sx={styles.buttonsContainer}>
                             <Button variant="outlined" color="primary" sx={styles.button} onClick={handleClose}>Cancel</Button>
                             <Button variant="contained" color="primary" sx={styles.button} onClick={handleSave}>Save Event</Button>
                         </Box>
-                    </Card>
-                </Fade>
-            </Modal>
+                    </Card >
+                </Fade >
+            </Modal >
             <Snackbar open={snackbarOpen} autoHideDuration={6000}>
                 <Alert onClose={handleSnackbarClose} severity={'success'}>
                     {snackbarMessage}

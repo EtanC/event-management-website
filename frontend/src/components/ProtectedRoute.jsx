@@ -1,10 +1,29 @@
-import { Navigate } from 'react-router-dom';
 import { useProfile } from '../components/ProfileProvider';
+import { useState } from 'react';
+import UnauthorisedPopup from './unauthroisedPopups/UnauthorisedPopup';
+import AdminUnauthorisedPopup from './AdminUnauthorsedPopUp';
 
-const ProtectedRoute = ({ element, ...rest }) => {
-    const { isAuthenticated } = useProfile();
+const ProtectedRoute = ({ element, requireAdmin = false }) => {
+    const { isAuthenticated, profileData } = useProfile();
+    const [popupOpen, setPopupOpen] = useState(false);
 
-    return isAuthenticated ? element : <Navigate to="/login" />;
+    if (!isAuthenticated) {
+        return (
+            <>
+                <UnauthorisedPopup open={!isAuthenticated} handleClose={() => setPopupOpen(false)} />
+            </>
+        );
+    }
+
+    if (requireAdmin && !profileData?.is_admin) {
+        return (
+            <>
+                <AdminUnauthorisedPopup open={isAuthenticated && !profileData?.is_admin} handleClose={() => setPopupOpen(false)} />
+            </>
+        );
+    }
+
+    return element;
 };
 
 export default ProtectedRoute;
