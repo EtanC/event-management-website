@@ -46,7 +46,7 @@ const AppContent = () => {
                     <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                     <Route path="/reset-password" element={<ResetPasswordPage />} />
                     <Route path="/event/:id" element={<EventDetailPage />} />
-                    <Route path="/admin" element={<ProtectedRoute element={<AdminPage />} />} />
+                    <Route path="/admin" element={<ProtectedRoute element={<AdminPage />} requireAdmin={true}/>} />
                     <Route path="/my-events" element={<ProtectedRoute element={<MyEventsPage />} />} />
                 </Routes>
                 <SessionTimeOutPopup open={isPopupOpen} handleClose={handleClosePopup} />
