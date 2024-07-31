@@ -78,7 +78,13 @@ def events_get_page(page_number, name, location, date, tags, sort_by):
                 "$cond": {
                     "if": {"$regexMatch": {"input": "$start_date", "regex": "^\\d{4}-\\d{2}-\\d{2}$"}},
                     "then": {"$dateFromString": {"dateString": "$start_date", "format": "%Y-%m-%d"}},
-                    "else": {"$dateFromString": {"dateString": "$start_date", "format": "%b %d, %Y"}}
+                    "else": {
+                      "$cond": {
+                          "if": {"$regexMatch": {"input": "$start_date", "regex": "^\\w{3} \\d{2}, \\d{4}$"}},
+                          "then": {"$dateFromString": {"dateString": "$start_date", "format": "%b %d, %Y"}},
+                          "else": {"$dateFromString": {"dateString": "2000-01-01", "format": "%Y-%m-%d"}}
+                      }
+                    }
                 }
             }
         }},
