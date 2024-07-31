@@ -19,15 +19,15 @@ import ProtectedRoute from './components/ProtectedRoute';
 const AppContent = () => {
     const location = useLocation();
     const showNavBar = !['/login', '/register'].includes(location.pathname);
-    const { sessionExpired, setSessionExpired } = useProfile();
+    const { sessionExpired, setSessionExpired, loggedOut } = useProfile();
     const [isPopupOpen, setIsPopupOpen] = useState(false);
 
     useEffect(() => {
-        if (sessionExpired) {
+        if (sessionExpired && !loggedOut) {
             setIsPopupOpen(true);
             setSessionExpired(false); // Ensure it only pops up once after session expires
         }
-    }, [sessionExpired, setSessionExpired]);
+    }, [loggedOut, sessionExpired, setSessionExpired]);
 
     const handleClosePopup = () => {
         setIsPopupOpen(false);

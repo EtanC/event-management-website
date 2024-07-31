@@ -17,6 +17,22 @@ export const fetchEventsData = async (setEvents, setLocations, setError, setIsLo
     }
 };
 
+// get user preference then get the events that are tagged with it
+export const fetchUserPreferences = async () => {
+    try {
+        // Fetch events tagged with user preferences
+        const userPreferences = await axios.get(`${config.apiBaseUrl}/profile/get/preferences`, {
+            withCredentials: true,
+        });
+
+        const preferences = userPreferences.data.preferences;
+        return preferences;
+    } catch (error) {
+        console.error(`Failed to fetch user preferences: ${error.message}`);
+        return [];
+    }
+};
+
 export const handleCreateEvent = async (eventData) => {
     try {
         const response = await axios.post(`${config.apiBaseUrl}/event/create`,

@@ -27,8 +27,8 @@ const SessionTimeOutPopup = ({ open, handleClose }) => {
         handleClose();
     }
 
-    const handleRegister = () => {
-        navigate('/register');
+    const handleContinue = () => {
+        navigate('/');
         handleClose();
     }
 
@@ -57,11 +57,11 @@ const SessionTimeOutPopup = ({ open, handleClose }) => {
                         </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                        <Button variant="contained" color="secondary" onClick={handleLogin} sx={{ marginRight: '8px' }}>
-                            Sign In
+                        <Button variant="contained" color="secondary" onClick={handleContinue} sx={{ marginRight: '8px' }}>
+                            Continue Browsing
                         </Button>
-                        <Button variant="contained" color="primary" onClick={handleRegister}>
-                            Sign Up
+                        <Button variant="contained" color="primary" onClick={handleLogin}>
+                            Sign In
                         </Button>
                     </Box>
                 </Box>
