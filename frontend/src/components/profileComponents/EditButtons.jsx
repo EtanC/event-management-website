@@ -2,7 +2,10 @@ import { Box, Button } from '@mui/material';
 import '../../styles/Profile.css';
 
 const EditButtons = ({ isEditing, handleEditClick, updateProfile }) => (
-    <Box className="flexbox">
+    <Box className="flexbox" sx={{ marginBottom: {
+        xs: '30px',
+        sm: '0px'
+    } }}>
         {!isEditing ? (
             <Button
                 variant="contained"

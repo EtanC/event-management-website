@@ -72,7 +72,10 @@ function NavBar() {
                         {isAuthenticated && !loading ? (
                             profileData ? (
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <Typography sx={{ mr: 2, color: 'black' }}>
+                                    <Typography sx={{ mr: 2, color: 'black', display: {
+                                        xs: 'none', 
+                                        sm: 'flex'
+                                    }}}>
                                         {profileData.full_name || ''}
                                     </Typography>
                                     <IconButton

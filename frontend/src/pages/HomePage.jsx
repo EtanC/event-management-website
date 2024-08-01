@@ -48,12 +48,30 @@ function HomePage() {
                         }}
                         onClick={handleImageClick}
                     >
-                        <img
+                        {/* <img
                             src={defaultImage}
                             alt="Default Event"
                             style={{
                                 width: '100%',
-                                height: '350px',
+                                height: {
+                                    xs: '200px',
+                                    sm: '350px'
+                                },
+                                objectFit: 'cover',
+                                borderRadius: '8px',
+                                marginBottom: '50px'
+                            }}
+                        /> */}
+                        <Box 
+                            component='img'
+                            src={defaultImage}
+                            alt="Default Event"
+                            sx={{
+                                width: '100%',
+                                height: {
+                                    xs: '200px',
+                                    sm: '350px'
+                                },
                                 objectFit: 'cover',
                                 borderRadius: '8px',
                                 marginBottom: '50px'

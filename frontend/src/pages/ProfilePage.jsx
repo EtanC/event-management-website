@@ -185,8 +185,11 @@ function ProfilePage() {
         <ThemeProvider theme={theme}>
             <Box sx={{ minHeight: '90vh', backgroundColor: '#f5f5f5', paddingBottom: '100px' }}>
                 <Container maxWidth="md" sx={{ mt: 2 }}>
-                    <Grid container spacing={4} sx={{ mb: 5 }}>
-                        <Grid item xs={6}>
+                    <Grid container spacing={{ xs: 0, sm: 4 }} sx={{ mb: 5, display: 'flex', flexDirection: {
+                        xs: 'column',
+                        sm: 'row'
+                    }}}>
+                        <Grid item xs={12} sm={6}>
                             <ProfileCard
                                 profile={profile}
                                 isEditing={isEditing}
@@ -207,7 +210,7 @@ function ProfilePage() {
                                 updateProfile={updateProfile}
                             />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} sm={6}>
                             <SettingsCard
                                 confirmOpen={confirmOpen}
                                 notificationsEnabled={notificationsEnabled}

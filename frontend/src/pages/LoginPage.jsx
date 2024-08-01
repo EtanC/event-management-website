@@ -43,8 +43,8 @@ const LoginPage = () => {
                         backgroundPosition: 'center',
                     }}
                 >
-                    <Typography variant="h4" sx={{ marginBottom: 2, fontWeight: 'bold', fontSize: '1.8em', color: 'white' }}>Don't have an account?</Typography>
-                    <Typography variant="body1" sx={{ marginBottom: 2, color: 'white' }}>Register with us today!</Typography>
+                    <Typography variant="h4" sx={{ marginBottom: 2, fontWeight: 'bold', fontSize: '1.8em', color: 'white' }} align='center' >Don't have an account?</Typography>
+                    <Typography variant="body1" sx={{ marginBottom: 2, color: 'white' }} align='center' >Register with us today!</Typography>
                     <Button
                         variant="contained"
                         sx={{

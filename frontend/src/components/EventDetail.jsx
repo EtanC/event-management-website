@@ -82,7 +82,10 @@ const EventDetail = ({ event, setEvent }) => {
     return (
         <>
             <ViewRegisteredEventPopUp open={openEditEvent} handleClose={handleEditClose} headerText={'Edit Event'} event={event} setEvent={setEvent} />
-            <Box className="date-time-box" sx={{ position: 'absolute', top: '30%', left: '70%', transform: 'translate(-20%, -0%)', zIndex: 2 }}>
+            <Box className="date-time-box" sx={{ display: {
+                xs: 'none',
+                sm: 'block'
+            }, position: 'absolute', top: '30%', left: '70%', transform: 'translate(-20%, -0%)', zIndex: 2 }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', width: '100%' }}>
                     {userCanEdit && (
                         <Button

@@ -71,8 +71,20 @@ function EventDetailPage() {
                                 display: 'flex',
                             }}
                         />
-                        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-80%, -80%)', zIndex: 2, textAlign: 'center', }}>
-                            <Typography variant="h4" component="h1" className="event-title" sx={{ fontWeight: 'bold', color: 'white', wordWrap: 'break-word' }}>
+                        <Box sx={{ position: 'absolute', top: {
+                            xs: '70%',
+                            sm: '50%'
+                        }, left: {
+                            xs: '85%',
+                            sm: '50%'
+                        }, transform: 'translate(-80%, -80%)', zIndex: 2, textAlign: 'center' }}>
+
+                            {/* ngl it'd probs be easier to centre this text and make it responsive by making the image a background image and having the text be aligned to the centre of it, but rn idk if theres enough time */}
+                            <Typography variant="h4" component="h1" className="event-title" sx={{ display: {xs: 'none', sm: 'block'}, fontWeight: 'bold', color: 'white', wordWrap: 'break-word' }}>
+                                {event.name}
+                            </Typography>
+
+                            <Typography variant="h6" component="h1" className="event-title" sx={{ display: {xs: 'block', sm: 'none'}, fontWeight: 'bold', color: 'white', wordWrap: 'break-word', width: '400px' }}>
                                 {event.name}
                             </Typography>
                         </Box>

@@ -74,8 +74,8 @@ const RegisterPage = () => {
                     backgroundPosition: 'center',
                 }}
             >
-                <Typography variant="h4" sx={{ marginBottom: 2, fontWeight: 'bold', fontSize: '1.8em', color: 'white' }}>Welcome back</Typography>
-                <Typography variant="body1" sx={{ marginBottom: 2, color: 'white' }}>To keep connecting us with your information</Typography>
+                <Typography variant="h4" sx={{ marginBottom: 2, fontWeight: 'bold', fontSize: '1.8em', color: 'white' }} align='center' >Welcome back</Typography>
+                <Typography variant="body1" sx={{ marginBottom: 2, color: 'white' }} align='center' >To keep connecting us with your information</Typography>
                 <Button variant="contained" sx={{ fontWeight: 'bold', borderRadius: '15px', mt: 2, backgroundColor: '#91b748', color: '#FFFFFF', '&:hover': { backgroundColor: '#1E4830' } }} onClick={() => navigate('/login')}>
                     Sign in
                 </Button>

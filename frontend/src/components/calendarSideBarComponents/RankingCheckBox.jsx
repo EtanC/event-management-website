@@ -10,7 +10,7 @@ const RankingAccordion = ({ selectedRankings, handleRankingChange }) => {
                 <Typography variant="h6">Ranking</Typography>
             </AccordionSummary>
             <AccordionDetails>
-                <FormGroup>
+                <FormGroup sx={{ overflow: 'scroll' }}>
                     <FormControlLabel
                         control={
                             <Checkbox

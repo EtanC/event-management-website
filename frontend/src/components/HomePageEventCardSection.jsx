@@ -156,18 +156,30 @@ function HomePageEventCardSection() {
                 <Button 
                     variant={sortBy === 'alphabetical' ? 'contained' : 'outlined'}
                     onClick={() => setSortBy('alphabetical')}
+                    sx={{ height: '45px', fontSize: {
+                        xs: '10px',
+                        sm: '12px'
+                    } }}
                 >
                     Alphabetical
                 </Button>
                 <Button 
                     variant={sortBy === 'reverse' ? 'contained' : 'outlined'}
                     onClick={() => setSortBy('reverse')}
+                    sx={{ height: '45px', fontSize: {
+                        xs: '10px',
+                        sm: '12px'
+                    } }}
                 >
                     Reverse Alphabetical
                 </Button>
                 <Button 
                     variant={sortBy === 'view_count' ? 'contained' : 'outlined'}
                     onClick={() => setSortBy('view_count')}
+                    sx={{ height: '45px', fontSize: {
+                        xs: '10px',
+                        sm: '12px'
+                    } }}
                 >
                     View Count
                 </Button>

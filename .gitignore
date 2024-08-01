@@ -7,4 +7,5 @@ output.json
 backend/.DS_Store
 .gitignore
 .coverage
+node_modules
 nohup.out

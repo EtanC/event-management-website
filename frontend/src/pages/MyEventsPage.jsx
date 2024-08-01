@@ -80,7 +80,7 @@ const MyEventsPage = () => {
     return (
         <>
             <ThemeProvider theme={theme}></ThemeProvider>
-            <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+            <Box sx={{ display: 'flex', minHeight: '100vh', width: '100vw', overflow: 'scroll' }}>
                 <CalendarSidebar
                     events={Array.isArray(events) ? events : []}
                     onSearchResultClick={handleSearchResultClick}
