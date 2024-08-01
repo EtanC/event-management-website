@@ -1,8 +1,9 @@
 import axios from 'axios';
 import config from '../config';
 
-const generateAIDescription = async (setLoadingAiDescription, setErrorPopupOpen) => {
+const generateAIDescription = async (setAiDescPopupOpen, setLoadingAiDescription, setErrorPopupOpen) => {
     try {
+        setAiDescPopupOpen(false);
         setLoadingAiDescription(true);
         await axios.post(`${config.apiBaseUrl}/events/ai-description`);
     } catch (error) {
