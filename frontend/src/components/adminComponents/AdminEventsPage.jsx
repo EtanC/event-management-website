@@ -50,8 +50,8 @@ const AdminEventsPage = () => {
 
     const filterEvents = (eventName) => {
         return events.filter(event => {
-            const eventNameMatch = eventName === '' || (event.name && event.name.toLowerCase().includes(eventName.toLowerCase()));
-            const locationMatch = location === '' || (event.location && event.location.toLowerCase().includes(location.toLowerCase()));
+            const eventNameMatch = eventName === null || (event.name && event.name.toLowerCase().includes(eventName.toLowerCase()));
+            const locationMatch = location === null || (event.location && event.location.toLowerCase().includes(location.toLowerCase()));
             return eventNameMatch && locationMatch;
         });
     };
