@@ -88,7 +88,7 @@ const AdminEventsPage = () => {
                 open={aiDescPopupOpen}
                 onClose={() => setAiDescPopupOpen(false)}
                 onConfirm={() => {
-                    handleAiDesc(setLoadingAiDescriptions, setErrorPopupOpen); // Call the AI description handler with state setters
+                    handleAiDesc(setAiDescPopupOpen, setLoadingAiDescriptions, setErrorPopupOpen); // Call the AI description handler with state setters
                 }}
                 title={'AI Description'}
                 content={'Each run will cost money. Are you sure you want to proceed?'}
