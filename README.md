@@ -1,4 +1,9 @@
-# Installation
+# Project Summary 
+Currently, computer science events and call-for-papers are scattered across multiple sources such as WikiCFP and EasyChair, making it difficult to track and manage. EventHubb aims to solve this problem by utilising web scrapers to aggregate event information into a central location through a user-friendly website. EventHubb crawls data from other websites, including WikiCFP and EasyChair. While these websites are difficult to navigate and don’t cater to users’ preferences, EventHubb aims to elevate the user experience by providing customisation, notifications and AI-generated summaries, all behind a visually appealing website.
+
+Key features include user authentication, profile management, event aggregation, search and browsing, a customisable calendar and admin event management. The end goal of EventHubb is for all users to be able to browse efficiently for computer science and call-for-papers events and register for those that interest them. From then, EventHubb will provide users with frequent reminders and notifications to ensure they can always stay on top of their deadlines. 
+
+# Installing EventHubb
 ## Docker
 As our project uses Docker to simplify the installation process, it must be installed before proceeding according to their installation instructions.
 ## Secrets
