@@ -42,9 +42,11 @@ Change the “BACKEND_URL” from 5000 to some other port.
 Change the “EXPOSE” from 5000 to the same port as the previous step.
 **docker-compose.yml**
 Under
+```
 backend:
 	ports:
-“5000:5000”
+    - "5000:5000"
+```
 Change both 5000’s to the same port as the previous steps.
 **frontend/src/config.js**
 Change the “apiBaseUrl: http://127.0.0.1:5000” from 5000 to the same port as the previous steps.
@@ -55,7 +57,9 @@ Change the port from 5173 to some other port.
 Change the “EXPOSE” from 5173 to the same port as the previous step
 **docker-compose.yml**
 Under
+```
 frontend:
 	ports:
-“5173:5173”
+    - "5173:5173"
+```
 Change both 5173’s to the same port as the previous steps.
