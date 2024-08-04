@@ -1,5 +1,5 @@
 import { Card, CardContent, Typography, Switch, Box } from '@mui/material';
-import ActionConfirmationPopup from '../ActionConfirmationPopup';
+import ActionConfirmationPopup from '../popups/ActionConfirmationPopup';
 import '../../styles/Profile.css';
 
 const SettingsCard = ({ confirmOpen, notificationsEnabled, handleSwitchChange, handleNotifConfirm, handleNotifCancel }) => {

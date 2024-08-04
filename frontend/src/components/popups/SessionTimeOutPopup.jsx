@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import { Box, Typography, Modal, IconButton, Button } from '@mui/material';
-import cross from '../Image/close.png';
+import cross from '../../Image/close.png';
 import { ThemeProvider } from '@mui/material/styles';
-import theme from '../styles/Theme';
+import theme from '../../styles/Theme';
 import { useNavigate } from 'react-router-dom';
 
 const SessionTimeOutPopup = ({ open, handleClose }) => {

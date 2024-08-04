@@ -3,7 +3,7 @@ import { IconButton } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import config from '../config';
+import config from '../../config';
 
 function GoogleAuth({ setTokenExpires }) {
   const navigate = useNavigate();

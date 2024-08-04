@@ -1,6 +1,5 @@
-import React from 'react';
 import { TextField, Button, Box, FormControl, InputLabel, Alert } from '@mui/material';
-import PreferencesSelect from '../PreferencesSelectBox'; // Update the import path as needed
+import PreferencesSelect from '../calendarSideBarComponents/PreferencesSelectBox'; // Update the import path as needed
 
 const ProfileCreationForm = ({ fullName, setFullName, occupation, setOccupation, funFact, setFunFact, headline, setHeadline, preference, setPreference, handleProfileSubmit, handleBack, errorMessage }) => (
     <Box

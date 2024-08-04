@@ -1,7 +1,7 @@
 import { useProfile } from '../components/ProfileProvider';
 import { useState } from 'react';
-import UnauthorisedPopup from './unauthroisedPopups/UnauthorisedPopup';
-import AdminUnauthorisedPopup from './AdminUnauthorsedPopUp';
+import UnauthorisedPopup from './popups/UnauthorisedPopup';
+import AdminUnauthorisedPopup from './popups/AdminUnauthorsedPopUp';
 
 const ProtectedRoute = ({ element, requireAdmin = false }) => {
     const { isAuthenticated, profileData } = useProfile();

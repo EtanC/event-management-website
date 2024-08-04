@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { Box, Typography, Modal, IconButton, Button } from '@mui/material';
 import moment from 'moment';
-import HtmlTagRender from './HtmlTagRender';
+import HtmlTagRender from '../eventDetailComponents/HtmlTagRender';
 import cross from '../Image/close.png';
 import { unregisterEvent } from '../helper/fetchUserEvents';
 

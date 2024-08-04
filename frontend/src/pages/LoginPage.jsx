@@ -6,7 +6,7 @@ import { TextField, Button, Typography, Box, Alert, Grid, Divider } from '@mui/m
 import background from '../Image/LHSBackground.png';
 import Logo from '../components/CompanyLogo';
 import { handleLogin } from '../helper/handleAuth';
-import LoginWithSocial from '../components/LoginWithSocialButtons';
+import LoginWithSocial from '../components/loginComponents/LoginWithSocialButtons';
 import { useProfile } from '../components/ProfileProvider';
 
 const LoginPage = () => {

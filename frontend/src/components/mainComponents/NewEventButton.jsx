@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import FloatingButton from './FloatingButton';
-import CreateEventPopUp from './CreateEventPopUp';
+import CreateEventPopUp from '../popups/CreateEventPopUp';
 
 const NewEventButton = () => {
     const [open, setOpen] = useState(false);

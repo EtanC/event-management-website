@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Box, Container, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import CalendarSidebar from '../components/CalendarSideBar';
+import CalendarSidebar from '../components/calendarMainComponents/CalendarSideBar';
 import ViewRegisteredEventPopUp from '../components/calendarMainComponents/ViewRegisteredEventPopUp';
 import CalendarContainer from '../components/calendarMainComponents/CalendarContainer';
 import sortEventRanking from '../helper/sortEventRanking';

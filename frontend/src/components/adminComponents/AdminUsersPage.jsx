@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Typography, Box, Container } from '@mui/material';
 import AdminUsersSearchBar from './AdminUsersSearchBar';
 import AdminTable from './AdminTable';
-import ActionConfirmationPopup from '../ActionConfirmationPopup';
+import ActionConfirmationPopup from '../popups/ActionConfirmationPopup';
 import { fetchAllUsers, toggleAdminStatus, deleteUser } from '../../helper/handleUsers';
 
 const AdminUsersPage = () => {

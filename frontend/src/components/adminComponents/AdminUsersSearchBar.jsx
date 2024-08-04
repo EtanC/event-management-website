@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 // eslint-disable-next-line no-unused-vars
-import React from 'react';
 import { TextField, Box, InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import DOMPurify from 'dompurify';
-import '../styles/HtmlTagRender.css';
+import '../../styles/HtmlTagRender.css';
 
 function HtmlTagRender({ htmlString }) {
     const sanitizedHTML = DOMPurify.sanitize(htmlString);

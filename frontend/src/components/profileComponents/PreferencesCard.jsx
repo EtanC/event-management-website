@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, Typography, Box, Button } from '@mui/material';
 import '../../styles/Profile.css';
-import PreferencesSelect from '../PreferencesSelectBox';
+import PreferencesSelect from '../calendarSideBarComponents/PreferencesSelectBox';
 
 const PreferencesCard = ({ profile, updatedPreferences, isEditingPref, handleEditPreferencesClick, setUpdatedPreferences, updatePreferences }) => {
     const [initialPreferences, setInitialPreferences] = useState([]);
