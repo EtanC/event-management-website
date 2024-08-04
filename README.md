@@ -32,3 +32,30 @@ The AI button can only be run on the admin page, and each run will prompt the be
 When the ChatGPT funds have run out, it will prompt the message below, indicating that the function will no longer work.
 
 ![alt text](image-1.png)
+
+# Port management
+If for some reason some error along the lines of “port unavailable” is encountered, please change the port in the following files:
+## Backend
+**backend/src/config.json**
+Change the “BACKEND_URL” from 5000 to some other port.
+**Dockerfile.backend**
+Change the “EXPOSE” from 5000 to the same port as the previous step.
+**docker-compose.yml**
+Under
+backend:
+	ports:
+“5000:5000”
+Change both 5000’s to the same port as the previous steps.
+**frontend/src/config.js**
+Change the “apiBaseUrl: http://127.0.0.1:5000” from 5000 to the same port as the previous steps.
+## Frontend
+**frontend/vite.config.js**
+Change the port from 5173 to some other port.
+**frontend/Dockerfile**
+Change the “EXPOSE” from 5173 to the same port as the previous step
+**docker-compose.yml**
+Under
+frontend:
+	ports:
+“5173:5173”
+Change both 5173’s to the same port as the previous steps.
