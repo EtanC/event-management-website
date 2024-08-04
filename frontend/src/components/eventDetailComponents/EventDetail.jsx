@@ -2,12 +2,12 @@
 import { useState, useEffect } from 'react';
 import { Box, Card, CardContent, Typography, Button, Snackbar } from '@mui/material';
 import { CalendarToday, Edit } from '@mui/icons-material';
-import handleRegisterEvent from '../helper/handleRegisterEvent';
-import { formatDate, getUserId } from '../helper/helpers'
-import ViewRegisteredEventPopUp from '../components/calendarMainComponents/ViewRegisteredEventPopUp';
-import { fetchRegisteredEventsSimple } from '../helper/fetchRegisteredEvents';
+import handleRegisterEvent from '../../helper/handleRegisterEvent';
+import { formatDate, getUserId } from '../../helper/helpers'
+import ViewRegisteredEventPopUp from '../../components/calendarMainComponents/ViewRegisteredEventPopUp';
+import { fetchRegisteredEventsSimple } from '../../helper/fetchRegisteredEvents';
 import Alert from '@mui/material/Alert';
-import { useProfile } from './ProfileProvider';
+import { useProfile } from '../ProfileProvider';
 import { useNavigate } from 'react-router-dom';
 
 const EventDetail = ({ event, setEvent }) => {

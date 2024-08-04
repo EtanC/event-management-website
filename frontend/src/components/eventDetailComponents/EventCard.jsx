@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
     Card,
     CardContent,
@@ -10,8 +9,9 @@ import {
     MenuItem
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import defaultImage from '../Image/default-event.png';
-import { formatDate } from '../helper/helpers';
+import defaultImage from '../../Image/default-event.png';
+import { formatDate } from '../../helper/helpers';
+import { useState } from 'react';
 
 const EventCard = ({
     event,

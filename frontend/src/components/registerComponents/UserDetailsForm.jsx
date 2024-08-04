@@ -1,5 +1,3 @@
-// UserDetailsForm.jsx
-import React from 'react';
 import { TextField, Button, Box, Alert } from '@mui/material';
 import { validatePassword } from '../../helper/helpers';
 

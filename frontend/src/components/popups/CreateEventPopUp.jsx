@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from 'react';
 import {
     Button,
     Modal,
@@ -11,9 +10,9 @@ import {
     Alert,
     Snackbar,
 } from '@mui/material';
-import PreferencesSelect from './PreferencesSelectBox.jsx';
-import { handleCreateEvent, handleEditEvent } from '../helper/handleEventData.js';
-
+import PreferencesSelect from '../calendarSideBarComponents/PreferencesSelectBox.jsx';
+import { handleCreateEvent, handleEditEvent } from '../../helper/handleEventData.js';
+import { useState, useEffect } from 'react';
 
 const MAX_NAME_LENGTH = 100;
 

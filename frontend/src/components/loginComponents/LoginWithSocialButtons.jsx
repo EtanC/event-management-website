@@ -6,7 +6,7 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import GoogleAuth from './GoogleAuth';
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import { useProfile } from './ProfileProvider';
+import { useProfile } from '../ProfileProvider';
 
 const SocialLoginButtons = (error) => {
     const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID

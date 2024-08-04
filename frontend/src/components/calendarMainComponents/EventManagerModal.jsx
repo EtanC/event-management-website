@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
-import { handleAddEventManager } from '../helper/handleEventData'
+import { handleAddEventManager } from '../../helper/handleEventData'
 
 const styles = {
     modal: {

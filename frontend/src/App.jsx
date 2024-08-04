@@ -13,7 +13,7 @@ import AdminPage from "./pages/AdminPage"
 import MyEventsPage from "./pages/MyEventsPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
-import SessionTimeOutPopup from './components/SessionTimeOutPopup';
+import SessionTimeOutPopup from './components/popups/SessionTimeOutPopup';
 import ProtectedRoute from './components/ProtectedRoute';
 
 const AppContent = () => {

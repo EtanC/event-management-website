@@ -1,6 +1,6 @@
 import { Box, Typography, Modal, IconButton } from '@mui/material';
 import moment from 'moment';
-import HtmlTagRender from '../HtmlTagRender';
+import HtmlTagRender from '../eventDetailComponents/HtmlTagRender';
 import bin from '../../Image/bin.png';
 import edit from '../../Image/edit.png';
 import cross from '../../Image/close.png';

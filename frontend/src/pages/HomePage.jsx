@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Box, Container } from '@mui/material';
-import HomePageEventCardSection from '../components/HomePageEventCardSection';
-import NewEventButton from '../components/NewEventButton'
+import HomePageEventCardSection from '../components/mainComponents/HomePageEventCardSection';
+import NewEventButton from '../components/mainComponents/NewEventButton'
 import defaultImage from '../Image/default-image.jpg';
 import theme from '../styles/Theme';
 import { ThemeProvider } from '@mui/material/styles';

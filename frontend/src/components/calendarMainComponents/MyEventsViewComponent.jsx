@@ -3,10 +3,10 @@ import {
     Box, Container, Card, Typography, Grid, CircularProgress,
 } from '@mui/material';
 import { fetchUserEvents, fetchUserRegisteredEvents } from '../../helper/handleEventData';
-import EventCard from '../EventCard';
-import ActionConfirmationPopup from '../ActionConfirmationPopup';
-import CreateEventPopUp from '../CreateEventPopUp';
-import EventManagerModal from '../EventManagerModal';
+import EventCard from '../eventDetailComponents/EventCard';
+import ActionConfirmationPopup from '../popups/ActionConfirmationPopup';
+import CreateEventPopUp from '../popups/CreateEventPopUp';
+import EventManagerModal from './EventManagerModal';
 import ViewRegisteredEventPopUp from './ViewRegisteredEventPopUp';
 import EditCreatedEventPopUp from './EditCreatedEventPopUp';
 import { handleDeleteEvent } from '../../helper/handleEventData';

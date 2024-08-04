@@ -1,4 +1,3 @@
-import React from 'react';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
 
 const ActionConfirmationPopup = ({ open, onClose, onConfirm, title, content, primaryButtonText }) => {

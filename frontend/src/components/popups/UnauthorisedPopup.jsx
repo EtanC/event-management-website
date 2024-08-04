@@ -1,9 +1,9 @@
 import { Box, Typography, Modal, Button } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import theme from '../styles/Theme';
+import theme from '../../styles/Theme';
 import { useNavigate } from 'react-router-dom';
 
-const AdminUnauthorizedPopup = ({ open, handleClose }) => {
+const UnauthorizedPopup = ({ open, handleClose }) => {
     const navigate = useNavigate();
     const modalStyle = {
         top: '50%',
@@ -20,6 +20,11 @@ const AdminUnauthorizedPopup = ({ open, handleClose }) => {
         overflowY: 'auto',
     };
 
+    const handleLogin = () => {
+        navigate('/login');
+        handleClose();
+    };
+
     const handleContinue = () => {
         navigate('/');
         handleClose();
@@ -30,21 +35,24 @@ const AdminUnauthorizedPopup = ({ open, handleClose }) => {
             <Modal
                 open={open}
                 onClose={handleClose}
-                aria-labelledby="admin-unauthorized-modal-title"
-                aria-describedby="admin-unauthorized-modal-description"
+                aria-labelledby="unauthorized-modal-title"
+                aria-describedby="unauthorized-modal-description"
             >
                 <Box sx={{ ...modalStyle, position: 'relative', maxHeight: '80vh', display: 'flex', flexDirection: 'column' }}>
                     <Box sx={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px' }}>
-                        <Typography id="admin-unauthorized-modal-title" variant="h5">
-                            Unauthorized Access
+                        <Typography id="unauthorized-modal-title" variant="h5">
+                            Uh-uh
                         </Typography>
                     </Box>
                     <Box sx={{ overflowY: 'auto', padding: '10px' }}>
-                        <Typography id="admin-unauthorized-modal-description" variant="body1" component="div" sx={{ marginBottom: '16px' }}>
-                            You do not have the necessary permissions to access this page.
+                        <Typography id="unauthorized-modal-description" variant="body1" component="div" sx={{ marginBottom: '16px' }}>
+                            Please login to continue your access.
                         </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                        <Button variant="contained" color="secondary" onClick={handleLogin} sx={{ marginRight: '8px' }}>
+                            Sign In
+                        </Button>
                         <Button variant="contained" color="primary" onClick={handleContinue}>
                             Go Back
                         </Button>
@@ -55,4 +63,4 @@ const AdminUnauthorizedPopup = ({ open, handleClose }) => {
     );
 };
 
-export default AdminUnauthorizedPopup;
+export default UnauthorizedPopup;

@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import HtmlTagRender from '../components/HtmlTagRender';
-import EventDetail from '../components/EventDetail';
+import HtmlTagRender from '../components/eventDetailComponents/HtmlTagRender';
+import EventDetail from '../components/eventDetailComponents/EventDetail';
 import defaultImage from '../Image/eventInfo-background.jpeg';
 import theme from '../styles/Theme';
 import { ThemeProvider } from '@mui/material/styles';

@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Box, IconButton, Typography, Button } from '@mui/material';
 import { ArrowBack, ArrowForward } from '@mui/icons-material';
-import { fetchUserPreferences } from '../helper/handleEventData';
-import EventCard from './EventCard';
+import { fetchUserPreferences } from '../../helper/handleEventData';
+import EventCard from '../eventDetailComponents/EventCard';
 import { useNavigate } from 'react-router-dom';
 
 const UserPreferenceEvent = ({ events, handleCardClick, selectedEvent }) => {

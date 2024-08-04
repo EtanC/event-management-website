@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { Typography, Box, Container, Button, CircularProgress } from '@mui/material';
 import AdminEventsSearchBar from './AdminEventsSearchBar';
 import AdminTable from './AdminTable';
-import ActionConfirmationPopup from '../ActionConfirmationPopup';
-import CreateEventPopUp from '../CreateEventPopUp';
+import ActionConfirmationPopup from '../popups/ActionConfirmationPopup';
+import CreateEventPopUp from '../popups/CreateEventPopUp';
 import { fetchEventsData } from '../../helper/handleEventData';
 import {
     handleDeleteClick,
@@ -14,7 +14,7 @@ import {
 } from '../../helper/handleEditDeleteEvent';
 import handleCrawlEvents from '../../helper/handleCrawlEvents';
 import handleAiDesc from '../../helper/handleAiDesc';
-import ConfirmationPopup from '../openAIButtonPopUp/ConfirmationPopUp';
+import ConfirmationPopup from '../popups/ConfirmationPopUp';
 
 const AdminEventsPage = () => {
     const [events, setEvents] = useState([]);

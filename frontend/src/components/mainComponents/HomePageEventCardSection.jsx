@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import SearchBar from './SearchBar';
-import EventCard from './EventCard';
+import SearchBar from '../mainComponents/SearchBar';
+import EventCard from '../eventDetailComponents/EventCard';
 import { Box, CircularProgress, Typography, Grid, IconButton, Button } from '@mui/material';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import fetchEventsData from '../helper/fetchEventData';
-import { increaseEventViewCount, fetchUserPreferences } from '../helper/handleEventData';
-import UserPreferenceEvent from './UserPreferenceEvents';
-import { useProfile } from './ProfileProvider';
+import fetchEventsData from '../../helper/fetchEventData';
+import { increaseEventViewCount, fetchUserPreferences } from '../../helper/handleEventData';
+import UserPreferenceEvent from '../mainComponents/UserPreferenceEvents';
+import { useProfile } from '../ProfileProvider';
 
 function HomePageEventCardSection() {
     const navigate = useNavigate();
@@ -27,34 +27,6 @@ function HomePageEventCardSection() {
     const [sortBy, setSortBy] = useState('alphabetical'); // default sort alphabetical
     const [filteredEvents, setFilteredEvents] = useState([]);
     const { isAuthenticated } = useProfile();
-
-
-    // // Debounce makes it so that we aren't spamming API calls everytime the search changes
-    // // Has a 200 ms delay for search
-    // function useDebounce(callback, delay) {
-    //     const [timeoutId, setTimeoutId] = useState();
-    
-    //     useEffect(() => {
-    //         return () => {
-    //             clearTimeout(timeoutId);
-    //         };
-    //     }, [timeoutId]);
-    
-    //     function debouncedCallback(...args) {
-    //         clearTimeout(timeoutId);
-    //         setTimeoutId(setTimeout(() => {
-    //             callback(...args);
-    //         }, delay));
-    //     }
-    
-    //     return debouncedCallback;
-    // }
-
-    // const debouncedFetchEventsData = useDebounce(fetchEventsData, 200);
-
-    // useEffect(() => {
-    //     debouncedFetchEventsData(setEvents, setLocations, setError, setIsLoading, page, setPageCount, eventType, location, date, tags, sortBy);
-    // }, [eventType, location, date, tags, sortBy, debouncedFetchEventsData, page]); 
 
     // user preferences, get preference and then filter event
     const fetchUserPreferencesAndFilterEvents = async (events) => {
