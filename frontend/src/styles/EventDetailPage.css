@@ -1,0 +1,108 @@
+/* EventInfoPage.css */
+.event-header {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    color: white;
+}
+
+.event-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: white;
+}
+
+.event-subtitle {
+    margin-bottom: 20px;
+    color: white;
+}
+
+.date-time-box {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 3;
+    width: 300px;
+}
+
+.event-detail {
+    padding: 20px;
+}
+
+.event-detail h1,
+.event-detail h2,
+.event-detail h3,
+.event-detail h4 {
+    margin: 20px 0;
+    color: #333;
+    font-family: 'Impact, sans-serif';
+}
+
+.event-detail p {
+    margin: 10px 0;
+    color: #666;
+    line-height: 1.6;
+    font-family: 'Impact, sans-serif';
+}
+
+.event-detail ul {
+    list-style: disc inside;
+    margin: 10px 0 10px 20px;
+}
+
+.event-detail a {
+    color: #1E4830;
+    text-decoration: none;
+}
+
+.event-detail a:hover {
+    text-decoration: underline;
+}
+
+.event-detail .important-dates,
+.event-detail .scope-topics {
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-left: 4px solid #1E4830;
+}
+
+.event-detail .important-dates h2,
+.event-detail .scope-topics h2 {
+    margin-top: 0;
+}
+
+.event-detail .event-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.event-detail .event-header h1 {
+    margin: 0;
+}
+
+.event-detail .event-location,
+.event-detail .event-date {
+    display: flex;
+    align-items: center;
+}
+
+.event-detail .event-location svg,
+.event-detail .event-date svg {
+    margin-right: 8px;
+}
+
+.event-detail .share-icons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}

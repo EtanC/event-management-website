@@ -1,0 +1,41 @@
+name: Backend Pytest
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - 'main'
+concurrency:
+  group: backend_testing
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+      - uses: py-actions/py-dependency-install@v4
+        with:
+          path: "./backend/requirements.txt"
+
+      # Set up environment variables
+      - name: Set up environment variables
+        run: echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
+
+      - run: python -m backend.src.server test & coverage run -m pytest
+        env:
+          APP_EMAIL: ${{ secrets.APP_EMAIL }}
+          APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
+          MONGODB_CONNECTION_STRING: ${{ secrets.MONGODB_CONNECTION_STRING }}
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+      - run: coverage html
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Coverage Report
+          path: htmlcov/
+          retention-days: 7

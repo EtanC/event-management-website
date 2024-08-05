@@ -1,0 +1,53 @@
+/* Styles for flexCard */
+.flexCard {
+    margin-bottom: 30px;
+    border-radius: 10px;
+}
+
+/* Styles for headerFont */
+.headerFont {
+    font-weight: bold !important;
+    font-size: 18px !important;
+    margin-bottom: 10px !important;
+}
+
+/* Styles for flexbox */
+.flexbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.button-common {
+    width: 150px !important;
+    border-radius: 20px !important;
+    text-transform: none !important;
+    font-weight: bold !important;
+}
+
+.button-edit {
+    width: 300px !important;
+}
+
+.button-responsive {
+    width: 100% !important;
+    max-width: 300px;
+}
+/* Styles for preferences bubbles */
+.preference-bubble {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 5px;
+    border-radius: 20px;
+    background-color: #f0f0f0;
+    color: #333;
+    font-size: 14px;
+}
+
+.bubbles-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 10px;
+}
